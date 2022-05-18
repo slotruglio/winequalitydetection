@@ -199,6 +199,13 @@ def compute_accuracy(LTE, S):
     accuracy = np.sum(LTE == np.argmax(S, axis=0)) / len(LTE)
     return accuracy
 
+def compute_confusion_matrix(S, LTE, K):
+    confusion_matrix = np.zeros((K,K))
+    for i in range(K):
+        for j in range(K):
+            confusion_matrix[i,j] = np.sum(np.logical_and(np.argmax(S, axis=0) == i, LTE == j))
+
+    return confusion_matrix
 
 if __name__ == "__main__":
     print("This module is not supposed to be run as main")
