@@ -199,13 +199,86 @@ def compute_accuracy(LTE, S):
     accuracy = np.sum(LTE == np.argmax(S, axis=0)) / len(LTE)
     return accuracy
 
-def compute_confusion_matrix(S, LTE, K):
-    confusion_matrix = np.zeros((K,K))
-    for i in range(K):
-        for j in range(K):
-            confusion_matrix[i,j] = np.sum(np.logical_and(np.argmax(S, axis=0) == i, LTE == j))
+# BAYES STUFF
 
-    return confusion_matrix
+def assign_labels(scores, pi, Cfn, Cfp, th=None):
+    if th is None:
+        th = -np.log(pi*Cfn)+np.log((1-pi)*Cfp)
+    P = scores > th
+    return np.int32(P)
+
+# calculate Binary Confusion Matrix
+# inputs: Pred, Labels
+# outputs: Confusion Matrix
+
+
+def compute_conf_matrix_binary(Pred, Labels):
+    C = np.zeros((2, 2))
+    C[0, 0] = ((Pred == 0) * (Labels == 0)).sum()
+    C[0, 1] = ((Pred == 0) * (Labels == 1)).sum()
+    C[1, 0] = ((Pred == 1) * (Labels == 0)).sum()
+    C[1, 1] = ((Pred == 1) * (Labels == 1)).sum()
+    return C
+
+# calculate empirical bayes decision
+# input : confusion matrix, pi, Cfn, Cfp
+# output : empirical bayes decision
+
+
+def compute_emp_Bayes_binary(CM, pi, Cfn, Cfp):
+    fnr = CM[0, 1] / (CM[0, 1] + CM[1, 1])
+    fpr = CM[1, 0] / (CM[0, 0] + CM[1, 0])
+    return pi*Cfn*fnr + (1-pi)*Cfp*fpr
+
+# calculate DCF for a given p
+# input: confusion matrix, prior, Cfn, Cfp
+# output: DCF
+
+
+def compute_normalized_emp_Bayes(CM, pi, Cfn, Cfp):
+    empBayes = compute_emp_Bayes_binary(CM, pi, Cfn, Cfp)
+    return empBayes / min(pi*Cfn, (1-pi)*Cfp)
+
+# calculate Normalized DCF for a given prior pi
+# input: scores, labels, prior, Cfn, Cfp and threshold (optional)
+# output: Normalized DCF
+
+
+def compute_act_DCF(scores, labels, pi, Cfn, Cfp, th=None):
+    Pred = assign_labels(scores, pi, Cfn, Cfp, th=th)
+    CM = compute_conf_matrix_binary(Pred, labels)
+    return compute_normalized_emp_Bayes(CM, pi, Cfn, Cfp)
+
+# calculate min DCF for a given prior pi
+# input: scores, labels, prior, Cfn, Cfp and threshold (optional)
+# output: min DCF
+
+
+def compute_min_DCF(scores, labels, pi, Cfn, Cfp):
+    t = np.array(scores)
+    t.sort()
+    np.concatenate([np.array([-np.inf]), t, np.array([np.inf])])
+    dcfList = []
+    for _th in t:
+        dcfList.append(compute_act_DCF(scores, labels, pi, Cfn, Cfp, th=_th))
+    return np.array(dcfList).min()
+
+# calculate bayes error data to plot
+# input: array of samples, scores, labels
+# if minCost is True, compute minDCF and append to y
+# if minCost is False, compute DCF and append to y
+# output: array of y values to plot
+
+
+def bayes_error_plot(pArray, scores, labels, minCost=False):
+    y = []
+    for p in pArray:
+        pi = 1./(1.+np.exp(-p))
+        if minCost:
+            y.append(compute_min_DCF(scores, labels, pi, 1, 1))
+        else:
+            y.append(compute_act_DCF(scores, labels, pi, 1, 1))
+    return np.array(y)
 
 if __name__ == "__main__":
     print("This module is not supposed to be run as main")

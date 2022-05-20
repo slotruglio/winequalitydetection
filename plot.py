@@ -64,5 +64,31 @@ def plot_hist_and_density(X1D, save=False):
         save_plot('hist_and_density.pdf')
     plt.show()
 
+def plot_ROC(FPR, TPR, save=False):
+    plt.figure()
+    plt.plot(FPR, TPR)
+    plt.xlabel('FPR')
+    plt.ylabel('TPR')
+    if save: 
+        save_plot('roc.pdf')
+    plt.show()
+
+def plot_bayes_error(p, Y, NAMES, colors=None, save=False, legend=None):
+    if colors is None:
+        colors = ['r', 'b', 'y', 'c', 'm', 'g', 'k']
+    for idx, name in enumerate(NAMES):
+        plt.plot(p, Y[idx], color=colors[idx], label=name)
+    plt.ylim(0, 1.1)
+    plt.xlim(-3, 3)
+    plt.xlabel('prior log-odds')
+    plt.ylabel('DCF value')
+    if legend is not None:
+        plt.legend(legend)
+    if save: 
+        save_plot('bayes_errors.pdf')
+    plt.figure()
+    
+
+
 def save_plot(name):
     plt.savefig(name)
