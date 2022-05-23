@@ -78,7 +78,7 @@ def split_db_2to1(D, L, seed=0):
 
     return (DTR, LTR), (DTE, LTE)
 
-def compute_optimal_bayes_binary(labels, llrs, pi, Cfn, Cfp):
+def compute_bayes_decision_binary(labels, llrs, pi, Cfn, Cfp):
 
 	#creo la confusion matrix
 	confusion_matrix = numpy.zeros((2,2))
