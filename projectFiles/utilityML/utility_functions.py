@@ -1,5 +1,7 @@
+from matplotlib import pyplot as plt
 import numpy
 from scipy import special
+from scipy import linalg
 
 def vrow(v):
     return numpy.array([v])
@@ -117,3 +119,89 @@ def compute_bayes_decision(labels, cond_ll, pi_array, c_matrix):
 
 
 	return confusion_matrix
+
+def pca(D, L):
+
+    mu = D.mean(1)
+    mu = mu.reshape((mu.size,1))
+
+    DC = D - mu.reshape((mu.size, 1))
+
+    C = 1/DC.shape[1] * DC.dot(DC.T)
+
+    #autovalori ed autovettori
+    s, U = numpy.linalg.eigh(C)
+
+    m = 2
+    P = U[:, ::-1][:, 0:m]
+    DP = numpy.dot(P.T, D)
+
+
+    # ***** PLOT GENERATION ***** #
+
+    plt.figure()
+
+    plt.xlabel("Sepal length")
+    plt.ylabel("Sepal width")
+
+    #non c'è bisogno di classi (detto a lezione)
+    plt.scatter(DP[0, :], DP[1, :])
+
+    plt.legend()
+
+    plt.show()
+
+def lda(D, L):
+
+    #+++ WITHIN COVARIANCE +++
+
+    #Divide the matrix for each class
+    D0 = D[:, L==0]
+    D1 = D[:, L==1]
+    D2 = D[:, L==2]
+
+    #Compute the mean for each class
+    mu0 = D0.mean(1)
+    mu1 = D1.mean(1)
+    mu2 = D2.mean(1)
+
+    mu0 = mu0.reshape((mu0.size,1))
+    mu1 = mu1.reshape((mu1.size,1))
+    mu2 = mu2.reshape((mu2.size,1))
+
+    #Subtract the mean from each sub matrix
+    DC0 = D0 - mu0
+    DC1 = D1 - mu1
+    DC2 = D2 - mu2 
+
+    #Calculate C
+    C0 = 1/DC0.shape[1] * DC0.dot(DC0.T)
+    C1 = 1/DC1.shape[1] * DC1.dot(DC1.T)
+    C2 = 1/DC2.shape[1] * DC2.dot(DC2.T)
+
+    #Calcolare il numero totale di samples N
+    N = D.shape[1]
+
+    #Calcolare il numero di samples per ogni classe nc
+    n0 = D0.shape[1]
+    n1 = D1.shape[1]
+    n2 = D2.shape[1]
+
+    #Formula: 1/N * [n0 * C0 + n1 * C1 + n2 * C2]
+    Sw = 1/N * (n0 * C0 + n1 * C1 + n2 * C2)
+
+    print(Sw)
+
+    #+++ BETWEEN COVARIANCE +++
+    mu = D.mean(1)
+    mu = mu.reshape((mu.size,1))
+    Sb_0 = n0 * (mu0 - mu) * (mu0-mu).T
+    Sb_1 = n1 * (mu1 - mu) * (mu1-mu).T
+    Sb_2 = n2 * (mu2 - mu) * (mu2-mu).T
+    Sb = 1/N * (Sb_0 + Sb_1 + Sb_2)
+
+    print(Sb)
+
+    #+++ SOLVING THE GENERALIZED EIGENVALUE PROBLEM TO FIND THE DIRECTIONS (Columns of W) +++
+    s, U = linalg.eigh(Sb, Sw)
+    W = U[:, ::-1][:, 0:9]
