@@ -1,9 +1,7 @@
 import numpy
 from scipy import optimize
 import sklearn
-
-def mcol(v):
-    return v.reshape((v.size, 1))
+from utilityML.utility_functions import mcol
 
 #BINARY LOGISTIC REGRESSION
 class LogReg:
