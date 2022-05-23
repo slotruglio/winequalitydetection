@@ -1,4 +1,5 @@
 import numpy
+from scipy import special
 
 def vrow(v):
     return numpy.array([v])
@@ -74,3 +75,45 @@ def split_db_2to1(D, L, seed=0):
     LTE = L[idxTest]
 
     return (DTR, LTR), (DTE, LTE)
+
+def compute_optimal_bayes_binary(labels, llrs, pi, Cfn, Cfp):
+
+	#creo la confusion matrix
+	confusion_matrix = numpy.zeros((2,2))
+
+	indexes_label_0 = (labels == 0)
+	indexes_label_1 = (labels == 1)
+
+	confusion_matrix[0][0] = (llrs[indexes_label_0] <= -numpy.log((pi * Cfn) / ((1-pi) * Cfp))).sum()
+	confusion_matrix[0][1] = (llrs[indexes_label_1] <= -numpy.log((pi * Cfn) / ((1-pi) * Cfp))).sum()	
+	
+	confusion_matrix[1][1] = (llrs[indexes_label_1] > -numpy.log((pi * Cfn) / ((1-pi) * Cfp))).sum()
+	confusion_matrix[1][0] = (llrs[indexes_label_0] > -numpy.log((pi * Cfn) / ((1-pi) * Cfp))).sum()
+
+	return confusion_matrix
+
+def compute_bayes_decision(labels, cond_ll, pi_array, c_matrix):
+
+	logSJoint = cond_ll + numpy.log(pi_array)
+	
+	logSMarginal = vrow(special.logsumexp(logSJoint, axis=0))
+
+	logSPost = logSJoint - logSMarginal
+
+	SPost = numpy.exp(logSPost)
+
+	optimal_classes = numpy.argmin(c_matrix @ SPost, axis=0)
+
+	numpy.savetxt("data/commedia_bayes_decision.txt", optimal_classes, fmt='%d')
+
+	confusion_matrix = numpy.zeros((len(cond_ll), len(cond_ll)))
+
+	for i in range(len(confusion_matrix)):
+
+		for j in range(len(confusion_matrix)):
+
+
+			confusion_matrix[i][j] = (optimal_classes[(labels == j)] == i).sum()
+
+
+	return confusion_matrix
