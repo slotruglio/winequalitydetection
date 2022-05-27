@@ -53,6 +53,15 @@ def split_leave_one_out(D, L, index):
 
 def vrow(v):
     return v.reshape((1, v.size))
+
+def mcol(v):
+    return v.reshape((v.size, 1))
+
+def mrow(v):
+    return v.reshape((1, v.size))
+
+
+
 # get mean of matrix
 
 
@@ -289,6 +298,12 @@ def bayes_error_plot(pArray, scores, labels, minCost=False):
         else:
             y.append(compute_act_DCF(scores, labels, pi, 1, 1))
     return np.array(y)
+
+# compute accuracy for SVM
+def compute_svm_accuracy(DTE, LTE, wStar):
+    DTEEXT = np.vstack([DTE, np.ones((1, DTE.shape[1]))])
+    score = np.dot(wStar.T, DTEEXT)
+    return np.sum( (score > 0) == LTE) / len(LTE)
 
 if __name__ == "__main__":
     print("This module is not supposed to be run as main")
