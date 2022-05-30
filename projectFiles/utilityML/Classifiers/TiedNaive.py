@@ -1,9 +1,8 @@
 import numpy
-import scipy
-
 from ..Functions.genpurpose import vrow, logpdf_GAU_ND, split_db_2to1, get_DTRs
 
-class MVG:
+class TiedNaive:
+
     def __init__(self, D, L, prior_prob_array):
         # initialization of the attributes
         self.D = numpy.array(D)
@@ -21,40 +20,40 @@ class MVG:
 
     def train(self):
         
-
         DTR_array = get_DTRs(self.DTR, self.LTR, self.L.max() +1)
-        
-        
+
+        self.cov = 0
+        sample_size = 0
+
         for DTRi in DTR_array:
             mu_i = numpy.mean(DTRi, axis=1)
             mu_i = mu_i.reshape((mu_i.shape[0], 1))
-            cov_i = 1/DTRi.shape[1] * numpy.dot(DTRi-mu_i, (DTRi-mu_i).T)
 
             self.mu_array.append(mu_i)
-            self.cov_array.append(cov_i)
+
+            sample_size += DTRi.shape[1]
+
+            self.cov += (DTRi - mu_i) @ (DTRi - mu_i).T
         
+        self.cov = numpy.diag(numpy.diag(self.cov * 1/sample_size))
     
     def test(self):
-
+            
         density_array = []
 
-        for mu_i, cov_i, prior_prob_i in zip(self.mu_array, self.cov_array, self.prior_prob_array):
+        for mu_i, prior_prob_i in zip(self.mu_array, self.prior_prob_array):
 
-            density_array.append(numpy.exp(logpdf_GAU_ND(self.DTE, mu_i, cov_i)) * prior_prob_i)
+            density_array.append(numpy.exp(logpdf_GAU_ND(self.DTE, mu_i, self.cov)) * prior_prob_i)
 
         SJoint = numpy.vstack((density_array))
-        logSJoint = numpy.log(SJoint)
 
-        logSMarginal = vrow(scipy.special.logsumexp(logSJoint, axis=0))
-
-        logSPost = logSJoint - logSMarginal
-
-        self.SPost = numpy.exp(logSPost)
+        self.SPost = SJoint / vrow(SJoint.sum(0))
 
         self.predicted_labels = numpy.argmax(self.SPost, axis=0)
-
+        
         #To include the leave-one-out special case
         denominator = 1 if numpy.isscalar(self.LTE) else self.LTE.shape[0]
         
         self.accuracy = (self.predicted_labels == self.LTE).sum() / denominator
+
         self.error = 1 - self.accuracy

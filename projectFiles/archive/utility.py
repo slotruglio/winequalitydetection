@@ -3,27 +3,11 @@ import scipy
 
 
 
-def split_leave_one_out(D, L, index):
-    D_train = numpy.delete(D, index, 1)
-    L_train = numpy.delete(L, index)
-    D_test = D[:, index:index+1]
-    L_test = L[index]
-    return (D_train, L_train), (D_test, L_test)
 
 # !!! to check
 def mrow(v):
     return v.reshape((1, v.size))
 
-
-# get loglikelihood of matrix X with mean mu and covariance C
-def loglikelihood(X, mu, C):
-    return logpdf_GAU_ND(X, mu, C).sum()
-
-# get likelihood of matrix X with mean mu and covariance C
-
-
-def likelihood(X, mu, C):
-    return numpy.exp(loglikelihood(X, mu, C))
 
 # separate DTR by class
 

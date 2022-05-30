@@ -1,7 +1,7 @@
 import numpy
 from scipy import optimize
 import sklearn
-from utilityML.utility_functions import mcol
+from ..Functions import mcol
 
 #BINARY LOGISTIC REGRESSION
 class LogReg:

@@ -1,33 +1,39 @@
 import numpy
 from scipy import special
 
-from utilityML.utility_functions import vrow, mcol
+from ..Functions import vrow, mcol
 
 class Multinomial:
+
+	def __init__(self, epsilon):
+		self.labeled_words = {}
+		self.epsilon = epsilon
+
 	
-	def create_dictionary_of_words(tercets):
-		labeled_words = {}
+	def create_dictionary_of_words(self, array_of_words):
+		
 		progressive_i = 0
 
-		for tercet in tercets:
-			for word in tercet.split():
-				if word not in labeled_words:
-					labeled_words[word] = progressive_i
-					progressive_i += 1
-				else:
-					continue
-		
-		return labeled_words
+		for word in array_of_words:
+			if word not in self.labeled_words:
+				self.labeled_words[word] = progressive_i
+				progressive_i += 1
+			else:
+				continue
 	
 
 	#For every word in every tercet, we increment the counters inside words_count_array.
 	#The index used to access the counters is the index of the word in the dictionary.
-	def count_word_occurrences(words_count_array, tercets, labeled_words):
+	def count_word_occurrences(self, words_count_array, tercets, labeled_words):
+
+		words_count_array = numpy.array([self.epsilon] * len(self))
+
 		for tercet in tercets:
 			for word in tercet.split():
 				words_count_array[labeled_words[word]] += 1
 		
 		return words_count_array
+
 
 	#For every array of words count, one for each class, we compute the model parameters of that class
 	def estimate_model_parameters(array_of_class_words_count):
