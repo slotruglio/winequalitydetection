@@ -3,12 +3,43 @@ import numpy
 from scipy import special
 from scipy import linalg
 
+#region Loading Data
+
+# get data and labels from file
+# INPUT: filename - the name of the file to be loaded
+#        featuresCols - # of consecutive cols (0-n) to be considered
+#        labelCol - the col number of the label (tipically the last col)
+# OUTPUT: X - the data matrix (n x m)
+#         L - the label vector (1 x m)
+
+def load(filename, featuresCols, labelCol):
+    floats_array = numpy.loadtxt(filename, delimiter=",", usecols=featuresCols)
+    label_array = numpy.loadtxt(filename, delimiter=",", usecols=labelCol)
+
+    return [floats_array.T, label_array]
+
+# get iris dataset
+
+def load_iris():
+    from sklearn.datasets import load_iris
+    D, L = load_iris()['data'].T, load_iris()['target']
+    return D, L
+
+#endregion
+
+#region particular lines from a matrix
+
 def vrow(v):
     return numpy.array([v])
     
 def mcol(v):
     return v.reshape((v.size, 1))
 
+#endregion
+
+#region matrix operations
+
+# get logpdf of matrix X of samples with mean mu and covariance C
 def logpdf_GAU_ND(x, mu, C):
     """
     logpdf of Gaussian distribution in N-dimensions
@@ -34,6 +65,29 @@ def logpdf_GAU_ND(x, mu, C):
 
     return numpy.array(Y).ravel()
 
+# get logpdf of sample x with mean mu and covariance C
+def logpdf_sample(x, mu, C):
+    logpdf = -0.5 * (x.shape[0] * numpy.log(2*numpy.pi) + numpy.linalg.slogdet(C)
+                     [1] + numpy.dot((x-mu).T, numpy.dot(numpy.linalg.inv(C), (x-mu))))
+    return logpdf.ravel()
+
+
+# get mean of matrix
+def compute_mean(X):
+    return X.mean(1).reshape((X.shape[0], 1))
+
+# get covariance of matrix X with mean mu
+def compute_covariance(X, mu):
+    X_centered = X - mu
+    return numpy.dot(X_centered, X_centered.T) / float(X.shape[1])
+
+# get diagonal covariance of matrix X with mean mu
+def compute_diag_covariance(X, mu):
+    return compute_covariance(X, mu)*numpy.identity(X.shape[0])
+
+
+#endregion
+
 def leave_one_out(D, L, classifier_train, classifier_test, prior_prob_array):
     acc = 0
     for i in range(D.shape[1]):
@@ -56,7 +110,7 @@ def leave_one_out(D, L, classifier_train, classifier_test, prior_prob_array):
     return acc / D.shape[1]
 
 
-def split_db_2to1(D, L, seed=0):
+def split_db_2to1(D, L, percTraining = 2.0/3.0, seed=0):
 
     #Per selezionare i sample in maniera randomica,
     #Prendiamo un array di indici dei sample
@@ -64,7 +118,7 @@ def split_db_2to1(D, L, seed=0):
     #Infine usiamo tale array per accedere ai sample 
     #(METODO SIMILE AD ANALISI DI IMMAGINI DIGITALI)
 
-    nTrain = int(D.shape[1] * 2.0/3.0)
+    nTrain = int(D.shape[1] * percTraining)
     numpy.random.seed(seed)
 
     idx = numpy.random.permutation(D.shape[1])
@@ -77,6 +131,20 @@ def split_db_2to1(D, L, seed=0):
     LTE = L[idxTest]
 
     return (DTR, LTR), (DTE, LTE)
+
+#region Bayes functions
+
+# calculate Binary Confusion Matrix
+# inputs: Pred, Labels
+# outputs: Confusion Matrix
+def compute_conf_matrix_binary(Pred, Labels):
+    C = numpy.zeros((2, 2))
+    C[0, 0] = ((Pred == 0) * (Labels == 0)).sum()
+    C[0, 1] = ((Pred == 0) * (Labels == 1)).sum()
+    C[1, 0] = ((Pred == 1) * (Labels == 0)).sum()
+    C[1, 1] = ((Pred == 1) * (Labels == 1)).sum()
+    return C
+
 
 def compute_bayes_decision_binary(labels, llrs, pi, Cfn, Cfp):
 
@@ -119,6 +187,8 @@ def compute_bayes_decision(labels, cond_ll, pi_array, c_matrix):
 
 
 	return confusion_matrix
+
+#endregion
 
 def pca(D, L):
 
@@ -205,3 +275,24 @@ def lda(D, L):
     #+++ SOLVING THE GENERALIZED EIGENVALUE PROBLEM TO FIND THE DIRECTIONS (Columns of W) +++
     s, U = linalg.eigh(Sb, Sw)
     W = U[:, ::-1][:, 0:9]
+
+#region accuracy computation
+
+# compute accuracy of model
+# given LTE = labels of test data
+# given S = class conditional probability
+def compute_accuracy(LTE, S):
+    accuracy = numpy.sum(LTE == numpy.argmax(S, axis=0)) / len(LTE)
+    return accuracy
+
+# compute accuracy for SVM
+def compute_svm_accuracy(DTE, LTE, wStar):
+    DTEEXT = numpy.vstack([DTE, numpy.ones((1, DTE.shape[1]))])
+    score = numpy.dot(wStar.T, DTEEXT)
+    return numpy.sum( (score > 0) == LTE) / len(LTE)
+
+#endregion
+
+if __name__ == "__main__":
+    print("This module is not supposed to be run as main")
+    exit(1)
