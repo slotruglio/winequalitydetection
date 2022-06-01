@@ -12,7 +12,7 @@ import numpy
 
 def load(filename, featuresCols, labelCol):
     floats_array = numpy.loadtxt(filename, delimiter=",", usecols=featuresCols)
-    label_array = numpy.loadtxt(filename, delimiter=",", usecols=labelCol)
+    label_array = numpy.loadtxt(filename, delimiter=",", usecols=labelCol).astype(int)
 
     return [floats_array.T, label_array]
 
@@ -98,6 +98,7 @@ def compute_svm_accuracy(DTE, LTE, wStar):
 #endregion
 
 def get_DTRs(DTR, LTR, number_of_classes):
+
     DTRs = []
     for i in range(number_of_classes):
         DTRs.append(DTR[:, LTR == i])
