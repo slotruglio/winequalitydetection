@@ -1,13 +1,16 @@
 import numpy
-import scipy
+from scipy import special
 
 from ..Functions.genpurpose import vrow, logpdf_GAU_ND, split_db_2to1, get_DTRs
 
 class MVG:
-    def __init__(self, D, L, prior_prob_array):
+    def __init__(self, DTR, LTR, DTE, LTE, prior_prob_array):
         # initialization of the attributes
-        self.D = numpy.array(D)
-        self.L = numpy.array(L)
+        self.DTR = DTR
+        self.LTR = LTR
+        self.DTE = DTE
+        self.LTE = LTE
+
         self.mu_array = []
         self.cov_array = []
         self.prior_prob_array = prior_prob_array
@@ -15,14 +18,12 @@ class MVG:
         self.predicted_labels = []
         self.accuracy = 0.
         self.error = 0.
-        #Generic way of splitting the data into training and test
-        (self.DTR, self.LTR), (self.DTE, self.LTE) = split_db_2to1(D, L)
 
 
     def train(self):
         
 
-        DTR_array = get_DTRs(self.DTR, self.LTR, self.L.max() +1)
+        DTR_array = get_DTRs(self.DTR, self.LTR, self.LTR.max() +1)
         
         
         for DTRi in DTR_array:
@@ -36,19 +37,15 @@ class MVG:
     
     def test(self):
 
-        density_array = []
+        log_density_array = []
 
         for mu_i, cov_i, prior_prob_i in zip(self.mu_array, self.cov_array, self.prior_prob_array):
 
-            density_array.append(numpy.exp(logpdf_GAU_ND(self.DTE, mu_i, cov_i)) * prior_prob_i)
+            log_density_array.append(logpdf_GAU_ND(self.DTE, mu_i, cov_i) + numpy.log(prior_prob_i))
 
-        SJoint = numpy.vstack((density_array))
-        logSJoint = numpy.log(SJoint)
-
-        logSMarginal = vrow(scipy.special.logsumexp(logSJoint, axis=0))
-
+        logSJoint = numpy.vstack((log_density_array))
+        logSMarginal = vrow(special.logsumexp(logSJoint, axis=0))
         logSPost = logSJoint - logSMarginal
-
         self.SPost = numpy.exp(logSPost)
 
         self.predicted_labels = numpy.argmax(self.SPost, axis=0)

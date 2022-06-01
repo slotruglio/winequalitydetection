@@ -1,7 +1,7 @@
 import numpy
 from scipy import special
 
-from ..Functions import vrow, mcol
+from ..Functions.genpurpose import vrow, mcol
 
 class Multinomial:
 

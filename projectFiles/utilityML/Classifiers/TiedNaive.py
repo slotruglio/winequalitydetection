@@ -3,10 +3,13 @@ from ..Functions.genpurpose import vrow, logpdf_GAU_ND, split_db_2to1, get_DTRs
 
 class TiedNaive:
 
-    def __init__(self, D, L, prior_prob_array):
+    def __init__(self, DTR, LTR, DTE, LTE, prior_prob_array):
         # initialization of the attributes
-        self.D = numpy.array(D)
-        self.L = numpy.array(L)
+        self.DTR = DTR
+        self.LTR = LTR
+        self.DTE = DTE
+        self.LTE = LTE
+
         self.mu_array = []
         self.cov_array = []
         self.prior_prob_array = prior_prob_array
@@ -14,13 +17,11 @@ class TiedNaive:
         self.predicted_labels = []
         self.accuracy = 0.
         self.error = 0.
-        #Generic way of splitting the data into training and test
-        (self.DTR, self.LTR), (self.DTE, self.LTE) = split_db_2to1(D, L)
 
 
     def train(self):
         
-        DTR_array = get_DTRs(self.DTR, self.LTR, self.L.max() +1)
+        DTR_array = get_DTRs(self.DTR, self.LTR, self.LTR.max() +1)
 
         self.cov = 0
         sample_size = 0

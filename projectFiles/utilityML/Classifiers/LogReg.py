@@ -1,13 +1,16 @@
 import numpy
 from scipy import optimize
 import sklearn
-from ..Functions import mcol
+from ..Functions.genpurpose import mcol
 
 #BINARY LOGISTIC REGRESSION
 class LogReg:
-	def __init__(self, DTR, LTR, l):
+	def __init__(self, DTR, LTR, DTE, LTE, l):
 		self.DTR = DTR
 		self.LTR = LTR
+		self.DTE = DTE
+		self.LTE = LTE
+
 		self.l = l
 		self.Z = 2 * LTR -1
 
@@ -32,13 +35,13 @@ class LogReg:
 		self.estimated_w = model_parameters[0][0:-1]
 		self.estimated_b = model_parameters[0][-1]
 
-	def logreg_test(self, DTE, LTE):
+	def logreg_test(self):
 		
-		S = numpy.dot(self.estimated_w.T, DTE) + self.estimated_b 
+		S = numpy.dot(self.estimated_w.T, self.DTE) + self.estimated_b 
 
-		predicted_labels = numpy.zeros(LTE.shape)
+		predicted_labels = numpy.zeros(self.LTE.shape)
 		predicted_labels[S > 0] = 1
 
-		acc = (predicted_labels == LTE).sum() / len(LTE)
+		acc = (predicted_labels == self.LTE).sum() / len(self.LTE)
 
 		return acc
