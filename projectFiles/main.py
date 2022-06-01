@@ -10,9 +10,10 @@ from utilityML.Classifiers.MVG import MVG
 from utilityML.Classifiers.NaiveBayes import NaiveBayes
 from utilityML.Classifiers.TiedCovariance import TiedCovariance
 from utilityML.Classifiers.TiedNaive import TiedNaive
-
 from utilityML.Classifiers.LogReg import LogReg
 from utilityML.Classifiers.Multinomial import Multinomial
+
+from Printer import Printer
 
 #Step 1 - Trovare il classificatore migliore
 #Bisogna fare parameters tuning tramite cross validation
@@ -49,23 +50,25 @@ tied_naive.train()
 tied_naive.test()
 
 #print all accuracies and errors in percentual form and table form
-print("MVG data")
-print("Accuracy: ", mvg.accuracy * 100, "%")
-print("Error: ", mvg.error * 100, "%")
+Printer.print_title("MVG data")
+Printer.print_line(f"Accuracy: {mvg.accuracy * 100:.2f}%")
+Printer.print_line(f"Error: {mvg.error * 100:.2f}%")
+Printer.print_empty_lines(1)
 
-print("Naive Bayes data")
-print("Accuracy: ", naive_bayes.accuracy * 100, "%")
-print("Error: ", naive_bayes.error * 100, "%")
+Printer.print_title("Naive Bayes data")
+Printer.print_line(f"Accuracy: {naive_bayes.accuracy * 100:.2f}%")
+Printer.print_line(f"Error: {naive_bayes.error * 100:.2f}%")
+Printer.print_empty_lines(1)
 
-print("Tied Covariance data")
-print("Accuracy: ", tied_covariance.accuracy * 100, "%")
-print("Error: ", tied_covariance.error * 100, "%")
+Printer.print_title("Tied Covariance data")
+Printer.print_line(f"Accuracy: {tied_covariance.accuracy * 100:.2f}%")
+Printer.print_line(f"Error: {tied_covariance.error * 100:.2f}%")
+Printer.print_empty_lines(1)
 
-print("Tied Naive data")
-print("Accuracy: ", tied_naive.accuracy * 100, "%")
-print("Error: ", tied_naive.error * 100, "%")
-
-
+Printer.print_title("Tied Naive data")
+Printer.print_line(f"Accuracy: {tied_naive.accuracy * 100:.2f}%")
+Printer.print_line(f"Error: {tied_naive.error * 100:.2f}%")
+Printer.print_empty_lines(1)
 
 
 
