@@ -49,6 +49,10 @@ tied_naive = TiedNaive(DTR, LTR, DTE, LTE, [prior_0, prior_1])
 tied_naive.train()
 tied_naive.test()
 
+log_reg = LogReg(DTR, LTR, DTE, LTE, 1)
+log_reg.estimate_model_parameters()
+log_reg.logreg_test()
+
 #print all accuracies and errors in percentual form and table form
 Printer.print_title("MVG data")
 Printer.print_line(f"Accuracy: {mvg.accuracy * 100:.2f}%")
@@ -68,6 +72,11 @@ Printer.print_empty_lines(1)
 Printer.print_title("Tied Naive data")
 Printer.print_line(f"Accuracy: {tied_naive.accuracy * 100:.2f}%")
 Printer.print_line(f"Error: {tied_naive.error * 100:.2f}%")
+Printer.print_empty_lines(1)
+
+Printer.print_title("Logistic Regression data")
+Printer.print_line(f"Accuracy: {log_reg.accuracy * 100:.2f}%")
+Printer.print_line(f"Error: {log_reg.error * 100:.2f}%")
 Printer.print_empty_lines(1)
 
 
