@@ -25,8 +25,8 @@ from utilityML.Classifiers.Multinomial import Multinomial
 #Questi due step vanno accompagnati da eventuali plot e commenti, utili per il report finale
 
 #Load the data
-DTR, LTR = load("Train.txt", [0, 1, 2, 3,4,5,6,7,8,9,10], 11)
-DTE, LTE = load("Test.txt", [0, 1, 2, 3,4,5,6,7,8,9,10], 11)
+DTR, LTR = load("data/Train.txt", [0, 1, 2, 3,4,5,6,7,8,9,10], 11)
+DTE, LTE = load("data/Test.txt", [0, 1, 2, 3,4,5,6,7,8,9,10], 11)
 
 #Compute class priors: label_i / total_labels
 prior_0 = (LTR == 0).sum() / LTR.shape[0]
