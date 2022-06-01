@@ -16,6 +16,10 @@ class LogReg:
 
 		self.estimated_w = None 
 		self.estimated_b = None
+
+		self.accuracy = 0.
+		self.error = 0.
+		self.predicted_label = []
 	
 	def logreg_obj(self, v):
 
@@ -39,9 +43,8 @@ class LogReg:
 		
 		S = numpy.dot(self.estimated_w.T, self.DTE) + self.estimated_b 
 
-		predicted_labels = numpy.zeros(self.LTE.shape)
-		predicted_labels[S > 0] = 1
+		self.predicted_labels = numpy.zeros(self.LTE.shape)
+		self.predicted_labels[S > 0] = 1
 
-		acc = (predicted_labels == self.LTE).sum() / len(self.LTE)
-
-		return acc
+		self.accuracy = (self.predicted_labels == self.LTE).sum() / len(self.LTE)
+		self.error = 1 - self.accuracy
