@@ -1,7 +1,6 @@
 import numpy
 from scipy import linalg
-from genpurpose import *
-from plot import *
+from utilityML.Functions.genpurpose import *
 
 def pca(D, L, m=2):
 

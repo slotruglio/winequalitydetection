@@ -1,6 +1,7 @@
 # Generic import
 import numpy
 from sklearn import naive_bayes
+from utilityML.Functions.crossvalid import evaluate_by_parameter
 
 # Functions import
 from utilityML.Functions.genpurpose import load
@@ -67,6 +68,8 @@ if show :
 # Compute class priors: label_i / total_labels
 prior_0 = (LTR == 0).sum() / LTR.shape[0]
 prior_1 = (LTR == 1).sum() / LTR.shape[0]
+
+evaluate_by_parameter(MVG, DTR, LTR, DTE, LTE, [prior_0, prior_1])
 
 mvg = MVG(DTR, LTR, DTE, LTE, [prior_0, prior_1])
 mvg.train()
