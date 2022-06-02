@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy
-from genpurpose import *
+from utilityML.Functions.genpurpose import *
 
 def plotHist(D, L, hFea, hLab, title, save=False):
     nLabels = len(set(L))
@@ -37,8 +37,8 @@ def plot_scatter_dual(D, L, hFea, hLab, title, save=False):
     for i in range(len(L)):
         D_p.append(D[:, L == i])
 
-    for dIdx1 in range(L.max()+1):
-        for dIdx2 in range(L.max()+1):
+    for dIdx1 in range(len(hFea)):
+        for dIdx2 in range(len(hFea)):
             if dIdx1 == dIdx2:
                 continue
             plt.figure()

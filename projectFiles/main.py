@@ -1,11 +1,14 @@
-#Generic import
+# Generic import
 import numpy
 from sklearn import naive_bayes
 
-#Functions import
+# Functions import
 from utilityML.Functions.genpurpose import load
 
-#Classifiers import
+# Plot import
+from utilityML.Functions.plot import *
+
+# Classifiers import
 from utilityML.Classifiers.MVG import MVG
 from utilityML.Classifiers.NaiveBayes import NaiveBayes
 from utilityML.Classifiers.TiedCovariance import TiedCovariance
@@ -15,21 +18,53 @@ from utilityML.Classifiers.Multinomial import Multinomial
 
 from Printer import Printer
 
-#Step 1 - Trovare il classificatore migliore
-#Bisogna fare parameters tuning tramite cross validation
-#La cross validation verifica ogni volta o la accuracy o la confusion matrix (misura più accurata)
+# Step 1 - Trovare il classificatore migliore
+# Bisogna fare parameters tuning tramite cross validation
+# La cross validation verifica ogni volta o la accuracy o la confusion matrix (misura più accurata)
 
-#Step 2 - Valutare dimensionality reduction
-#Una volta trovato il classificatore migliore con i parametri migliori, si fa
-#dimensionality reduction con la PCA, valutando vari valori per m, sempre con la cross validation
+# Step 2 - Valutare dimensionality reduction
+# Una volta trovato il classificatore migliore con i parametri migliori, si fa
+# dimensionality reduction con la PCA, valutando vari valori per m, sempre con la cross validation
 
-#Questi due step vanno accompagnati da eventuali plot e commenti, utili per il report finale
+# Questi due step vanno accompagnati da eventuali plot e commenti, utili per il report finale
 
-#Load the data
-DTR, LTR = load("data/Train.txt", [0, 1, 2, 3,4,5,6,7,8,9,10], 11)
-DTE, LTE = load("data/Test.txt", [0, 1, 2, 3,4,5,6,7,8,9,10], 11)
+# Load the data
+DTR, LTR = load("data/Train.txt", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 11)
+DTE, LTE = load("data/Test.txt", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 11)
 
-#Compute class priors: label_i / total_labels
+# Show the data
+show = False
+#region plotting data
+# features as array
+features = [
+    "fixed acidity",
+    "volatile acidity",
+    "citric acid",
+    "residual sugar",
+    "chlorides",
+    "free sulfur dioxide",
+    "total sulfur dioxide",
+    "density",
+    "pH",
+    "sulphates",
+    "alcohol"
+]
+# labels as array
+labels = [
+    "bad quality",
+    "good quality"
+]
+
+if show :
+
+    # histogram
+    plotHist(numpy.concatenate((DTR, DTE), axis=1), numpy.concatenate((LTR, LTE), axis=0), features, labels, "Dataset's histogram")
+
+    # scatter
+    plot_scatter_dual(numpy.concatenate((DTR, DTE), axis=1), numpy.concatenate((LTR, LTE), axis=0), features, labels, "Dataset's scatter")
+#endregion
+
+# Compute class priors: label_i / total_labels
 prior_0 = (LTR == 0).sum() / LTR.shape[0]
 prior_1 = (LTR == 1).sum() / LTR.shape[0]
 
@@ -53,7 +88,7 @@ log_reg = LogReg(DTR, LTR, DTE, LTE, 1)
 log_reg.estimate_model_parameters()
 log_reg.logreg_test()
 
-#print all accuracies and errors in percentual form and table form
+# print all accuracies and errors in percentual form and table form
 Printer.print_title("MVG data")
 Printer.print_line(f"Accuracy: {mvg.accuracy * 100:.2f}%")
 Printer.print_line(f"Error: {mvg.error * 100:.2f}%")
@@ -78,7 +113,3 @@ Printer.print_title("Logistic Regression data")
 Printer.print_line(f"Accuracy: {log_reg.accuracy * 100:.2f}%")
 Printer.print_line(f"Error: {log_reg.error * 100:.2f}%")
 Printer.print_empty_lines(1)
-
-
-
-
