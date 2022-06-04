@@ -1,6 +1,7 @@
 # Generic import
 import numpy
 from sklearn import naive_bayes
+from utilityML.Functions.crossvalid import pca_k_fold_crossvalidation
 from utilityML.Functions.crossvalid import evaluate_by_parameter
 
 # Functions import
@@ -69,7 +70,7 @@ if show :
 prior_0 = (LTR == 0).sum() / LTR.shape[0]
 prior_1 = (LTR == 1).sum() / LTR.shape[0]
 
-evaluate_by_parameter(MVG, DTR, LTR, DTE, LTE, [prior_0, prior_1])
+#evaluate_by_parameter(MVG, DTR, LTR, DTE, LTE, [prior_0, prior_1])
 
 mvg = MVG(DTR, LTR, DTE, LTE, [prior_0, prior_1])
 mvg.train()
@@ -115,4 +116,9 @@ Printer.print_empty_lines(1)
 Printer.print_title("Logistic Regression data")
 Printer.print_line(f"Accuracy: {log_reg.accuracy * 100:.2f}%")
 Printer.print_line(f"Error: {log_reg.error * 100:.2f}%")
+Printer.print_empty_lines(1)
+
+
+
+pca_k_fold_crossvalidation(MVG, DTR, LTR, [prior_0, prior_1], 10)
 Printer.print_empty_lines(1)

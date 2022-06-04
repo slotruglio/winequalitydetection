@@ -5,7 +5,7 @@ from utilityML.Functions.genpurpose import *
 def pca(D, L, m=2):
 
     mu = D.mean(1)
-    mu = mu.reshape((mu.size,1))
+    #mu = mu.reshape((mu.size,1))
 
     DC = D - mu.reshape((mu.size, 1))
 
@@ -18,7 +18,7 @@ def pca(D, L, m=2):
     DP = numpy.dot(P.T, D)
 
     # plot_scatter(DP, "sepal length", "sepal width", "scatter_title")
-    return DP
+    return DP, P
 
 def lda(D, L, m=9):
 
