@@ -26,4 +26,4 @@ jobs:
       - name: install reqs
         run: pip install -r requirements.txt
       - name: execute main
-        run: python main.py
+        run: pwd && ls && python main.py
