@@ -2,7 +2,6 @@
 import numpy
 from sklearn import naive_bayes
 from utilityML.Functions.crossvalid import pca_k_fold_crossvalidation
-from utilityML.Functions.crossvalid import evaluate_by_parameter
 
 # Functions import
 from utilityML.Functions.genpurpose import load
@@ -17,6 +16,7 @@ from utilityML.Classifiers.TiedCovariance import TiedCovariance
 from utilityML.Classifiers.TiedNaive import TiedNaive
 from utilityML.Classifiers.LogReg import LogReg
 from utilityML.Classifiers.Multinomial import Multinomial
+from utilityML.Classifiers.SVM import SVM
 
 from Printer import Printer
 
@@ -91,6 +91,19 @@ tied_naive.test()
 log_reg = LogReg(DTR, LTR, DTE, LTE, 1)
 log_reg.estimate_model_parameters()
 log_reg.logreg_test()
+
+doSVM = False
+
+if doSVM :
+    for K in [1,10]:
+        for C in [0.1, 1.0, 10.0]:
+            svm = SVM(DTR, LTR, DTE, LTE)
+            svm.train(C, K)
+            svm.test()
+            Printer.print_title("SVM with C = " + str(C) + " and K = " + str(K))
+            Printer.print_line(f"Accuracy: {svm.accuracy * 100:.2f}%")
+            Printer.print_line(f"Error: {svm.error * 100:.2f}%")
+            Printer.print_empty_lines(1)
 
 # print all accuracies and errors in percentual form and table form
 Printer.print_title("MVG data")

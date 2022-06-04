@@ -11,28 +11,6 @@ def split_leave_one_out(D, L, index):
     return (D_train, L_train), (D_test, L_test)
 
 
-def evaluate_by_parameter(classifier, DTR, LTR, DTE, LTE, priors):
-    m = DTR.shape[0]
-    results = {}
-    D = numpy.concatenate((DTR, DTE), axis=1)
-    L = numpy.concatenate((LTR, LTE), axis=0)
-
-    while m > 0:
-        DP = pca(D, L, m)
-        model = classifier(DP[:, 0:DTR.shape[1]], L[:DTR.shape[1]], DP[:, DTR.shape[1]:-1], L[DTR.shape[1]:-1], priors)
-        #model = classifier(DTR, LTR, DTE, LTE, priors)
-        model.train()
-        model.test()
-        results[m] = model.accuracy
-        m -= 1
-
-    sortedRes = sorted(results.items(), key=lambda x: x[1], reverse=True);
-    for (k,v) in sortedRes:
-        print(f"m = {k} -> {v * 100:.2f}%")
-    return sorted(results.items(), key=lambda x: x[1], reverse=True)
-
-
-
 def pca_k_fold_crossvalidation(classifier, DTR, LTR, priors, k):
 
 	#for each group, compute the accuracy
@@ -55,6 +33,7 @@ def pca_k_fold_crossvalidation(classifier, DTR, LTR, priors, k):
 			cv_dte = cv_dte_array[i]
 			cv_lte = cv_lte_array[i]
 
+			# get projected samples of test data
 			reduced_cv_dte = numpy.dot(P.T, cv_dte)
 
 			#train the model
