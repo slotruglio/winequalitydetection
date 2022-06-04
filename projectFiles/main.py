@@ -19,7 +19,7 @@ from utilityML.Classifiers.TiedCovariance import TiedCovariance
 from utilityML.Classifiers.TiedNaive import TiedNaive
 from utilityML.Classifiers.LogReg import LogReg
 from utilityML.Classifiers.Multinomial import Multinomial
-from utilityML.Classifiers.SVM import SVM_linear
+from utilityML.Classifiers.SVM import SVM_linear, SVM_poly
 
 from Printer import Printer
 
@@ -102,6 +102,10 @@ if do_svm:
     svm_l.train()
     svm_l.test()
 
+    svm_p = SVM_poly(DTR, LTR, DTE, LTE)
+    svm_p.train()
+    svm_p.test()
+
 # print all accuracies and errors in percentual form and table form
 Printer.print_title("MVG data")
 Printer.print_line(f"Accuracy: {mvg.accuracy * 100:.2f}%")
@@ -129,9 +133,14 @@ Printer.print_line(f"Error: {log_reg.error * 100:.2f}%")
 Printer.print_empty_lines(1)
 
 if do_svm:
-    Printer.print_title("SVM data")
+    Printer.print_title("SVM linear data")
     Printer.print_line(f"Accuracy: {svm_l.accuracy * 100:.2f}%")
     Printer.print_line(f"Error: {svm_l.error * 100:.2f}%")
+    Printer.print_empty_lines(1)
+
+    Printer.print_title("SVM poly data")
+    Printer.print_line(f"Accuracy: {svm_p.accuracy * 100:.2f}%")
+    Printer.print_line(f"Error: {svm_p.error * 100:.2f}%")
     Printer.print_empty_lines(1)
 
 
@@ -139,22 +148,22 @@ pca_crossvalidation(MVG, DTR, LTR, [prior_0, prior_1], 10)
 Printer.print_empty_lines(1)
 
 
-if False :
-    # Printer.print_title("SVM linear cross validation of C")
+if do_svm :
+    Printer.print_title("SVM linear cross validation of C")
 
-    # start = time.time()
-    # svm_linear_cross_valid_C(DTR, LTR, [0.1, 1, 10], 1, percentage=2./3.)
-    # end = time.time()
-    # Printer.print_line(f"Time of 70/30: {end - start:.2f}s")
-    # Printer.print_empty_lines(1)
+    start = time.time()
+    svm_linear_cross_valid_C(DTR, LTR, [0.1, 1, 10], 1, percentage=2./3.)
+    end = time.time()
+    Printer.print_line(f"Time of 70/30: {end - start:.2f}s")
+    Printer.print_empty_lines(1)
 
-    # start = time.time()
-    # svm_linear_cross_valid_C(DTR, LTR, [0.1, 1, 10], 1, 10)
-    # end = time.time()
-    # Printer.print_line(f"Time of kfold: {end - start:.2f}s")
-    # Printer.print_empty_lines(1)
+    start = time.time()
+    svm_linear_cross_valid_C(DTR, LTR, [0.1, 1, 10], 1, 10)
+    end = time.time()
+    Printer.print_line(f"Time of kfold: {end - start:.2f}s")
+    Printer.print_empty_lines(1)
 
-    Printer.print_title("SVM poly cross validation of C")
+    Printer.print_title("SVM poly cross validation")
 
     start = time.time()
     svm_poly_cross_valid(DTR, LTR, [0.1, 1, 10], [0,1], 1, percentage=2./3.)
