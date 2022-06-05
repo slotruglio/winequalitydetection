@@ -1,10 +1,6 @@
 # Generic import
 import numpy
 from sklearn import naive_bayes
-from utilityML.Functions.crossvalid import pca_crossvalidation, svm_linear_cross_valid_C, svm_poly_cross_valid
-
-# Statistics import
-import time
 
 # Functions import
 from utilityML.Functions.genpurpose import load
@@ -18,22 +14,15 @@ from utilityML.Classifiers.NaiveBayes import NaiveBayes
 from utilityML.Classifiers.TiedCovariance import TiedCovariance
 from utilityML.Classifiers.TiedNaive import TiedNaive
 from utilityML.Classifiers.LogReg import LogReg
-from utilityML.Classifiers.Multinomial import Multinomial
 from utilityML.Classifiers.SVM import SVM_linear, SVM_poly
 
 from Printer import Printer
 
-# Step 1 - Trovare il classificatore migliore
-# Bisogna fare parameters tuning tramite cross validation
-# La cross validation verifica ogni volta o la accuracy o la confusion matrix (misura più accurata)
+#Parameters tuning import (this actually executes the file)
+from parameters_tuning import *
 
-# Step 2 - Valutare dimensionality reduction
-# Una volta trovato il classificatore migliore con i parametri migliori, si fa
-# dimensionality reduction con la PCA, valutando vari valori per m, sempre con la cross validation
 
-# Questi due step vanno accompagnati da eventuali plot e commenti, utili per il report finale
-
-# Load the data
+#LOAD THE DATA
 DTR, LTR = load("data/Train.txt", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 11)
 DTE, LTE = load("data/Test.txt", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 11)
 
@@ -41,6 +30,7 @@ DTE, LTE = load("data/Test.txt", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 11)
 show = False
 # do or not do svm
 do_svm = True
+
 
 #region plotting data
 # features as array
@@ -72,31 +62,37 @@ if show :
     plot_scatter_dual(numpy.concatenate((DTR, DTE), axis=1), numpy.concatenate((LTR, LTE), axis=0), features, labels, "Dataset's scatter")
 #endregion
 
-# Compute class priors: label_i / total_labels
+
+#COMPUTE CLASS PRIORS: label_i / total_labels
 prior_0 = (LTR == 0).sum() / LTR.shape[0]
 prior_1 = (LTR == 1).sum() / LTR.shape[0]
 
-
+#TRAIN AND TEST FOR MVG
 mvg = MVG(DTR, LTR, DTE, LTE, [prior_0, prior_1])
 mvg.train()
 mvg.test()
 
+#TRAIN AND TEST FOR NAIVEBAYES
 naive_bayes = NaiveBayes(DTR, LTR, DTE, LTE, [prior_0, prior_1])
 naive_bayes.train()
 naive_bayes.test()
 
+#TRAIN AND TEST FOR TIEDCOVARIANCE
 tied_covariance = TiedCovariance(DTR, LTR, DTE, LTE, [prior_0, prior_1])
 tied_covariance.train()
 tied_covariance.test()
 
+#TRAIN AND TEST FOR TIEDNAIVE
 tied_naive = TiedNaive(DTR, LTR, DTE, LTE, [prior_0, prior_1])
 tied_naive.train()
 tied_naive.test()
 
+#TRAIN AND TEST FOR LOGREG
 log_reg = LogReg(DTR, LTR, DTE, LTE, 1)
 log_reg.estimate_model_parameters()
 log_reg.logreg_test()
 
+#TRAIN AND TEST FOR SVG
 if do_svm:
     svm_l = SVM_linear(DTR, LTR, DTE, LTE)
     svm_l.train()
@@ -106,7 +102,8 @@ if do_svm:
     svm_p.train()
     svm_p.test()
 
-# print all accuracies and errors in percentual form and table form
+
+#PRINT ALL CLASSIFIERS RESULTS
 Printer.print_title("MVG data")
 Printer.print_line(f"Accuracy: {mvg.accuracy * 100:.2f}%")
 Printer.print_line(f"Error: {mvg.error * 100:.2f}%")
@@ -144,35 +141,4 @@ if do_svm:
     Printer.print_empty_lines(1)
 
 
-pca_crossvalidation(MVG, DTR, LTR, [prior_0, prior_1], 10)
-Printer.print_empty_lines(1)
 
-
-if do_svm :
-    Printer.print_title("SVM linear cross validation of C")
-
-    start = time.time()
-    svm_linear_cross_valid_C(DTR, LTR, [0.1, 1, 10], 1, percentage=2./3.)
-    end = time.time()
-    Printer.print_line(f"Time of 70/30: {end - start:.2f}s")
-    Printer.print_empty_lines(1)
-
-    start = time.time()
-    svm_linear_cross_valid_C(DTR, LTR, [0.1, 1, 10], 1, 10)
-    end = time.time()
-    Printer.print_line(f"Time of kfold: {end - start:.2f}s")
-    Printer.print_empty_lines(1)
-
-    Printer.print_title("SVM poly cross validation")
-
-    start = time.time()
-    svm_poly_cross_valid(DTR, LTR, [0.1, 1, 10], [0,1], 1, percentage=2./3.)
-    end = time.time()
-    Printer.print_line(f"Time of 70/30: {end - start:.2f}s")
-    Printer.print_empty_lines(1)
-
-    start = time.time()
-    svm_poly_cross_valid(DTR, LTR, [0.1, 1, 10], [0,1], 1, 10)
-    end = time.time()
-    Printer.print_line(f"Time of kfold: {end - start:.2f}s")
-    Printer.print_empty_lines(1)
