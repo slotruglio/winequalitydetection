@@ -2,6 +2,7 @@ import numpy
 from utilityML.Functions.dimred import *
 from utilityML.Functions.genpurpose import split_db_2to1
 from utilityML.Classifiers.SVM import SVM_linear, SVM_poly
+from utilityML.Classifiers.LogReg import LogReg
 
 
 def split_leave_one_out(D, L, index):
@@ -11,14 +12,14 @@ def split_leave_one_out(D, L, index):
     L_test = L[index]
     return (D_train, L_train), (D_test, L_test)
 
-#region pca
-def pca_crossvalidation(classifier, DTR, LTR, priors, k=None, percentage=2./3.):
+#region gaussian pca
+def gaussian_pca_crossvalidation(classifier, DTR, LTR, priors, k=None, percentage=2./3.):
 	if k is None:
-		pca_1_fold_crossvalidation(classifier, DTR, LTR, priors, percentage)
+		return gaussian_pca_1_fold_crossvalidation(classifier, DTR, LTR, priors, percentage)
 	else:
-		pca_k_fold_crossvalidation(classifier, DTR, LTR, priors, k)
+		return gaussian_pca_k_fold_crossvalidation(classifier, DTR, LTR, priors, k)
 
-def pca_k_fold_crossvalidation(classifier, DTR, LTR, priors, k):
+def gaussian_pca_k_fold_crossvalidation(classifier, DTR, LTR, priors, k):
 
 	#for each group, compute the accuracy
 	global_accuracies = {}
@@ -53,12 +54,10 @@ def pca_k_fold_crossvalidation(classifier, DTR, LTR, priors, k):
 		#append the mean of accuracies to the global_accuracies dictionary, with m as key
 		global_accuracies[m] = numpy.mean(accuracies)
 	
-	print(global_accuracies)
+	return global_accuracies
 	
-	#get the entry of global_accuracies corresponding to the max value
-	print(max(global_accuracies.items(), key=lambda x: x[1]))
 
-def pca_1_fold_crossvalidation(classifier, DTR, LTR, priors, percentage=2./3.):
+def gaussian_pca_1_fold_crossvalidation(classifier, DTR, LTR, priors, percentage=2./3.):
 
 	#for each group, compute the accuracy
 	global_accuracies = {}
@@ -80,11 +79,90 @@ def pca_1_fold_crossvalidation(classifier, DTR, LTR, priors, percentage=2./3.):
 		#append the accuracy to the global_accuracies dictionary, with m as key
 		global_accuracies[m] = model.accuracy
 
-	print(global_accuracies)
+	return global_accuracies
 	
-	#get the entry of global_accuracies corresponding to the max value
-	print(max(global_accuracies.items(), key=lambda x: x[1]))
+	
 #endregion
+
+
+#region logreg pca
+def logreg_pca_crossvalidation(DTR, LTR, k=None, percentage=2./3.):
+	if k is None:
+		return logreg_pca_1_fold_crossvalidation(DTR, LTR, percentage)
+	else:
+		return logreg_pca_k_fold_crossvalidation(DTR, LTR, k)
+
+
+def logreg_pca_1_fold_crossvalidation(DTR, LTR, percentage=2./3.):
+
+	#for each group, compute the accuracy
+	global_accuracies = {}
+
+	(cv_dtr, cv_ltr), (cv_dte, cv_lte) = split_db_2to1(DTR, LTR, percentage)
+
+	for m in range(1,11):
+
+		accuracies = []
+
+		for l in [10**-6, 10**-3, 10**-1, 1.0]:
+			reduced_cv_dtr, P = pca(cv_dtr, cv_ltr, m)
+
+			# get projected samples of test data
+			reduced_cv_dte = numpy.dot(P.T, cv_dte)
+
+			#train the model
+			model = LogReg(reduced_cv_dtr, cv_ltr, reduced_cv_dte, cv_lte, l)
+			model.estimate_model_parameters()
+			model.logreg_test()
+
+			accuracies.append(model.accuracy)
+
+		#append the accuracy to the global_accuracies dictionary, with m as key
+		global_accuracies[m] = model.accuracy
+
+	return global_accuracies
+
+
+def logreg_pca_k_fold_crossvalidation(DTR, LTR, k):
+
+	#for each group, compute the accuracy
+	global_accuracies = {}
+
+	cv_dtr_array, cv_ltr_array, cv_dte_array, cv_lte_array = fold_data(DTR, LTR, k)
+
+	for m in range(1,11):
+
+		for l in [10**-6, 10**-3, 10**-1, 1.0]:
+
+			accuracies = []
+			for i in range(k):
+
+				#delete i-th component from indices
+				cv_dtr = cv_dtr_array[i]
+				cv_ltr = cv_ltr_array[i]
+				
+				reduced_cv_dtr, P = pca(cv_dtr, cv_ltr, m)
+
+				#get the test data
+				cv_dte = cv_dte_array[i]
+				cv_lte = cv_lte_array[i]
+
+				# get projected samples of test data
+				reduced_cv_dte = numpy.dot(P.T, cv_dte)
+
+				#train the model
+				model = LogReg(reduced_cv_dtr, cv_ltr, reduced_cv_dte, cv_lte, l)
+				model.estimate_model_parameters()
+				model.logreg_test()
+
+				accuracies.append(model.accuracy)
+		
+			#append the mean of accuracies to the global_accuracies dictionary, with m as key
+			global_accuracies[(m,l)] = numpy.mean(accuracies)
+	
+	return global_accuracies
+#endregion
+
 
 def fold_data(DTR, LTR, k):
 
