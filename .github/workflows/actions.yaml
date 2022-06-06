@@ -31,8 +31,8 @@ jobs:
       - name: execute main
         run: |
           cd projectFiles
-          python main.py
+          python main.py | tee -a ./log/results.txt
       # commit changes
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: feat(results.json)
+          commit_message: feat(results.txt)
