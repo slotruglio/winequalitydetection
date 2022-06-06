@@ -1,6 +1,10 @@
 name: Executing main
 
-on: [push]
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:        
+      - calculate-version
 
 jobs:
   build:
@@ -16,14 +20,24 @@ jobs:
           python-version: '3.8'
           # Optional - x64 or x86 architecture, defaults to x64
           architecture: 'x64'
-      # You can test your matrix by printing the current Python version
+      # install dependencies
       - name: pipreqs commands
         run:  |
           cd projectFiles
           pip install pipreqs
           pipreqs .
           pip install -r requirements.txt
+      # run main
       - name: execute main
         run: |
           cd projectFiles
           python main.py
+      - name: Commit and Push
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        # use account 'github-actions[bot]' to set the git config
+
+          git add -A
+          git commit -m "commit message"
+          git push origin develop

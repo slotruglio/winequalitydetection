@@ -14,7 +14,7 @@ from utilityML.Classifiers.NaiveBayes import NaiveBayes
 from utilityML.Classifiers.TiedCovariance import TiedCovariance
 from utilityML.Classifiers.TiedNaive import TiedNaive
 from utilityML.Classifiers.LogReg import LogReg
-from utilityML.Classifiers.SVM import SVM_linear, SVM_poly
+from utilityML.Classifiers.SVM import SVM_linear, SVM_poly, SVM_RBF
 
 from Printer import Printer
 
@@ -102,6 +102,10 @@ if do_svm:
     svm_p.train()
     svm_p.test()
 
+    svm_rbf = SVM_RBF(DTR, LTR, DTE, LTE)
+    svm_rbf.train()
+    svm_rbf.test()
+
 
 #PRINT ALL CLASSIFIERS RESULTS
 Printer.print_title("MVG data")
@@ -138,6 +142,11 @@ if do_svm:
     Printer.print_title("SVM poly data")
     Printer.print_line(f"Accuracy: {svm_p.accuracy * 100:.2f}%")
     Printer.print_line(f"Error: {svm_p.error * 100:.2f}%")
+    Printer.print_empty_lines(1)
+
+    Printer.print_title("SVM RBF data")
+    Printer.print_line(f"Accuracy: {svm_rbf.accuracy * 100:.2f}%")
+    Printer.print_line(f"Error: {svm_rbf.error * 100:.2f}%")
     Printer.print_empty_lines(1)
 
 

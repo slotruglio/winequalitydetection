@@ -203,9 +203,9 @@ def fold_data(DTR, LTR, k):
 #region svm
 def svm_linear_cross_valid_C(DTR, LTR, C_array, K=1, folds=None, percentage=2./3.):
     if folds is None:
-        svm_linear_single_cross_valid_C(DTR, LTR, C_array, K)
+        return svm_linear_single_cross_valid_C(DTR, LTR, C_array, K)
     else:
-        svm_linear_k_cross_valid_C(DTR, LTR, folds, C_array, K)
+        return svm_linear_k_cross_valid_C(DTR, LTR, folds, C_array, K)
 
 def svm_linear_single_cross_valid_C(DTR, LTR, C_array, K=1, percentage=2./3.):
     (cv_DTR, cv_LTR), (cv_DTE, cv_LTE) = split_db_2to1(DTR, LTR, percTraining=percentage)
@@ -216,8 +216,7 @@ def svm_linear_single_cross_valid_C(DTR, LTR, C_array, K=1, percentage=2./3.):
         svm.test()
         accuracies[C] = svm.accuracy
     
-    print(accuracies)
-    print(max(accuracies.items(), key=lambda x: x[1]))
+    return accuracies
 
 def svm_linear_k_cross_valid_C(DTR, LTR, folds, C_array, K=1):
 
@@ -247,32 +246,36 @@ def svm_linear_k_cross_valid_C(DTR, LTR, folds, C_array, K=1):
 		#append the mean of accuracies to the global_accuracies dictionary, with C as key
 		global_accuracies[C] = numpy.mean(accuracies)
 
-	print(global_accuracies)
+	return global_accuracies
 	
 		
 
 def svm_poly_cross_valid(DTR, LTR, C_array, costant_array, K_array=[1], folds=None, percentage=2./3., degree=2):
     if folds is None:
-        svm_poly_single_cross_valid(DTR, LTR, C_array, costant_array, K_array, degree=degree)
+        return svm_poly_single_cross_valid(DTR, LTR, C_array, costant_array, K_array, degree=degree)
     else:
-        svm_poly_k_cross_valid(DTR, LTR, folds, C_array, costant_array, K_array, degree=degree)
+        return svm_poly_k_cross_valid(DTR, LTR, folds, C_array, costant_array, K_array, degree=degree)
 
 def svm_poly_single_cross_valid(DTR, LTR, C_array, costant_array, K_array=[1], degree=2, percentage=2./3.):
     (cv_DTR, cv_LTR), (cv_DTE, cv_LTE) = split_db_2to1(DTR, LTR, percTraining=percentage)
     accuracies = {}
     for K in K_array:
         K_accuracies = {}
+
         for C in C_array:
             C_accuracies = {}
+
             for c in costant_array:
                 svm = SVM_poly(cv_DTR, cv_LTR, cv_DTE, cv_LTE, C, K, degree=degree, costant=c)
                 svm.train()
                 svm.test()
                 C_accuracies[c] = svm.accuracy
+
             K_accuracies[C] = C_accuracies
+
         accuracies[K] = K_accuracies
     
-    print(accuracies)
+    return accuracies
 
 def svm_poly_k_cross_valid(DTR, LTR, folds, C_array, costant_array, K_array=[1], degree=2, costant = 0):
 
@@ -282,11 +285,13 @@ def svm_poly_k_cross_valid(DTR, LTR, folds, C_array, costant_array, K_array=[1],
     cv_dtr_array, cv_ltr_array, cv_dte_array, cv_lte_array = fold_data(DTR, LTR, folds)
     for K in K_array:
         K_accuracies = {}
+
         for C in C_array:
             C_accuracies = {}
-            for c in costant_array:
 
+            for c in costant_array:
                 accuracies = []
+
                 for i in range(folds):
 
                     #get the training data
@@ -303,35 +308,42 @@ def svm_poly_k_cross_valid(DTR, LTR, folds, C_array, costant_array, K_array=[1],
                     svm.test()
 
                     accuracies.append(svm.accuracy)
+
                 C_accuracies[c] = numpy.mean(accuracies)
+
             K_accuracies[C] = C_accuracies
-        #append the mean of accuracies to the global_accuracies dictionary, with C as key
+
         global_accuracies[K] = K_accuracies
 
-    print(global_accuracies)
+    return global_accuracies
 
 def svm_RBF_cross_valid(DTR, LTR, C_array, gamma_array, K_array=[1], folds=None, percentage=2./3.):
     if folds is None:
-        svm_RBF_single_cross_valid(DTR, LTR, C_array, gamma_array, K_array)
+        return svm_RBF_single_cross_valid(DTR, LTR, C_array, gamma_array, K_array)
     else:
-        svm_RBF_k_cross_valid(DTR, LTR, folds, C_array, gamma_array, K_array)
+        return svm_RBF_k_cross_valid(DTR, LTR, folds, C_array, gamma_array, K_array)
 
 def svm_RBF_single_cross_valid(DTR, LTR, C_array, gamma_array, K_array=[1], percentage=2./3.):
     (cv_DTR, cv_LTR), (cv_DTE, cv_LTE) = split_db_2to1(DTR, LTR, percTraining=percentage)
     accuracies = {}
+
     for K in K_array:
         K_accuracies = {}
+
         for C in C_array:
             C_accuracies = {}
+
             for gamma in gamma_array:
                 svm = SVM_RBF(cv_DTR, cv_LTR, cv_DTE, cv_LTE, C, K, gamma=gamma)
                 svm.train()
                 svm.test()
                 C_accuracies[gamma] = svm.accuracy
+
             K_accuracies[C] = C_accuracies
+
         accuracies[K] = K_accuracies
     
-    print(accuracies)
+    return accuracies
 
 def svm_RBF_k_cross_valid(DTR, LTR, folds, C_array, gamma_array, K_array=[1], gamma=0):
 
@@ -341,11 +353,13 @@ def svm_RBF_k_cross_valid(DTR, LTR, folds, C_array, gamma_array, K_array=[1], ga
     cv_dtr_array, cv_ltr_array, cv_dte_array, cv_lte_array = fold_data(DTR, LTR, folds)
     for K in K_array:
         K_accuracies = {}
+
         for C in C_array:
             C_accuracies = {}
-            for gamma in gamma_array:
 
+            for gamma in gamma_array:
                 accuracies = []
+
                 for i in range(folds):
 
                     #get the training data
@@ -362,11 +376,13 @@ def svm_RBF_k_cross_valid(DTR, LTR, folds, C_array, gamma_array, K_array=[1], ga
                     svm.test()
 
                     accuracies.append(svm.accuracy)
+
                 C_accuracies[gamma] = numpy.mean(accuracies)
+
             K_accuracies[C] = C_accuracies
-        #append the mean of accuracies to the global_accuracies dictionary, with C as key
+
         global_accuracies[K] = K_accuracies
 
-    print(global_accuracies)
+    return global_accuracies
 
 #endregion
