@@ -42,7 +42,6 @@ def train_SVM_linear(DTR, LTR, C, K=1):
 
     
     alphaStar, JDual, LDual = calculate_lbgf(H, DTR, C)
-    print(alphaStar)
     #print(_x),
     #print(_y)
 
@@ -77,8 +76,8 @@ class SVM_linear:
     def test(self):
         DTEEXT = numpy.vstack([self.DTE, self.K*numpy.ones((1, self.DTE.shape[1]))])
         self.score = numpy.dot(self.wStar.T, DTEEXT)
-        self.error = (1 - numpy.sum( (self.score > 0) == self.LTE) / len(self.LTE))
-        self.accuracy = 1- self.error
+        self.accuracy = numpy.sum( (self.score > 0) == self.LTE) / len(self.LTE)
+        self.error = 1 - self.accuracy
         self.predicted = 1 * (self.score > 0)
 
 class SVM_poly:
@@ -112,5 +111,46 @@ class SVM_poly:
         kernel = (numpy.dot(self.DTR.T, self.DTE)+self.costant)**self.degree + self.K*self.K
         self.score = numpy.sum( numpy.dot(self.alphaStar * mrow(Z), kernel), axis=0 )
         self.predicted = 1*(self.score > 0)
-        self.error = (1 - numpy.sum( (self.score > 0) == self.LTE) / len(self.LTE))
-        self.accuracy = 1 - self.error
+        self.accuracy = numpy.sum( (self.score > 0) == self.LTE) / len(self.LTE)
+        self.error = 1 - self.accuracy
+
+class SVM_RBF:
+    def __init__(self, DTR, LTR, DTE, LTE, C=0.1, K=1, gamma=1):
+        self.DTR = DTR
+        self.LTR = LTR
+        self.DTE = DTE
+        self.LTE = LTE
+        self.C = C
+        self.K = K
+        self.gamma = gamma
+        self.predicted = []
+        self.accuracy = 0.
+        self.error = 0.
+
+    def train(self):
+        Z = numpy.zeros(self.LTR.shape)
+        Z[self.LTR == 1] = 1
+        Z[self.LTR == 0] = -1
+
+        # kernel function
+        kernel = numpy.zeros((self.DTR.shape[1], self.DTR.shape[1]))
+        for i in range(self.DTR.shape[1]):
+            for j in range(self.DTR.shape[1]):
+                kernel[i,j] = numpy.exp(-self.gamma*(numpy.linalg.norm(self.DTR[:,i]-self.DTR[:,j])**2)) +self.K**2
+        H = mcol(Z) * mrow(Z) * kernel
+
+        self.alphaStar, self.JDual, self.LDual = calculate_lbgf(H, self.DTR, self.C)
+
+    def test(self):
+        Z = numpy.zeros(self.LTR.shape)
+        Z[self.LTR == 1] = 1
+        Z[self.LTR == 0] = -1
+        kern = numpy.zeros((self.DTR.shape[1], self.DTE.shape[1]))
+        for i in range(self.DTR.shape[1]):
+            for j in range(self.DTE.shape[1]):
+                kern[i,j] = numpy.exp(-self.gamma*(numpy.linalg.norm(self.DTR[:,i]-self.DTE[:,j])**2)) + self.K**2
+        
+        self.score = numpy.sum( numpy.dot(self.alphaStar * mrow(Z), kern), axis=0 )
+        self.predicted = 1*(self.score > 0)
+        self.accuracy = numpy.sum( (self.score > 0) == self.LTE) / len(self.LTE)
+        self.error = 1 - self.accuracy

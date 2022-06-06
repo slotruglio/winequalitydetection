@@ -17,11 +17,13 @@ jobs:
           # Optional - x64 or x86 architecture, defaults to x64
           architecture: 'x64'
       # You can test your matrix by printing the current Python version
-      - name: install pipreqs
-        run: cd projectFiles && pip install pipreqs
-      - name: execute pipreqs
-        run: cd projectFiles && pipreqs .
-      - name: install reqs
-        run: cd projectFiles && pip install -r requirements.txt
+      - name: pipreqs commands
+        run:  |
+          cd projectFiles
+          pip install pipreqs
+          pipreqs .
+          pip install -r requirements.txt
       - name: execute main
-        run: cd projectFiles && python main.py
+        run: |
+          cd projectFiles
+          python main.py

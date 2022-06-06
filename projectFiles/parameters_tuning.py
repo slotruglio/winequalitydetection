@@ -10,7 +10,7 @@ from utilityML.Classifiers.LogReg import LogReg
 
 #Functions import
 from utilityML.Functions.genpurpose import load
-from utilityML.Functions.crossvalid import gaussian_pca_crossvalidation, logreg_pca_crossvalidation, svm_linear_cross_valid_C, svm_poly_cross_valid
+from utilityML.Functions.crossvalid import gaussian_pca_crossvalidation, logreg_pca_crossvalidation, svm_linear_cross_valid_C, svm_poly_cross_valid, svm_RBF_cross_valid
 from Printer import Printer
 
 #Statistics import
@@ -89,16 +89,31 @@ if do_svm :
     Printer.print_title("SVM poly cross validation")
 
     start = time.time()
-    svm_poly_cross_valid(DTR, LTR, [0.1, 1, 10], [0,1], 1, percentage=2./3.)
+    svm_poly_cross_valid(DTR, LTR, [0.1, 1, 10], [0,1], [0,1], percentage=2./3.)
     end = time.time()
     Printer.print_line(f"Time of 70/30: {end - start:.2f}s")
     Printer.print_empty_lines(1)
 
     start = time.time()
-    svm_poly_cross_valid(DTR, LTR, [0.1, 1, 10], [0,1], 1, 10)
+    svm_poly_cross_valid(DTR, LTR, [0.1, 1, 10], [0,1], [0,1], 10)
     end = time.time()
     Printer.print_line(f"Time of kfold: {end - start:.2f}s")
     Printer.print_empty_lines(1)
+
+    Printer.print_title("SVM RBF cross validation")
+
+    start = time.time()
+    svm_RBF_cross_valid(DTR, LTR, [0.1, 1, 10], [1.,10.], [0,1], percentage=2./3.)
+    end = time.time()
+    Printer.print_line(f"Time of 70/30: {end - start:.2f}s")
+    Printer.print_empty_lines(1)
+
+    start = time.time()
+    svm_RBF_cross_valid(DTR, LTR, [0.1, 1, 10], [1.,10.], [0,1], folds=10)
+    end = time.time()
+    Printer.print_line(f"Time of kfold: {end - start:.2f}s")
+    Printer.print_empty_lines(1)
+
 
 
 #SEPARATOR FOR THE PRINTER
