@@ -56,10 +56,10 @@ labels = [
 if show :
 
     # histogram
-    plotHist(numpy.concatenate((DTR, DTE), axis=1), numpy.concatenate((LTR, LTE), axis=0), features, labels, "Dataset's histogram")
+    plotHist(DTR, LTR, features, labels, "Dataset's histogram")
 
     # scatter
-    plot_scatter_dual(numpy.concatenate((DTR, DTE), axis=1), numpy.concatenate((LTR, LTE), axis=0), features, labels, "Dataset's scatter")
+    plot_scatter_dual(DTR, LTR, features, labels, "Dataset's scatter")
 #endregion
 
 

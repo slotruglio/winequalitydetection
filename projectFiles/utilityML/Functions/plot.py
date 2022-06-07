@@ -10,7 +10,7 @@ def plotHist(D, L, hFea, hLab, title, save=False):
         plt.xlabel(hFea[i])
         for j in range(nLabels):
             plt.hist(D[:, L == j][i, :],
-                     density=True, label=hLab[j])
+                     density=True, label=hLab[j], alpha=0.5)
         plt.legend()
         plt.tight_layout()
     if save:
