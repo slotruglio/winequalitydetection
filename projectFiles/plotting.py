@@ -1,9 +1,9 @@
-#Functions import
+# Functions import
 from utilityML.Functions.genpurpose import load
 from utilityML.Functions.plot import *
 from utilityML.Functions.gaussianization import *
 
-#LOAD THE DATA
+# LOAD THE DATA
 DTR, LTR = load("data/Train.txt", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 11)
 DTE, LTE = load("data/Test.txt", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 11)
 
@@ -28,9 +28,16 @@ labels = [
 ]
 
 # histogram
-plotHist(DTR, LTR, features, labels, "Dataset's histogram", save=False)
+plotHist(DTR, LTR, features, labels, "DTR's histogram", save=False)
 
-DTR_gauss = gaussianize(DTR)
+DTR_gauss, mu, sigma = gaussianize(DTR)
 
-plotHist(DTR_gauss, LTR, features, labels, "Dataset's histogram (gaussianized)", save=False)
+plotHist(DTR_gauss, LTR, features, labels,
+         "DTR's histogram (gaussianized)", save=False)
 
+plotHist(DTE, LTE, features, labels, "DTE's histogram", save=False)
+
+DTE_gauss, _mu, _sigma = gaussianize(DTE, mu, sigma)
+
+plotHist(DTE_gauss, LTE, features, labels,
+         "DTE's histogram (gaussianized)", save=False)
