@@ -1,26 +1,26 @@
 import numpy
 import scipy
-from genpurpose import *
+from ..Functions.genpurpose import *
 
 
 def compute_confusion_matrix_binary(labels, llrs, pi, Cfn, Cfp, t = None):
 
-    if(t == None):
-        t = -numpy.log((pi * Cfn) / ((1-pi) * Cfp))
+	if(t == None):
+		t = -numpy.log((pi * Cfn) / ((1-pi) * Cfp))
 
-    #creo la confusion matrix
-    confusion_matrix = numpy.zeros((2,2))
+	#creo la confusion matrix
+	confusion_matrix = numpy.zeros((2,2))
 
-    indexes_label_0 = (labels == 0)
-    indexes_label_1 = (labels == 1)
+	indexes_label_0 = (labels == 0)
+	indexes_label_1 = (labels == 1)
 
-    confusion_matrix[0][0] = (llrs[indexes_label_0] <= t).sum()
-    confusion_matrix[0][1] = (llrs[indexes_label_1] <= t).sum()	
+	confusion_matrix[0][0] = (llrs[indexes_label_0] <= t).sum()
+	confusion_matrix[0][1] = (llrs[indexes_label_1] <= t).sum()	
 
-    confusion_matrix[1][1] = (llrs[indexes_label_1] > t).sum()
-    confusion_matrix[1][0] = (llrs[indexes_label_0] > t).sum()
+	confusion_matrix[1][1] = (llrs[indexes_label_1] > t).sum()
+	confusion_matrix[1][0] = (llrs[indexes_label_0] > t).sum()
 
-    return confusion_matrix
+	return confusion_matrix
 
 #LO CHIAMAVANO BAYES RISK
 def compute_dcf_binary(confusion_matrix, pi, Cfn, Cfp):
@@ -33,42 +33,45 @@ def compute_dcf_binary(confusion_matrix, pi, Cfn, Cfp):
 #ANCHE CHIAMATO NORMALIZED BAYES RISK
 def compute_normalized_dcf_binary(confusion_matrix, pi, Cfn, Cfp):
 
-    best_dummy = min(pi * Cfn, (1-pi) * Cfp)
-    return compute_dcf_binary(confusion_matrix, pi, Cfn, Cfp) / best_dummy
+	best_dummy = min(pi * Cfn, (1-pi) * Cfp)
+
+	return compute_dcf_binary(confusion_matrix, pi, Cfn, Cfp) / best_dummy
 
 
 def compute_min_dcf(labels, scores, pi, Cfn, Cfp):
 
-    t = numpy.array(scores)
-    t.sort()
+	t = numpy.array(scores)
+	t.sort()
 
-    threshold_list = numpy.concatenate([numpy.array([-numpy.inf]), t, numpy.array([numpy.inf])])
+	threshold_list = numpy.concatenate([numpy.array([-numpy.inf]), t, numpy.array([numpy.inf])])
 
-    dcf_array = []
+	dcf_array = []
 
-    for threshold in threshold_list:
-        confusion_matrix = compute_confusion_matrix_binary(labels, scores, pi, Cfn, Cfp, threshold)
-        dcf_array.append(compute_normalized_dcf_binary(confusion_matrix, pi, Cfn, Cfp))
-    
-    return numpy.array(dcf_array).min()
+	for threshold in threshold_list:
+		confusion_matrix = compute_confusion_matrix_binary(labels, scores, pi, Cfn, Cfp, threshold)
+
+		dcf_array.append(compute_normalized_dcf_binary(confusion_matrix, pi, Cfn, Cfp))
+
+
+	return numpy.array(dcf_array).min()
 
 
 def generate_roc_curve(labels, scores, pi, Cfn, Cfp):
 
-    t = numpy.array(scores)
-    t.sort()
+	t = numpy.array(scores)
+	t.sort()
 
-    threshold_list = numpy.concatenate([numpy.array([-numpy.inf]), t, numpy.array([numpy.inf])])
+	threshold_list = numpy.concatenate([numpy.array([-numpy.inf]), t, numpy.array([numpy.inf])])
 
-    FPR_array = []
-    TPR_array = []
+	FPR_array = []
+	TPR_array = []
 
-    for threshold in threshold_list:
-        confusion_matrix = compute_confusion_matrix_binary(labels, scores, pi, Cfn, Cfp, threshold)
-        FPR_array.append(confusion_matrix[1][0] / (confusion_matrix[1][0] + confusion_matrix[0][0]))
-        TPR_array.append(1 - confusion_matrix[0][1] / (confusion_matrix[0][1] + confusion_matrix[1][1]))
-    
-    return FPR_array, TPR_array
+	for threshold in threshold_list:
+		confusion_matrix = compute_confusion_matrix_binary(labels, scores, pi, Cfn, Cfp, threshold)
+		FPR_array.append(confusion_matrix[1][0] / (confusion_matrix[1][0] + confusion_matrix[0][0]))
+		TPR_array.append(1 - confusion_matrix[0][1] / (confusion_matrix[0][1] + confusion_matrix[1][1]))
+
+	return FPR_array, TPR_array
 
 def bayes_error_plots(labels, scores):
 

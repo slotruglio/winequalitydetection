@@ -1,60 +1,66 @@
 import numpy
+
+from ..Functions.bayes import compute_confusion_matrix_binary, compute_normalized_dcf_binary
 from ..Functions.genpurpose import vrow, logpdf_GAU_ND, split_db_2to1, get_DTRs
 
 class TiedNaive:
 
-    def __init__(self, DTR, LTR, DTE, LTE, prior_prob_array):
-        # initialization of the attributes
-        self.DTR = DTR
-        self.LTR = LTR
-        self.DTE = DTE
-        self.LTE = LTE
+	def __init__(self, DTR, LTR, DTE, LTE, prior_prob_array):
+		# initialization of the attributes
+		self.DTR = DTR
+		self.LTR = LTR
+		self.DTE = DTE
+		self.LTE = LTE
 
-        self.mu_array = []
-        self.cov_array = []
-        self.prior_prob_array = prior_prob_array
-        self.SPost = []
-        self.predicted_labels = []
-        self.accuracy = 0.
-        self.error = 0.
+		self.mu_array = []
+		self.cov_array = []
+		self.prior_prob_array = prior_prob_array
+		self.SPost = []
+		self.llrs = 0.
+		self.predicted_labels = []
+		self.accuracy = 0.
+		self.error = 0.
+		self.dcf = 0.
 
 
-    def train(self):
-        
-        DTR_array = get_DTRs(self.DTR, self.LTR, self.LTR.max() +1)
+	def train(self):
+		
+		DTR_array = get_DTRs(self.DTR, self.LTR, self.LTR.max() +1)
 
-        self.cov = 0
-        sample_size = 0
+		self.cov = 0
+		sample_size = 0
 
-        for DTRi in DTR_array:
-            mu_i = numpy.mean(DTRi, axis=1)
-            mu_i = mu_i.reshape((mu_i.shape[0], 1))
+		for DTRi in DTR_array:
+			mu_i = numpy.mean(DTRi, axis=1)
+			mu_i = mu_i.reshape((mu_i.shape[0], 1))
 
-            self.mu_array.append(mu_i)
+			self.mu_array.append(mu_i)
 
-            sample_size += DTRi.shape[1]
+			sample_size += DTRi.shape[1]
 
-            self.cov += (DTRi - mu_i) @ (DTRi - mu_i).T
-        
-        self.cov = numpy.diag(numpy.diag(self.cov * 1/sample_size))
-    
-    def test(self):
-            
-        density_array = []
+			self.cov += (DTRi - mu_i) @ (DTRi - mu_i).T
+		
+		self.cov = numpy.diag(numpy.diag(self.cov * 1/sample_size))
 
-        for mu_i, prior_prob_i in zip(self.mu_array, self.prior_prob_array):
+	def test(self):
+			
+		density_array = []
 
-            density_array.append(numpy.exp(logpdf_GAU_ND(self.DTE, mu_i, self.cov)) * prior_prob_i)
+		for mu_i, prior_prob_i in zip(self.mu_array, self.prior_prob_array):
 
-        SJoint = numpy.vstack((density_array))
+			density_array.append(numpy.exp(logpdf_GAU_ND(self.DTE, mu_i, self.cov)) * prior_prob_i)
 
-        self.SPost = SJoint / vrow(SJoint.sum(0))
+		SJoint = numpy.vstack((density_array))
 
-        self.predicted_labels = numpy.argmax(self.SPost, axis=0)
-        
-        #To include the leave-one-out special case
-        denominator = 1 if numpy.isscalar(self.LTE) else self.LTE.shape[0]
-        
-        self.accuracy = (self.predicted_labels == self.LTE).sum() / denominator
+		self.SPost = SJoint / vrow(SJoint.sum(0))
 
-        self.error = 1 - self.accuracy
+		self.predicted_labels = numpy.argmax(self.SPost, axis=0)
+		
+		#To include the leave-one-out special case
+		denominator = 1 if numpy.isscalar(self.LTE) else self.LTE.shape[0]
+		
+		self.accuracy = (self.predicted_labels == self.LTE).sum() / denominator
+
+		self.error = 1 - self.accuracy
+
+		self.llrs = numpy.log(self.SPost[1,:]) - numpy.log(self.SPost[0,:])

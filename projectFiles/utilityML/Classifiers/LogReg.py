@@ -20,6 +20,8 @@ class LogReg:
 		self.accuracy = 0.
 		self.error = 0.
 		self.predicted_label = []
+
+		self.S = []
 	
 	def logreg_obj(self, v):
 
@@ -41,10 +43,10 @@ class LogReg:
 
 	def logreg_test(self):
 		
-		S = numpy.dot(self.estimated_w.T, self.DTE) + self.estimated_b 
+		self.S = numpy.dot(self.estimated_w.T, self.DTE) + self.estimated_b 
 
 		self.predicted_labels = numpy.zeros(self.LTE.shape)
-		self.predicted_labels[S > 0] = 1
+		self.predicted_labels[self.S > 0] = 1
 
 		self.accuracy = (self.predicted_labels == self.LTE).sum() / len(self.LTE)
 		self.error = 1 - self.accuracy
