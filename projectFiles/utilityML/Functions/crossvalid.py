@@ -281,7 +281,7 @@ def svm_linear_k_cross_valid_C(DTR, LTR, folds, C_array, priors, K=1):
 
 			#concatenate model.LTE and model.llrs
 			labels.extend(svm.LTE)
-			score.extend(svm.scor[0])
+			score.extend(svm.score[0])
 
 		#compute the mindcf on ALL the folds permutations' SCORES and LABELS
 		mindcf = compute_min_dcf(numpy.array(labels), numpy.array(score), priors[1], 1, 1)
