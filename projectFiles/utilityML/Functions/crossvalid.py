@@ -313,7 +313,7 @@ def svm_poly_single_cross_valid(DTR, LTR, C_array, costant_array, priors, K_arra
 				svm.train()
 				svm.test()
 
-				mindcf = compute_min_dcf(numpy.array(svm.LTE), numpy.array(svm.score[0]), priors[1], 1, 1)
+				mindcf = compute_min_dcf(numpy.array(svm.LTE), numpy.array(svm.score), priors[1], 1, 1)
 				C_accuracies[c] = (svm.accuracy, mindcf)
 
 			K_accuracies[C] = C_accuracies
@@ -393,7 +393,7 @@ def svm_RBF_single_cross_valid(DTR, LTR, C_array, gamma_array, priors, K_array=[
 				svm.train()
 				svm.test()
 
-				mindcf = compute_min_dcf(numpy.array(svm.LTE), numpy.array(svm.score[0]), priors[1], 1, 1)
+				mindcf = compute_min_dcf(numpy.array(svm.LTE), numpy.array(svm.score), priors[1], 1, 1)
 
 				C_accuracies[gamma] = (svm.accuracy, mindcf)
 
