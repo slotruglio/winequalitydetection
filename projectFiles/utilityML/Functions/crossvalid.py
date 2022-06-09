@@ -359,7 +359,7 @@ def svm_poly_k_cross_valid(DTR, LTR, folds, C_array, costant_array, priors, K_ar
 
 					#concatenate model.LTE and model.score
 					labels.extend(svm.LTE)
-					score.extend(svm.score[0])
+					score.extend(svm.score)
 
 				#compute the mindcf on ALL the folds permutations' SCORES and LABELS
 				mindcf = compute_min_dcf(numpy.array(labels), numpy.array(score), priors[1], 1, 1)
@@ -441,7 +441,7 @@ def svm_RBF_k_cross_valid(DTR, LTR, folds, C_array, gamma_array, priors, K_array
 
 					#concatenate model.LTE and model.score
 					labels.extend(svm.LTE)
-					score.extend(svm.score[0])
+					score.extend(svm.score)
 
 				#compute the mindcf on ALL the folds permutations' SCORES and LABELS
 				mindcf = compute_min_dcf(numpy.array(labels), numpy.array(score), priors[1], 1, 1)
