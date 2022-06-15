@@ -74,7 +74,7 @@ Printer.print_empty_lines(1)
 #Separated from the rest of the file because of its complexity
 #SVM CROSS VALIDATION SECTION
 # do or not do svm
-do_svm = False
+do_svm = True
 
 if do_svm :
     Printer.print_title("SVM linear cross validation of C")

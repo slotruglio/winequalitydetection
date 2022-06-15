@@ -1,9 +1,11 @@
 # Generic import
 import numpy
 from sklearn import naive_bayes
+from utilityML.Functions.bayes import bayes_error_plots
 
 # Functions import
 from utilityML.Functions.genpurpose import load
+from utilityML.Functions.dimred import pca
 
 # Plot import
 from utilityML.Functions.plot import *
@@ -68,27 +70,56 @@ prior_0 = (LTR == 0).sum() / LTR.shape[0]
 prior_1 = (LTR == 1).sum() / LTR.shape[0]
 
 #TRAIN AND TEST FOR MVG
-mvg = MVG(DTR, LTR, DTE, LTE, [prior_0, prior_1])
+
+optimal_m = min(mvg_xval_accuracies.items(), key=lambda x: x[1][1][0])[0]
+reduced_dtr, P = pca(DTR, optimal_m)
+reduced_dte = numpy.dot(P.T, DTE)
+
+mvg = MVG(reduced_dtr, LTR, reduced_dte, LTE, [prior_0, prior_1])
 mvg.train()
 mvg.test()
 
+bayes_error_plots(LTE, mvg.llrs, min(mvg_xval_accuracies.items(), key=lambda x: x[1][1][0])[1][1][1], "DCF error plots for MVG")
+
+
 #TRAIN AND TEST FOR NAIVEBAYES
-naive_bayes = NaiveBayes(DTR, LTR, DTE, LTE, [prior_0, prior_1])
+
+optimal_m = min(naivebayes_xval_accuracies.items(), key=lambda x: x[1][1][0])[0]
+reduced_dtr, P = pca(DTR, optimal_m)
+reduced_dte = numpy.dot(P.T, DTE)
+
+naive_bayes = NaiveBayes(reduced_dtr, LTR, reduced_dte, LTE, [prior_0, prior_1])
 naive_bayes.train()
 naive_bayes.test()
 
 #TRAIN AND TEST FOR TIEDCOVARIANCE
-tied_covariance = TiedCovariance(DTR, LTR, DTE, LTE, [prior_0, prior_1])
+
+optimal_m = min(tiedcov_xval_accuracies.items(), key=lambda x: x[1][1][0])[0]
+reduced_dtr, P = pca(DTR, optimal_m)
+reduced_dte = numpy.dot(P.T, DTE)
+
+tied_covariance = TiedCovariance(reduced_dtr, LTR, reduced_dte, LTE, [prior_0, prior_1])
 tied_covariance.train()
 tied_covariance.test()
 
 #TRAIN AND TEST FOR TIEDNAIVE
-tied_naive = TiedNaive(DTR, LTR, DTE, LTE, [prior_0, prior_1])
+
+optimal_m = min(tiednaive_xval_accuracies.items(), key=lambda x: x[1][1][0])[0]
+reduced_dtr, P = pca(DTR, optimal_m)
+reduced_dte = numpy.dot(P.T, DTE)
+
+tied_naive = TiedNaive(reduced_dtr, LTR, reduced_dte, LTE, [prior_0, prior_1])
 tied_naive.train()
 tied_naive.test()
 
 #TRAIN AND TEST FOR LOGREG
-log_reg = LogReg(DTR, LTR, DTE, LTE, 1)
+
+optimal_m = min(logreg_xval_accuracies.items(), key=lambda x: x[1][1][0])[0][0]
+optimal_lambda = min(logreg_xval_accuracies.items(), key=lambda x: x[1][1][0])[0][1]
+reduced_dtr, P = pca(DTR, optimal_m)
+reduced_dte = numpy.dot(P.T, DTE)
+
+log_reg = LogReg(reduced_dtr, LTR, reduced_dte, LTE, optimal_lambda)
 log_reg.estimate_model_parameters()
 log_reg.logreg_test()
 
@@ -111,21 +142,25 @@ if do_svm:
 Printer.print_title("MVG data")
 Printer.print_line(f"Accuracy: {mvg.accuracy * 100:.2f}%")
 Printer.print_line(f"Error: {mvg.error * 100:.2f}%")
+Printer.print_line(f"DCF: {mvg.dcf}")
 Printer.print_empty_lines(1)
 
 Printer.print_title("Naive Bayes data")
 Printer.print_line(f"Accuracy: {naive_bayes.accuracy * 100:.2f}%")
 Printer.print_line(f"Error: {naive_bayes.error * 100:.2f}%")
+Printer.print_line(f"DCF: {naive_bayes.dcf}")
 Printer.print_empty_lines(1)
 
 Printer.print_title("Tied Covariance data")
 Printer.print_line(f"Accuracy: {tied_covariance.accuracy * 100:.2f}%")
 Printer.print_line(f"Error: {tied_covariance.error * 100:.2f}%")
+Printer.print_line(f"DCF: {tied_covariance.dcf}")
 Printer.print_empty_lines(1)
 
 Printer.print_title("Tied Naive data")
 Printer.print_line(f"Accuracy: {tied_naive.accuracy * 100:.2f}%")
 Printer.print_line(f"Error: {tied_naive.error * 100:.2f}%")
+Printer.print_line(f"DCF: {tied_naive.dcf}")
 Printer.print_empty_lines(1)
 
 Printer.print_title("Logistic Regression data")
