@@ -29,44 +29,43 @@ prior_1 = (LTR == 1).sum() / LTR.shape[0]
 
 
 #CROSSVAL FOR MVG
-xval_accuracies = gaussian_pca_crossvalidation(MVG, DTR, LTR, [prior_0, prior_1], 10)
+mvg_xval_accuracies = gaussian_pca_crossvalidation(MVG, DTR, LTR, [prior_0, prior_1], 10)
 Printer.print_title("XVal Data for MVG")
-Printer.print_line(f"m: (Accuracies, dcf): {xval_accuracies}")
-Printer.print_line(f"Best accuracy (max): {max(xval_accuracies.items(), key=lambda x: x[1][0])}")
-Printer.print_line(f"Best dcf (min): {min(xval_accuracies.items(), key=lambda x: x[1][1])}")
+Printer.print_line(f"m: (Accuracies, dcf): {mvg_xval_accuracies}")
+Printer.print_line(f"Best accuracy (max): {max(mvg_xval_accuracies.items(), key=lambda x: x[1][0])}")
+Printer.print_line(f"Best dcf (min): {min(mvg_xval_accuracies.items(), key=lambda x: x[1][1][0])}")
 Printer.print_empty_lines(1)
 
-
 #CROSSVAL FOR NAIVEBAYES
-xval_accuracies = gaussian_pca_crossvalidation(NaiveBayes, DTR, LTR, [prior_0, prior_1], 10)
+naivebayes_xval_accuracies = gaussian_pca_crossvalidation(NaiveBayes, DTR, LTR, [prior_0, prior_1], 10)
 Printer.print_title("XVal Data for Naive Bayes")
-Printer.print_line(f"m: (Accuracies, dcf): {xval_accuracies}")
-Printer.print_line(f"Best accuracy (max): {max(xval_accuracies.items(), key=lambda x: x[1][0])}")
-Printer.print_line(f"Best dcf (min): {min(xval_accuracies.items(), key=lambda x: x[1][1])}")
+Printer.print_line(f"m: (Accuracies, dcf): {naivebayes_xval_accuracies}")
+Printer.print_line(f"Best accuracy (max): {max(naivebayes_xval_accuracies.items(), key=lambda x: x[1][0])}")
+Printer.print_line(f"Best dcf (min): {min(naivebayes_xval_accuracies.items(), key=lambda x: x[1][1][0])}")
 Printer.print_empty_lines(1)
 
 #CROSSVAL FOR TIED COVARIANCE
-xval_accuracies = gaussian_pca_crossvalidation(TiedCovariance, DTR, LTR, [prior_0, prior_1], 10)
+tiedcov_xval_accuracies = gaussian_pca_crossvalidation(TiedCovariance, DTR, LTR, [prior_0, prior_1], 10)
 Printer.print_title("XVal Data for Tied Covariance")
-Printer.print_line(f"m: (Accuracies, dcf): {xval_accuracies}")
-Printer.print_line(f"Best accuracy (max): {max(xval_accuracies.items(), key=lambda x: x[1][0])}")
-Printer.print_line(f"Best dcf (min): {min(xval_accuracies.items(), key=lambda x: x[1][1])}")
+Printer.print_line(f"m: (Accuracies, dcf): {tiedcov_xval_accuracies}")
+Printer.print_line(f"Best accuracy (max): {max(tiedcov_xval_accuracies.items(), key=lambda x: x[1][0])}")
+Printer.print_line(f"Best dcf (min): {min(tiedcov_xval_accuracies.items(), key=lambda x: x[1][1][0])}")
 Printer.print_empty_lines(1)
 
 #CROSSVAL FOR TIED NAIVE
-xval_accuracies = gaussian_pca_crossvalidation(TiedNaive, DTR, LTR, [prior_0, prior_1], 10)
+tiednaive_xval_accuracies = gaussian_pca_crossvalidation(TiedNaive, DTR, LTR, [prior_0, prior_1], 10)
 Printer.print_title("XVal Data for Tied Naive")
-Printer.print_line(f"m: (Accuracies, dcf): {xval_accuracies}")
-Printer.print_line(f"Best accuracy (max): {max(xval_accuracies.items(), key=lambda x: x[1][0])}")
-Printer.print_line(f"Best dcf (min): {min(xval_accuracies.items(), key=lambda x: x[1][1])}")
+Printer.print_line(f"m: (Accuracies, dcf): {tiednaive_xval_accuracies}")
+Printer.print_line(f"Best accuracy (max): {max(tiednaive_xval_accuracies.items(), key=lambda x: x[1][0])}")
+Printer.print_line(f"Best dcf (min): {min(tiednaive_xval_accuracies.items(), key=lambda x: x[1][1][0])}")
 Printer.print_empty_lines(1)
 
 #CROSSVAL FOR LOGREG
-xval_accuracies = logreg_pca_crossvalidation(DTR, LTR, [prior_0, prior_1], 10)
+logreg_xval_accuracies = logreg_pca_crossvalidation(DTR, LTR, [prior_0, prior_1], 10)
 Printer.print_title("XVal Data for Logistic Regression")
-Printer.print_line(f"Accuracies: {xval_accuracies}")
-Printer.print_line(f"Best accuracy: {max(xval_accuracies.items(), key=lambda x: x[1][0])}")
-Printer.print_line(f"Best dcf (min): {min(xval_accuracies.items(), key=lambda x: x[1][1])}")
+Printer.print_line(f"Accuracies: {logreg_xval_accuracies}")
+Printer.print_line(f"Best accuracy: {max(logreg_xval_accuracies.items(), key=lambda x: x[1][0])}")
+Printer.print_line(f"Best dcf (min): {min(logreg_xval_accuracies.items(), key=lambda x: x[1][1][0])}")
 Printer.print_empty_lines(1)
 
 
@@ -75,7 +74,7 @@ Printer.print_empty_lines(1)
 #Separated from the rest of the file because of its complexity
 #SVM CROSS VALIDATION SECTION
 # do or not do svm
-do_svm = True
+do_svm = False
 
 if do_svm :
     Printer.print_title("SVM linear cross validation of C")
