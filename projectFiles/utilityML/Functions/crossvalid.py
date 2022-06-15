@@ -40,7 +40,7 @@ def gaussian_pca_k_fold_crossvalidation(classifier, DTR, LTR, priors, k):
 			cv_dtr = cv_dtr_array[i]
 			cv_ltr = cv_ltr_array[i]
 			
-			reduced_cv_dtr, P = pca(cv_dtr, cv_ltr, m)
+			reduced_cv_dtr, P = pca(cv_dtr, m)
 
 			#get the test data
 			cv_dte = cv_dte_array[i]
@@ -78,7 +78,7 @@ def gaussian_pca_1_fold_crossvalidation(classifier, DTR, LTR, priors, percentage
 
 	for m in range(1,11):
 
-		reduced_cv_dtr, P = pca(cv_dtr, cv_ltr, m)
+		reduced_cv_dtr, P = pca(cv_dtr, m)
 
 		# get projected samples of test data
 		reduced_cv_dte = numpy.dot(P.T, cv_dte)
@@ -120,7 +120,7 @@ def logreg_pca_1_fold_crossvalidation(DTR, LTR, priors, percentage=2./3.):
 		#accuracies = []
 
 		for l in [10**-6, 10**-3, 10**-1, 1.0]:
-			reduced_cv_dtr, P = pca(cv_dtr, cv_ltr, m)
+			reduced_cv_dtr, P = pca(cv_dtr, m)
 
 			# get projected samples of test data
 			reduced_cv_dte = numpy.dot(P.T, cv_dte)
@@ -160,7 +160,7 @@ def logreg_pca_k_fold_crossvalidation(DTR, LTR, priors, k):
 				cv_dtr = cv_dtr_array[i]
 				cv_ltr = cv_ltr_array[i]
 				
-				reduced_cv_dtr, P = pca(cv_dtr, cv_ltr, m)
+				reduced_cv_dtr, P = pca(cv_dtr, m)
 
 				#get the test data
 				cv_dte = cv_dte_array[i]

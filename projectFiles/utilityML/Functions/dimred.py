@@ -2,7 +2,7 @@ import numpy
 from scipy import linalg
 from utilityML.Functions.genpurpose import *
 
-def pca(D, L, m=2):
+def pca(D, m=2):
 
     mu = D.mean(1)
     #mu = mu.reshape((mu.size,1))
