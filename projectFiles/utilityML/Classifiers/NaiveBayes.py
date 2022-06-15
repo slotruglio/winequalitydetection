@@ -61,3 +61,5 @@ class NaiveBayes:
 
 
 		self.llrs = numpy.log(self.SPost[1,:]) - numpy.log(self.SPost[0,:])
+		confusion_matrix = compute_confusion_matrix_binary(self.LTE, self.llrs, self.prior_prob_array[1],1,1)
+		self.dcf = compute_normalized_dcf_binary(confusion_matrix, self.prior_prob_array[1], 1, 1)

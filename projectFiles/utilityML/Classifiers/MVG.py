@@ -22,6 +22,8 @@ class MVG:
 		self.accuracy = 0.
 		self.error = 0.
 
+		self.dcf = 0.
+
 
 	def train(self):
 		
@@ -60,5 +62,6 @@ class MVG:
 		self.error = 1 - self.accuracy
 
 		self.llrs = logSPost[1,:] - logSPost[0,:]
-		#confusion_matrix = compute_confusion_matrix_binary(self.LTE, llrs, self.prior_prob_array[1],1,1)
-		#self.dcf = compute_min_dcf(self.LTE, llrs, self.prior_prob_array[1], 1, 1)
+		confusion_matrix = compute_confusion_matrix_binary(self.LTE, self.llrs, self.prior_prob_array[1],1,1)
+		self.dcf = compute_normalized_dcf_binary(confusion_matrix, self.prior_prob_array[1], 1, 1)
+		
