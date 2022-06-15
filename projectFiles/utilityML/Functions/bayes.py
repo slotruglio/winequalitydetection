@@ -50,10 +50,11 @@ def compute_min_dcf(labels, scores, pi, Cfn, Cfp):
 	for threshold in threshold_list:
 		confusion_matrix = compute_confusion_matrix_binary(labels, scores, pi, Cfn, Cfp, threshold)
 
-		dcf_array.append(compute_normalized_dcf_binary(confusion_matrix, pi, Cfn, Cfp))
+		dcf_array.append((compute_normalized_dcf_binary(confusion_matrix, pi, Cfn, Cfp), threshold))
 
 
-	return numpy.array(dcf_array).min()
+	#return the entry with the minimum first element
+	return min(dcf_array, key=lambda x: x[0])
 
 
 def generate_roc_curve(labels, scores, pi, Cfn, Cfp):
@@ -73,45 +74,49 @@ def generate_roc_curve(labels, scores, pi, Cfn, Cfp):
 
 	return FPR_array, TPR_array
 
-def bayes_error_plots(labels, scores):
+def bayes_error_plots(labels, scores, empiric_threshold, plot_name):
 
-    pass
+	#IPOTESI DI BASE
+	#Una qualsiasi applicazione (pi, Cfn, Cfp), è equivalente
+	#All'applicazione (pi_tilde, 1, 1). Dove pi_tilde ha un valore specifico (?)
+	#Possiamo quindi considerare tante applicazioni diverse variando pi_tilde
 
-    #IPOTESI DI BASE
-    #Una qualsiasi applicazione (pi, Cfn, Cfp), è equivalente
-    #All'applicazione (pi_tilde, 1, 1). Dove pi_tilde ha un valore specifico (?)
-    #Possiamo quindi considerare tante applicazioni diverse variando pi_tilde
-    
-    #DEFINIZIONE FORMALE
-    #Il bayes error plot normalizzato verifica la performance del
-    #recognizer al variare dell'applicazione
-    #Quindi, come una funzione delle prior log-odds p (formula sul lab)
+	#DEFINIZIONE FORMALE
+	#Il bayes error plot normalizzato verifica la performance del
+	#recognizer al variare dell'applicazione
+	#Quindi, come una funzione delle prior log-odds p (formula sul lab)
 
-    #APPROCCIO E OSSERVAZIONI
-    #1) I valori di p vanno da -3 a 3
-    effPriorLogOdds = numpy.linspace(-3, 3, 21)
+	#APPROCCIO E OSSERVAZIONI
+	#1) I valori di p vanno da -3 a 3
+	effPriorLogOdds = numpy.linspace(-3, 3, 21)
 
-    DCF_array = []
-    DCF_min_array = []
+	DCF_array = []
+	DCF_min_array = []
+	DCF_empiric = []
 
-    #2) Per ogni valore di p, calcolo pi_tilde (usando la formula inversa di p)
-    #3) Calcolare DCF attuale e minima (entrambe normalizzate), considerando pi_tilde
-    for p in effPriorLogOdds:
-        pi_tilde = 1 / (1 + numpy.exp(-p))
-        DCF_array.append(compute_normalized_dcf_binary(compute_confusion_matrix_binary(labels, scores, pi_tilde, 1, 1), pi_tilde, 1, 1))
-        DCF_min_array.append(compute_min_dcf(labels, scores, pi_tilde, 1, 1))
+	#2) Per ogni valore di p, calcolo pi_tilde (usando la formula inversa di p)
+	#3) Calcolare DCF attuale e minima (entrambe normalizzate), considerando pi_tilde
+	for p in effPriorLogOdds:
+		pi_tilde = 1 / (1 + numpy.exp(-p))
+		DCF_array.append(compute_normalized_dcf_binary(compute_confusion_matrix_binary(labels, scores, pi_tilde, 1, 1), pi_tilde, 1, 1))
+		DCF_min_array.append(compute_min_dcf(labels, scores, pi_tilde, 1, 1)[0])
+		DCF_empiric.append(compute_normalized_dcf_binary(compute_confusion_matrix_binary(labels, scores, pi_tilde, 1, 1, t=empiric_threshold), pi_tilde, 1, 1))
 
-    #^^^^^ NOTA: nel metodo compute_min_dcf, consideriamo già le DCF normalizzate.
-    
-    print(DCF_array)
+	#^^^^^ NOTA: nel metodo compute_min_dcf, consideriamo già le DCF normalizzate.
 
-    #4) Plottare i dati come una funzione di p
-    #5) PLOT 1: la x è p, la y è la corrispondente DCF normalizzata
-    #6) PLOT 2: la x è sempre la p, la y è la corrispondente DCF normalizzata minima
+	#4) Plottare i dati come una funzione di p
+	#5) PLOT 1: la x è p, la y è la corrispondente DCF normalizzata
+	#6) PLOT 2: la x è sempre la p, la y è la corrispondente DCF normalizzata minima
 
-    plotLabels = ["DCF", "DCF min"]
+	plt.plot(effPriorLogOdds, DCF_array, label="Empiric DCF", color='r') 
+	plt.plot(effPriorLogOdds, DCF_min_array, label="min DCF", color='b')
+	plt.plot(effPriorLogOdds, DCF_empiric, label="XVal Threshold DCF", color='y') 
+	plt.ylim([0, 1.1])
+	plt.xlim([-3, 3])
+	plt.legend()
+	plt.title(plot_name)
 
-    return p, [*DCF_array, *DCF_min_array], plotLabels
+	plt.show()
 
 #region *** MULTICLASS CASE ***
 def compute_confusion_matrix(labels, cond_ll, pi_array, c_matrix):
