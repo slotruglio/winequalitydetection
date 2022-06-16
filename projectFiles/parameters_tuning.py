@@ -7,10 +7,12 @@ from utilityML.Classifiers.NaiveBayes import NaiveBayes
 from utilityML.Classifiers.TiedCovariance import TiedCovariance
 from utilityML.Classifiers.TiedNaive import TiedNaive
 from utilityML.Classifiers.LogReg import LogReg
+from utilityML.Classifiers.GMM import GMM
 
 #Functions import
 from utilityML.Functions.genpurpose import load
 from utilityML.Functions.crossvalid import gaussian_pca_crossvalidation, logreg_pca_crossvalidation, svm_linear_cross_valid_C, svm_poly_cross_valid, svm_RBF_cross_valid
+from utilityML.Functions.crossvalid import gmm_k_fold_cross_valid_components
 from Printer import Printer
 
 #Statistics import
@@ -66,6 +68,14 @@ Printer.print_title("XVal Data for Logistic Regression")
 Printer.print_line(f"Accuracies: {logreg_xval_accuracies}")
 Printer.print_line(f"Best accuracy: {max(logreg_xval_accuracies.items(), key=lambda x: x[1][0])}")
 Printer.print_line(f"Best dcf (min): {min(logreg_xval_accuracies.items(), key=lambda x: x[1][1][0])}")
+Printer.print_empty_lines(1)
+
+#CROSSVAL FOR GMM FULL COVARIANCE
+gmm_xval_accuracies = gmm_k_fold_cross_valid_components(DTR, LTR, 10, [prior_0, prior_1], alpha=0.1, psi=0.01, type="full")
+Printer.print_title("XVal Data for GMM Full Covariance iterate over components")
+Printer.print_line(f"Accuracies: {gmm_xval_accuracies}")
+Printer.print_line(f"Best accuracy: {max(gmm_xval_accuracies.items(), key=lambda x: x[1][0])}")
+Printer.print_line(f"Best dcf (min): {min(gmm_xval_accuracies.items(), key=lambda x: x[1][1][0])}")
 Printer.print_empty_lines(1)
 
 

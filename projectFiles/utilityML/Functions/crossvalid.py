@@ -2,6 +2,7 @@ import numpy
 from utilityML.Functions.dimred import *
 from utilityML.Functions.genpurpose import split_db_2to1
 from utilityML.Classifiers.SVM import SVM_linear, SVM_poly, SVM_RBF
+from utilityML.Classifiers.GMM import GMM
 from utilityML.Classifiers.LogReg import LogReg
 from utilityML.Functions.bayes import compute_min_dcf
 
@@ -455,3 +456,43 @@ def svm_RBF_k_cross_valid(DTR, LTR, folds, C_array, gamma_array, priors, K_array
 	return global_accuracies
 
 #endregion
+
+#region GMM
+
+def gmm_k_fold_cross_valid_components(DTR, LTR, folds, priors, alpha, psi, type="full"):
+	#for each group, compute the accuracy
+	global_accuracies = {}
+
+	cv_dtr_array, cv_ltr_array, cv_dte_array, cv_lte_array = fold_data(DTR, LTR, folds)
+	# 2**iteration = number of components
+	for iteration in range(5):
+		accuracies = []
+		labels = []
+		llrs = []
+		
+		for i in range(folds):
+			#delete i-th component from indices
+			cv_dtr = cv_dtr_array[i]
+			cv_ltr = cv_ltr_array[i]
+
+			#get the test data
+			cv_dte = cv_dte_array[i]
+			cv_lte = cv_lte_array[i]
+
+			#train the model
+			gmm = GMM(cv_dtr, cv_ltr, cv_dte, cv_lte, priors, iterations=iteration, alpha=alpha, psi=psi, typeOfGmm=type)
+			gmm.train()
+			gmm.test()
+			accuracies.append(gmm.accuracy)
+
+			#concatenate model.LTE and model.llrs
+			labels.extend(gmm.LTE)
+			llrs.extend(gmm.llrs)
+
+		#compute the mindcf on ALL the folds permutations' LLRS and LABELS
+		mindcf = compute_min_dcf(numpy.array(labels), numpy.array(llrs), priors[1], 1, 1)
+		
+		#append the mean of accuracies to the global_accuracies dictionary, with m as key
+		global_accuracies[2**iteration] = (numpy.mean(accuracies), mindcf)
+	
+	return global_accuracies
