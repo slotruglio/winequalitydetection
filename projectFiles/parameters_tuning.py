@@ -73,7 +73,7 @@ Printer.print_empty_lines(1)
 #CROSSVAL FOR GMM FULL COVARIANCE
 gmm_xval_accuracies = gmm_k_fold_cross_valid_components(DTR, LTR, 10, [prior_0, prior_1], alpha=0.1, psi=0.01, type="full")
 Printer.print_title("XVal Data for GMM Full Covariance iterate over components")
-Printer.print_line(f"Accuracies: {gmm_xval_accuracies}")
+Printer.print_line(f"components: (accuracy, minDCF): {gmm_xval_accuracies}")
 Printer.print_line(f"Best accuracy: {max(gmm_xval_accuracies.items(), key=lambda x: x[1][0])}")
 Printer.print_line(f"Best dcf (min): {min(gmm_xval_accuracies.items(), key=lambda x: x[1][1][0])}")
 Printer.print_empty_lines(1)
@@ -93,7 +93,7 @@ if do_svm :
     
     xval = svm_linear_cross_valid_C(DTR, LTR, [0.1, 1, 10], [prior_0, prior_1], 1, percentage=2./3.)
     end = time.time()
-    Printer.print_line(f"Accuracies: {xval}")
+    Printer.print_line(f"C: (accuracy, mindcf): {xval}")
     Printer.print_empty_lines(1)
     Printer.print_line(f"Time of 70/30: {end - start:.2f}s")
     Printer.print_empty_lines(1)
@@ -102,7 +102,7 @@ if do_svm :
     
     xval = svm_linear_cross_valid_C(DTR, LTR, [0.1, 1, 10], [prior_0, prior_1], 1, 10)
     end = time.time()
-    Printer.print_line(f"Accuracies: {xval}")
+    Printer.print_line(f"C: (accuracy, mindcf): {xval}")
     Printer.print_empty_lines(1)
     Printer.print_line(f"Time of kfold: {end - start:.2f}s")
     Printer.print_empty_lines(1)
@@ -113,7 +113,7 @@ if do_svm :
     
     xval = svm_poly_cross_valid(DTR, LTR, [0.1, 1, 10], [0,1], [prior_0, prior_1], [0,1], percentage=2./3.)
     end = time.time()
-    Printer.print_line(f"Accuracies: {xval}")
+    Printer.print_line(f"K: C: c: (accuracy, mindcf): {xval}")
     Printer.print_empty_lines(1)
     Printer.print_line(f"Time of 70/30: {end - start:.2f}s")
     Printer.print_empty_lines(1)
@@ -122,7 +122,7 @@ if do_svm :
 
     xval = svm_poly_cross_valid(DTR, LTR, [0.1, 1, 10], [0,1], [prior_0, prior_1], [0,1], 10)
     end = time.time()
-    Printer.print_line(f"Accuracies: {xval}")
+    Printer.print_line(f"K: C: c: (accuracy, mindcf): {xval}")
     Printer.print_empty_lines(1)
     Printer.print_line(f"Time of kfold: {end - start:.2f}s")
     Printer.print_empty_lines(1)
@@ -133,7 +133,7 @@ if do_svm :
 
     xval = svm_RBF_cross_valid(DTR, LTR, [0.1, 1, 10], [1.,10.], [prior_0, prior_1], [0,1], percentage=2./3.)
     end = time.time()
-    Printer.print_line(f"Accuracies: {xval}")
+    Printer.print_line(f"K: C: gamma: (accuracy mindcf): {xval}")
     Printer.print_empty_lines(1)
     Printer.print_line(f"Time of 70/30: {end - start:.2f}s")
     Printer.print_empty_lines(1)
@@ -142,7 +142,7 @@ if do_svm :
 
     xval = svm_RBF_cross_valid(DTR, LTR, [0.1, 1, 10], [1.,10.], [prior_0, prior_1], [0,1], folds=10)
     end = time.time()
-    Printer.print_line(f"Accuracies: {xval}")
+    Printer.print_line(f"K: C: gamma: (accuracy mindcf): {xval}")
     Printer.print_empty_lines(1)
     Printer.print_line(f"Time of kfold: {end - start:.2f}s")
     Printer.print_empty_lines(1)
