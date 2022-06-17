@@ -11,8 +11,7 @@ from utilityML.Classifiers.GMM import GMM
 
 #Functions import
 from utilityML.Functions.genpurpose import load
-from utilityML.Functions.crossvalid import gaussian_pca_crossvalidation, logreg_pca_crossvalidation, svm_linear_cross_valid_C, svm_poly_cross_valid, svm_RBF_cross_valid
-from utilityML.Functions.crossvalid import gmm_k_fold_cross_valid_components
+from utilityML.Functions.crossvalid import *
 from Printer import Printer
 
 #Statistics import
@@ -28,6 +27,18 @@ DTE, LTE = load("data/Test.txt", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 11)
 prior_0 = (LTR == 0).sum() / LTR.shape[0]
 prior_1 = (LTR == 1).sum() / LTR.shape[0]
  
+
+svm_linear_pca = svm_linear_pca_k_cross_valid(DTR, LTR, [prior_0, prior_1], folds=10)
+Printer.print_line(f"m: (Accuracies, dcf): {svm_linear_pca}")
+
+svm_poly_pca = svm_poly_pca_k_cross_valid(DTR, LTR, [prior_0, prior_1], folds=10)
+Printer.print_line(f"m: (Accuracies, dcf): {svm_poly_pca}")
+
+svm_rbf_pca = svm_rbf_pca_k_cross_valid(DTR, LTR, [prior_0, prior_1], folds=10)
+Printer.print_line(f"m: (Accuracies, dcf): {svm_rbf_pca}")
+
+gmm_pca = gmm_pca_k_cross_valid(DTR, LTR, [prior_0, prior_1], folds=10)
+Printer.print_line(f"m: (Accuracies, dcf): {gmm_pca}")
 
 
 #CROSSVAL FOR MVG

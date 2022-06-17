@@ -2,9 +2,11 @@ import numpy
 from utilityML.Functions.genpurpose import compute_mean
 
 
-def gaussianize(dataset, mu=None, sigma=None):
+def normalize(dataset, mu=None, sigma=None):
     """
-    Gaussianize dataset
+    Z Normalize the dataset
+    if normalizing training set, then mu and sigma are computed from the training set
+    if normalizing test set, provide mu and sigma
     """
     if mu is None:
         mu = compute_mean(dataset)
