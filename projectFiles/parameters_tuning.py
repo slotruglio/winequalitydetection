@@ -27,20 +27,7 @@ DTE, LTE = load("data/Test.txt", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 11)
 prior_0 = (LTR == 0).sum() / LTR.shape[0]
 prior_1 = (LTR == 1).sum() / LTR.shape[0]
  
-
-svm_linear_pca = svm_linear_pca_k_cross_valid(DTR, LTR, [prior_0, prior_1], folds=10)
-Printer.print_line(f"m: (Accuracies, dcf): {svm_linear_pca}")
-
-svm_poly_pca = svm_poly_pca_k_cross_valid(DTR, LTR, [prior_0, prior_1], folds=10)
-Printer.print_line(f"m: (Accuracies, dcf): {svm_poly_pca}")
-
-svm_rbf_pca = svm_rbf_pca_k_cross_valid(DTR, LTR, [prior_0, prior_1], folds=10)
-Printer.print_line(f"m: (Accuracies, dcf): {svm_rbf_pca}")
-
-gmm_pca = gmm_pca_k_cross_valid(DTR, LTR, [prior_0, prior_1], folds=10)
-Printer.print_line(f"m: (Accuracies, dcf): {gmm_pca}")
-
-
+ 
 #CROSSVAL FOR MVG
 mvg_xval_accuracies = gaussian_pca_crossvalidation(MVG, DTR, LTR, [prior_0, prior_1], 10)
 Printer.print_title("XVal Data for MVG")
@@ -89,7 +76,8 @@ Printer.print_line(f"Best accuracy: {max(gmm_xval_accuracies.items(), key=lambda
 Printer.print_line(f"Best dcf (min): {min(gmm_xval_accuracies.items(), key=lambda x: x[1][1][0])}")
 Printer.print_empty_lines(1)
 
-
+gmm_pca = gmm_pca_k_cross_valid(DTR, LTR, [prior_0, prior_1], folds=5)
+Printer.print_line(f"m: (Accuracies, dcf): {gmm_pca}")
 
 #******* SVM CROSS VALIDATION *******
 #Separated from the rest of the file because of its complexity
@@ -157,6 +145,16 @@ if do_svm :
     Printer.print_empty_lines(1)
     Printer.print_line(f"Time of kfold: {end - start:.2f}s")
     Printer.print_empty_lines(1)
+
+    svm_linear_pca = svm_linear_pca_k_cross_valid(DTR, LTR, [prior_0, prior_1], folds=5)
+    Printer.print_line(f"m: (Accuracies, dcf): {svm_linear_pca}")
+
+    svm_poly_pca = svm_poly_pca_k_cross_valid(DTR, LTR, [prior_0, prior_1], folds=5)
+    Printer.print_line(f"m: (Accuracies, dcf): {svm_poly_pca}")
+
+    svm_rbf_pca = svm_rbf_pca_k_cross_valid(DTR, LTR, [prior_0, prior_1], folds=5)
+    Printer.print_line(f"m: (Accuracies, dcf): {svm_rbf_pca}")
+
 
 #SEPARATOR FOR THE PRINTER
 Printer.print_separator()

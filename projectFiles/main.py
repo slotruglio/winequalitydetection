@@ -125,15 +125,15 @@ log_reg.logreg_test()
 
 #TRAIN AND TEST FOR SVG
 if do_svm:
-    svm_l = SVM_linear(DTR, LTR, DTE, LTE)
+    svm_l = SVM_linear(DTR, LTR, DTE, LTE, [prior_0, prior_1])
     svm_l.train()
     svm_l.test()
 
-    svm_p = SVM_poly(DTR, LTR, DTE, LTE)
+    svm_p = SVM_poly(DTR, LTR, DTE, LTE, [prior_0, prior_1])
     svm_p.train()
     svm_p.test()
 
-    svm_rbf = SVM_RBF(DTR, LTR, DTE, LTE)
+    svm_rbf = SVM_RBF(DTR, LTR, DTE, LTE, [prior_0, prior_1])
     svm_rbf.train()
     svm_rbf.test()
 
