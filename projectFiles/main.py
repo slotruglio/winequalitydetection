@@ -31,7 +31,7 @@ DTE, LTE = load("data/Test.txt", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 11)
 # Show the data
 show = False
 # do or not do svm
-do_svm = True
+do_svm = False
 
 
 #region plotting data
@@ -123,17 +123,35 @@ log_reg = LogReg(reduced_dtr, LTR, reduced_dte, LTE, optimal_lambda)
 log_reg.estimate_model_parameters()
 log_reg.logreg_test()
 
+#TODO gmm unify m and iteration ? PCA ???
+optimal_m = min(gmm_pca.items(), key=lambda x: x[1][1][0])[0]
+reduced_dtr, P = pca(DTR, optimal_m)
+reduced_dte = numpy.dot(P.T, DTE)
+
+gmm = GMM(reduced_dtr, LTR, reduced_dte, LTE, [prior_0, prior_1])
+optimal_iteration = min(gmm_xval_accuracies.items(), key=lambda x: x[1][1][0])[0]
+
+gmm = GMM(reduced_dtr, LTR, reduced_dte, LTE, [prior_0, prior_1], iterations=optimal_iteration)
+
 #TRAIN AND TEST FOR SVG
 if do_svm:
-    svm_l = SVM_linear(DTR, LTR, DTE, LTE, [prior_0, prior_1])
+
+    #TODO PCA ???
+    optimal_C = min(svm_linear_results.items(), key=lambda x: x[1][1][0])[0]
+
+    svm_l = SVM_linear(DTR, LTR, DTE, LTE, [prior_0, prior_1], optimal_C)
     svm_l.train()
     svm_l.test()
 
-    svm_p = SVM_poly(DTR, LTR, DTE, LTE, [prior_0, prior_1])
+    optimal_C = min(svm_poly_results.items(), key=lambda x: x[1][1][1][1][0])[1][0]
+    optimal_c = min(svm_poly_results.items(), key=lambda x: x[1][1][1][1][0])[1][1][0]
+    svm_p = SVM_poly(DTR, LTR, DTE, LTE, [prior_0, prior_1], C=optimal_C, costant=optimal_c)
     svm_p.train()
     svm_p.test()
 
-    svm_rbf = SVM_RBF(DTR, LTR, DTE, LTE, [prior_0, prior_1])
+    optimal_C = min(svm_rbf_results.items(), key=lambda x: x[1][1][1][1][0])[1][0]
+    optimal_gamma = min(svm_rbf_results.items(), key=lambda x: x[1][1][1][1][0])[1][1][0]
+    svm_rbf = SVM_RBF(DTR, LTR, DTE, LTE, [prior_0, prior_1], C=optimal_C, gamma=optimal_gamma)
     svm_rbf.train()
     svm_rbf.test()
 

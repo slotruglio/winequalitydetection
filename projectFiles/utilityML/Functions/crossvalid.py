@@ -683,7 +683,7 @@ def gmm_k_fold_cross_valid_components(DTR, LTR, folds, priors, alpha, psi, type=
 		mindcf = compute_min_dcf(numpy.array(labels), numpy.array(llrs), priors[1], 1, 1)
 		
 		#append the mean of accuracies to the global_accuracies dictionary, with m as key
-		global_accuracies[2**iteration] = (numpy.mean(accuracies), mindcf)
+		global_accuracies[iteration] = (numpy.mean(accuracies), mindcf)
 	
 	return global_accuracies
 	
