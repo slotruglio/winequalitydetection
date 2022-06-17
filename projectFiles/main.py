@@ -143,14 +143,14 @@ if do_svm:
     svm_l.train()
     svm_l.test()
 
-    optimal_C = min(svm_poly_results.items(), key=lambda x: x[1][1][1][1][0])[1][0]
-    optimal_c = min(svm_poly_results.items(), key=lambda x: x[1][1][1][1][0])[1][1][0]
+    optimal_C = min(svm_poly_results.items(), key=lambda x: x[1][1][1][1][0])[0][1]
+    optimal_c = min(svm_poly_results.items(), key=lambda x: x[1][1][1][1][0])[0][2]
     svm_p = SVM_poly(DTR, LTR, DTE, LTE, [prior_0, prior_1], C=optimal_C, costant=optimal_c)
     svm_p.train()
     svm_p.test()
 
-    optimal_C = min(svm_rbf_results.items(), key=lambda x: x[1][1][1][1][0])[1][0]
-    optimal_gamma = min(svm_rbf_results.items(), key=lambda x: x[1][1][1][1][0])[1][1][0]
+    optimal_C = min(svm_rbf_results.items(), key=lambda x: x[1][1][1][1][0])[0][1]
+    optimal_gamma = min(svm_rbf_results.items(), key=lambda x: x[1][1][1][1][0])[0][2]
     svm_rbf = SVM_RBF(DTR, LTR, DTE, LTE, [prior_0, prior_1], C=optimal_C, gamma=optimal_gamma)
     svm_rbf.train()
     svm_rbf.test()

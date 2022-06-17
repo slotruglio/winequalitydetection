@@ -85,7 +85,7 @@ Printer.print_empty_lines(1)
 #Separated from the rest of the file because of its complexity
 #SVM CROSS VALIDATION SECTION
 # do or not do svm
-do_svm = False
+do_svm = True
 
 if do_svm :
     Printer.print_title("SVM linear cross validation of C")
@@ -106,8 +106,8 @@ if do_svm :
     Printer.print_line(f"C: (accuracy, mindcf): {svm_linear_results}")
     Printer.print_empty_lines(1)
     Printer.print_line(f"Time of kfold: {end - start:.2f}s")
+    Printer.print_line(f"Best dcf (min): {min(svm_linear_results.items(), key=lambda x: x[1][1][0])}")
     Printer.print_empty_lines(1)
-
     Printer.print_title("SVM poly cross validation")
 
     # start = time.time()
@@ -123,11 +123,11 @@ if do_svm :
 
     svm_poly_results = svm_poly_cross_valid(DTR, LTR, [0.1, 1, 10], [0,1], [prior_0, prior_1], [0,1], 10)
     end = time.time()
-    Printer.print_line(f"K: C: c: (accuracy, mindcf): {svm_poly_results}")
+    Printer.print_line(f"(K, C, c): (accuracy, mindcf): {svm_poly_results}")
     Printer.print_empty_lines(1)
     Printer.print_line(f"Time of kfold: {end - start:.2f}s")
     Printer.print_empty_lines(1)
-
+    Printer.print_line(f"Best dcf (min): {min(svm_poly_results.items(), key=lambda x: x[1][1][0])}")
     Printer.print_title("SVM RBF cross validation")
 
     # start = time.time()
@@ -143,19 +143,20 @@ if do_svm :
 
     svm_rbf_results = svm_RBF_cross_valid(DTR, LTR, [0.1, 1, 10], [1.,10.], [prior_0, prior_1], [0,1], folds=10)
     end = time.time()
-    Printer.print_line(f"K: C: gamma: (accuracy mindcf): {svm_rbf_results}")
+    Printer.print_line(f"(K, C, gamma): (accuracy mindcf): {svm_rbf_results}")
     Printer.print_empty_lines(1)
     Printer.print_line(f"Time of kfold: {end - start:.2f}s")
+    Printer.print_line(f"Best dcf (min): {min(svm_rbf_results.items(), key=lambda x: x[1][1][0])}")
     Printer.print_empty_lines(1)
 
-    svm_linear_pca = svm_linear_pca_k_cross_valid(DTR, LTR, [prior_0, prior_1], folds=5)
-    Printer.print_line(f"m: (Accuracies, dcf): {svm_linear_pca}")
+    # svm_linear_pca = svm_linear_pca_k_cross_valid(DTR, LTR, [prior_0, prior_1], folds=5)
+    # Printer.print_line(f"m: (Accuracies, dcf): {svm_linear_pca}")
 
-    svm_poly_pca = svm_poly_pca_k_cross_valid(DTR, LTR, [prior_0, prior_1], folds=5)
-    Printer.print_line(f"m: (Accuracies, dcf): {svm_poly_pca}")
+    # svm_poly_pca = svm_poly_pca_k_cross_valid(DTR, LTR, [prior_0, prior_1], folds=5)
+    # Printer.print_line(f"m: (Accuracies, dcf): {svm_poly_pca}")
 
-    svm_rbf_pca = svm_rbf_pca_k_cross_valid(DTR, LTR, [prior_0, prior_1], folds=5)
-    Printer.print_line(f"m: (Accuracies, dcf): {svm_rbf_pca}")
+    # svm_rbf_pca = svm_rbf_pca_k_cross_valid(DTR, LTR, [prior_0, prior_1], folds=5)
+    # Printer.print_line(f"m: (Accuracies, dcf): {svm_rbf_pca}")
 
 
 #SEPARATOR FOR THE PRINTER

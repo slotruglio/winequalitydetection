@@ -272,8 +272,6 @@ def svm_linear_pca_k_cross_valid(DTR, LTR, priors, folds, K=1):
 
 		#compute the mindcf on ALL the folds permutations' SCORES and LABELS
 		mindcf = compute_min_dcf(numpy.array(labels), numpy.array(score), priors[1], 1, 1)
-		print("mindcf")
-		print(mindcf)
 		#append the mean of accuracies to the global_accuracies dictionary, with C as key
 		global_accuracies[m] = (numpy.mean(accuracies), mindcf)
 
@@ -401,10 +399,8 @@ def svm_poly_single_cross_valid(DTR, LTR, C_array, costant_array, priors, K_arra
 	(cv_DTR, cv_LTR), (cv_DTE, cv_LTE) = split_db_2to1(DTR, LTR, percTraining=percentage)
 	accuracies = {}
 	for K in K_array:
-		K_accuracies = {}
 
 		for C in C_array:
-			C_accuracies = {}
 
 			for c in costant_array:
 				svm = SVM_poly(cv_DTR, cv_LTR, cv_DTE, cv_LTE, priors, C, K, degree=degree, costant=c)
@@ -412,11 +408,7 @@ def svm_poly_single_cross_valid(DTR, LTR, C_array, costant_array, priors, K_arra
 				svm.test()
 
 				mindcf = compute_min_dcf(numpy.array(svm.LTE), numpy.array(svm.score), priors[1], 1, 1)
-				C_accuracies[c] = (svm.accuracy, mindcf)
-
-			K_accuracies[C] = C_accuracies
-
-		accuracies[K] = K_accuracies
+				accuracies[(K,C,c)] = (svm.accuracy, mindcf)
 
 	return accuracies
 
@@ -427,10 +419,8 @@ def svm_poly_k_cross_valid(DTR, LTR, folds, C_array, costant_array, priors, K_ar
 
 	cv_dtr_array, cv_ltr_array, cv_dte_array, cv_lte_array = fold_data(DTR, LTR, folds)
 	for K in K_array:
-		K_accuracies = {}
 
 		for C in C_array:
-			C_accuracies = {}
 
 			for c in costant_array:
 				accuracies = []
@@ -462,11 +452,7 @@ def svm_poly_k_cross_valid(DTR, LTR, folds, C_array, costant_array, priors, K_ar
 				#compute the mindcf on ALL the folds permutations' SCORES and LABELS
 				mindcf = compute_min_dcf(numpy.array(labels), numpy.array(score), priors[1], 1, 1)
 
-				C_accuracies[c] = (numpy.mean(accuracies), mindcf)
-
-			K_accuracies[C] = C_accuracies
-
-		global_accuracies[K] = K_accuracies
+				global_accuracies[(K,C,c)] = (numpy.mean(accuracies), mindcf)
 
 	return global_accuracies
 
@@ -529,10 +515,8 @@ def svm_RBF_single_cross_valid(DTR, LTR, C_array, gamma_array, priors, K_array=[
 	accuracies = {}
 
 	for K in K_array:
-		K_accuracies = {}
 
 		for C in C_array:
-			C_accuracies = {}
 
 			for gamma in gamma_array:
 				svm = SVM_RBF(cv_DTR, cv_LTR, cv_DTE, cv_LTE, priors, C, K, gamma=gamma)
@@ -541,12 +525,8 @@ def svm_RBF_single_cross_valid(DTR, LTR, C_array, gamma_array, priors, K_array=[
 
 				mindcf = compute_min_dcf(numpy.array(svm.LTE), numpy.array(svm.score), priors[1], 1, 1)
 
-				C_accuracies[gamma] = (svm.accuracy, mindcf)
+				accuracies[(K,C, gamma)] = (svm.accuracy, mindcf)
 
-			
-			K_accuracies[C] = C_accuracies
-
-		accuracies[K] = K_accuracies
 
 	return accuracies
 
@@ -557,10 +537,8 @@ def svm_RBF_k_cross_valid(DTR, LTR, folds, C_array, gamma_array, priors, K_array
 
 	cv_dtr_array, cv_ltr_array, cv_dte_array, cv_lte_array = fold_data(DTR, LTR, folds)
 	for K in K_array:
-		K_accuracies = {}
 
 		for C in C_array:
-			C_accuracies = {}
 
 			for gamma in gamma_array:
 				accuracies = []
@@ -592,11 +570,8 @@ def svm_RBF_k_cross_valid(DTR, LTR, folds, C_array, gamma_array, priors, K_array
 				#compute the mindcf on ALL the folds permutations' SCORES and LABELS
 				mindcf = compute_min_dcf(numpy.array(labels), numpy.array(score), priors[1], 1, 1)
 
-				C_accuracies[gamma] = (numpy.mean(accuracies), mindcf)
+				global_accuracies[(K,C,gamma)] = (numpy.mean(accuracies), mindcf)
 
-			K_accuracies[C] = C_accuracies
-
-		global_accuracies[K] = K_accuracies
 
 	return global_accuracies
 
