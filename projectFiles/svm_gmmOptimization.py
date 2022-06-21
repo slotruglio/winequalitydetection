@@ -42,17 +42,40 @@ def calculate_svm_poly_paramaters(dataset, labels, priors, folds):
         
         if pca == "no pca":
             
-            result = svm_poly_k_cross_valid(DTR, labels, folds, [0.1, 1, 10], [0,1], [prior_0, prior_1], [0,1], pcaVal=-1)
+            result = svm_poly_k_cross_valid(DTR, labels, folds, [0.1, 1, 10], [0,1], priors, [0,1], pcaVal=-1)
             for x in result.items():
                 results[(dsType, pca, x[0])] = x[1][1]
         else:
-            result = svm_poly_k_cross_valid(DTR, labels, folds, [0.1, 1, 10], [0,1], [prior_0, prior_1], [0,1], pcaVal=pca)
+            result = svm_poly_k_cross_valid(DTR, labels, folds, [0.1, 1, 10], [0,1], priors, [0,1], pcaVal=pca)
             for x in result.items():
                 results[(dsType, pca, x[0])] = x[1][1]
         print("done {}, {}".format(dsType, pca))
 
     # sort by mindcf
     return sorted(results.items(), key=lambda x: x[1][0])
+
+def calculate_svm_rbf_paramaters(dataset, labels, priors, folds):
+    
+    results = {}
+    for dsType, pca in best_combo_svm_rbf:
+        DTR = dataset
+        if dsType == "norm":
+            DTR, mu, sigma = normalize(dataset)
+        
+        if pca == "no pca":
+            
+            result = svm_RBF_k_cross_valid(DTR, labels, folds, [0.1, 1, 10], [1,10], priors, [0,1], pcaVal=-1)
+            for x in result.items():
+                results[(dsType, pca, x[0])] = x[1][1]
+        else:
+            result = svm_RBF_k_cross_valid(DTR, labels, folds, [0.1, 1, 10], [1,10], priors, [0,1], pcaVal=pca)
+            for x in result.items():
+                results[(dsType, pca, x[0])] = x[1][1]
+        print("done {}, {}".format(dsType, pca))
+
+    # sort by mindcf
+    return sorted(results.items(), key=lambda x: x[1][0])
+
 
 def calculate_gmm_parameters(dataset, labels, priors, folds):
     results = {}
@@ -89,7 +112,7 @@ if __name__ == "__main__":
     prior_1 = (LTR == 1).sum() / LTR.shape[0]
 
     #svm_linear = calculate_svm_linear_paramaters(DTR, LTR, [prior_0, prior_1], 3)
-    svm_poly = calculate_svm_poly_paramaters(DTR, LTR, [prior_0, prior_1], 3)
+    svm_rbf = calculate_svm_rbf_paramaters(DTR, LTR, [prior_0, prior_1], 3)
 
-    print(svm_poly)
+    print(svm_rbf)
 

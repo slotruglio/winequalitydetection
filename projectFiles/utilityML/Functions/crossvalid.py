@@ -466,7 +466,7 @@ def svm_rbf_pca_k_cross_valid(DTR, LTR, priors, folds):
 	return global_accuracies
 
 
-def svm_RBF_k_cross_valid(DTR, LTR, folds, C_array, gamma_array, priors, K_array=[1], gamma=0, pcaVal = -1):
+def svm_RBF_k_cross_valid(DTR, LTR, folds, C_array, gamma_array, priors, K_array=[1], pcaVal = -1):
 
 	# for each group, compute the accuracy
 	global_accuracies = {}
