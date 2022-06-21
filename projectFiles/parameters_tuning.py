@@ -90,18 +90,9 @@ do_svm = True
 if do_svm :
     Printer.print_title("SVM linear cross validation of C")
 
-    # start = time.time()
-    
-    # svm_linear_results = svm_linear_cross_valid_C(DTR, LTR, [0.1, 1, 10], [prior_0, prior_1], 1, percentage=2./3.)
-    # end = time.time()
-    # Printer.print_line(f"C: (accuracy, mindcf): {svm_linear_results}")
-    # Printer.print_empty_lines(1)
-    # Printer.print_line(f"Time of 70/30: {end - start:.2f}s")
-    # Printer.print_empty_lines(1)
-
     start = time.time()
     
-    svm_linear_results = svm_linear_cross_valid_C(DTR, LTR, [0.1, 1, 10], [prior_0, prior_1], 1, 10)
+    svm_linear_results = svm_linear_k_cross_valid_C(DTR, LTR, 10, [0.1, 1, 10], [prior_0, prior_1], 1, pcaVal=-1)
     end = time.time()
     Printer.print_line(f"C: (accuracy, mindcf): {svm_linear_results}")
     Printer.print_empty_lines(1)
@@ -110,18 +101,9 @@ if do_svm :
     Printer.print_empty_lines(1)
     Printer.print_title("SVM poly cross validation")
 
-    # start = time.time()
-    
-    # svm_poly_results = svm_poly_cross_valid(DTR, LTR, [0.1, 1, 10], [0,1], [prior_0, prior_1], [0,1], percentage=2./3.)
-    # end = time.time()
-    # Printer.print_line(f"K: C: c: (accuracy, mindcf): {svm_poly_results}")
-    # Printer.print_empty_lines(1)
-    # Printer.print_line(f"Time of 70/30: {end - start:.2f}s")
-    # Printer.print_empty_lines(1)
-
     start = time.time()
 
-    svm_poly_results = svm_poly_cross_valid(DTR, LTR, [0.1, 1, 10], [0,1], [prior_0, prior_1], [0,1], 10)
+    svm_poly_results = svm_poly_k_cross_valid(DTR, LTR, 10, [0.1, 1, 10], [0,1], [prior_0, prior_1], [0,1], pcaVal=-1)
     end = time.time()
     Printer.print_line(f"(K, C, c): (accuracy, mindcf): {svm_poly_results}")
     Printer.print_empty_lines(1)
@@ -130,18 +112,9 @@ if do_svm :
     Printer.print_line(f"Best dcf (min): {min(svm_poly_results.items(), key=lambda x: x[1][1][0])}")
     Printer.print_title("SVM RBF cross validation")
 
-    # start = time.time()
-
-    # svm_rbf_results = svm_RBF_cross_valid(DTR, LTR, [0.1, 1, 10], [1.,10.], [prior_0, prior_1], [0,1], percentage=2./3.)
-    # end = time.time()
-    # Printer.print_line(f"K: C: gamma: (accuracy mindcf): {svm_rbf_results}")
-    # Printer.print_empty_lines(1)
-    # Printer.print_line(f"Time of 70/30: {end - start:.2f}s")
-    # Printer.print_empty_lines(1)
-
     start = time.time()
 
-    svm_rbf_results = svm_RBF_cross_valid(DTR, LTR, [0.1, 1, 10], [1.,10.], [prior_0, prior_1], [0,1], folds=10)
+    svm_rbf_results = svm_RBF_k_cross_valid(DTR, LTR, 10, [0.1, 1, 10], [1.,10.], [prior_0, prior_1], [0,1], pcaVal=-1)
     end = time.time()
     Printer.print_line(f"(K, C, gamma): (accuracy mindcf): {svm_rbf_results}")
     Printer.print_empty_lines(1)

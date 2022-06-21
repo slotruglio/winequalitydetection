@@ -64,32 +64,33 @@ def svm_calculate_best_combo_ds_and_pca(svm_type, svm_pca_function, dataset, lab
     
     return sorted(results.items(), key=lambda x: x[1][0])
 
+if __name__ == "__main__":
 
-# testing data
+    # testing data
 
-#LOAD THE DATA
-DTR, LTR = load("data/Train.txt", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 11)
-DTE, LTE = load("data/Test.txt", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 11)
-
-
-#COMPUTE CLASS PRIORS: label_i / total_labels
-prior_0 = (LTR == 0).sum() / LTR.shape[0]
-prior_1 = (LTR == 1).sum() / LTR.shape[0]
+    #LOAD THE DATA
+    DTR, LTR = load("data/Train.txt", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 11)
+    DTE, LTE = load("data/Test.txt", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 11)
 
 
-svm_linear = svm_calculate_best_combo_ds_and_pca("linear", svm_linear_pca_k_cross_valid, DTR, LTR, [prior_0, prior_1], 10)
-svm_poly = svm_calculate_best_combo_ds_and_pca("poly", svm_poly_pca_k_cross_valid, DTR, LTR, [prior_0, prior_1], 10)
-svm_rbf = svm_calculate_best_combo_ds_and_pca("rbf", svm_rbf_pca_k_cross_valid, DTR, LTR, [prior_0, prior_1], 10)
+    #COMPUTE CLASS PRIORS: label_i / total_labels
+    prior_0 = (LTR == 0).sum() / LTR.shape[0]
+    prior_1 = (LTR == 1).sum() / LTR.shape[0]
 
 
-with open("results/svm_linear_data_pca.txt", "w") as f:
-    for x in svm_linear:
-        f.write(str(x) + "\n")
+    svm_linear = svm_calculate_best_combo_ds_and_pca("linear", svm_linear_pca_k_cross_valid, DTR, LTR, [prior_0, prior_1], 10)
+    svm_poly = svm_calculate_best_combo_ds_and_pca("poly", svm_poly_pca_k_cross_valid, DTR, LTR, [prior_0, prior_1], 10)
+    svm_rbf = svm_calculate_best_combo_ds_and_pca("rbf", svm_rbf_pca_k_cross_valid, DTR, LTR, [prior_0, prior_1], 10)
 
-with open("results/svm_poly_data_pca.txt", "w") as f:
-    for x in svm_poly:
-        f.write(str(x) + "\n")
 
-with open("results/svm_rbf_data_pca.txt", "w") as f:
-    for x in svm_rbf:
-        f.write(str(x) + "\n")
+    with open("results/svm_linear_data_pca.txt", "w") as f:
+        for x in svm_linear:
+            f.write(str(x) + "\n")
+
+    with open("results/svm_poly_data_pca.txt", "w") as f:
+        for x in svm_poly:
+            f.write(str(x) + "\n")
+
+    with open("results/svm_rbf_data_pca.txt", "w") as f:
+        for x in svm_rbf:
+            f.write(str(x) + "\n")
