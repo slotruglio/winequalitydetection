@@ -100,19 +100,19 @@ def calculate_gmm_parameters(dataset, labels, priors, folds):
     return sorted(results.items(), key=lambda x: x[1][0])
 
 if __name__ == "__main__":
-    # testing data
+	# testing data
 
-    #LOAD THE DATA
-    DTR, LTR = load("data/Train.txt", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 11)
-    DTE, LTE = load("data/Test.txt", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 11)
+	#LOAD THE DATA
+	DTR, LTR = load("data/Train.txt", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 11)
+	DTE, LTE = load("data/Test.txt", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 11)
 
 
-    #COMPUTE CLASS PRIORS: label_i / total_labels
-    prior_0 = (LTR == 0).sum() / LTR.shape[0]
-    prior_1 = (LTR == 1).sum() / LTR.shape[0]
+	#COMPUTE CLASS PRIORS: label_i / total_labels
+	prior_0 = 0.5
+	prior_1 = 0.5
 
-    #svm_linear = calculate_svm_linear_paramaters(DTR, LTR, [prior_0, prior_1], 3)
-    svm_rbf = calculate_svm_rbf_paramaters(DTR, LTR, [prior_0, prior_1], 3)
+	#svm_linear = calculate_svm_linear_paramaters(DTR, LTR, [prior_0, prior_1], 3)
+	svm_rbf = calculate_svm_rbf_paramaters(DTR, LTR, [prior_0, prior_1], 3)
 
-    print(svm_rbf)
+	print(svm_rbf)
 

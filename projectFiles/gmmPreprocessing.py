@@ -51,20 +51,20 @@ def gmm_calculate_best_combo_ds_and_pca(dataset, labels, priors, folds):
 
 if __name__ == "__main__":
 
-    # testing data
+	# testing data
 
-    #LOAD THE DATA
-    DTR, LTR = load("data/Train.txt", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 11)
-    DTE, LTE = load("data/Test.txt", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 11)
-
-
-    #COMPUTE CLASS PRIORS: label_i / total_labels
-    prior_0 = (LTR == 0).sum() / LTR.shape[0]
-    prior_1 = (LTR == 1).sum() / LTR.shape[0]
+	#LOAD THE DATA
+	DTR, LTR = load("data/Train.txt", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 11)
+	DTE, LTE = load("data/Test.txt", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 11)
 
 
-    gmm = gmm_calculate_best_combo_ds_and_pca(DTR, LTR, [prior_0, prior_1], 10)
+	#COMPUTE CLASS PRIORS: label_i / total_labels
+	prior_0 = 0.5
+	prior_1 = 0.5
 
-    with open("results/gmm_data_pca.txt", "w") as f:
-        for x in gmm:
-            f.write(str(x) + "\n")
+
+	gmm = gmm_calculate_best_combo_ds_and_pca(DTR, LTR, [prior_0, prior_1], 10)
+
+	with open("results/gmm_data_pca.txt", "w") as f:
+		for x in gmm:
+			f.write(str(x) + "\n")
