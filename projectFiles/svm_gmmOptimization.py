@@ -22,11 +22,11 @@ def calculate_svm_linear_paramaters(dataset, labels, priors, folds):
         if pca == "no pca":
             result = svm_linear_k_cross_valid_C(DTR, labels, folds, [0.1, 1, 10], priors, pcaVal=-1)
             for x in result.items():
-                results[(dsType, pca, x[0])] = x[1][1]
+                results[(dsType, pca, x[0])] = (x[1][1],x[1][2])
         else:
             result = svm_linear_k_cross_valid_C(DTR, labels, folds, [0.1, 1, 10], priors, pcaVal=pca)
             for x in result.items():
-                results[(dsType, pca, x[0])] = x[1][1]
+                results[(dsType, pca, x[0])] = (x[1][1],x[1][2])
         print("done {}, {}".format(dsType, pca))
 
     # sort by mindcf
@@ -44,11 +44,11 @@ def calculate_svm_poly_paramaters(dataset, labels, priors, folds):
             
             result = svm_poly_k_cross_valid(DTR, labels, folds, [0.1, 1, 10], [0,1], priors, [0,1], pcaVal=-1)
             for x in result.items():
-                results[(dsType, pca, x[0])] = x[1][1]
+                results[(dsType, pca, x[0])] = (x[1][1],x[1][2])
         else:
             result = svm_poly_k_cross_valid(DTR, labels, folds, [0.1, 1, 10], [0,1], priors, [0,1], pcaVal=pca)
             for x in result.items():
-                results[(dsType, pca, x[0])] = x[1][1]
+                results[(dsType, pca, x[0])] = (x[1][1],x[1][2])
         print("done {}, {}".format(dsType, pca))
 
     # sort by mindcf
@@ -66,11 +66,11 @@ def calculate_svm_rbf_paramaters(dataset, labels, priors, folds):
             
             result = svm_RBF_k_cross_valid(DTR, labels, folds, [0.1, 1, 10], [1,10], priors, [0,1], pcaVal=-1)
             for x in result.items():
-                results[(dsType, pca, x[0])] = x[1][1]
+                results[(dsType, pca, x[0])] = (x[1][1],x[1][2])
         else:
             result = svm_RBF_k_cross_valid(DTR, labels, folds, [0.1, 1, 10], [1,10], priors, [0,1], pcaVal=pca)
             for x in result.items():
-                results[(dsType, pca, x[0])] = x[1][1]
+                results[(dsType, pca, x[0])] = (x[1][1],x[1][2])
         print("done {}, {}".format(dsType, pca))
 
     # sort by mindcf
@@ -88,12 +88,12 @@ def calculate_gmm_parameters(dataset, labels, priors, folds):
             for type in ["full", "diag", "tied_full", "tied_diag"]:
                 result = gmm_k_fold_cross_valid_components(DTR, labels, folds, priors, alpha=0.1, psi=0.01, type=type, pcaVal=-1)
                 for x in result.items():
-                    results[(dsType, pca, type, x[0])] = x[1][1]
+                    results[(dsType, pca, type, x[0])] = (x[1][1],x[1][2])
         else:
             for type in ["full", "diag", "tied_full", "tied_diag"]:
                 result = gmm_k_fold_cross_valid_components(DTR, labels, folds, priors, alpha=0.1, psi=0.01, type=type, pcaVal=pca)
                 for x in result.items():
-                    results[(dsType, pca, type, x[0])] = x[1][1]
+                    results[(dsType, pca, type, x[0])] = (x[1][1],x[1][2])
         print("done {}, {}".format(dsType, pca))
 
     # sort by mindcf
@@ -115,7 +115,7 @@ if __name__ == "__main__":
 
 	with open("results/svm_linear_optimization.txt", "w") as f:
 		for x in svm_linear:
-			f.write(str(x) + "\n")
+			f.write(str(x)[1:-1] + "\n")
 
 	print("done linear")
 
@@ -123,7 +123,7 @@ if __name__ == "__main__":
 
 	with open("results/svm_poly_optimization.txt", "w") as f:
 		for x in svm_poly:
-			f.write(str(x) + "\n")
+			f.write(str(x)[1:-1] + "\n")
 
 	print("done poly")
 
@@ -131,7 +131,7 @@ if __name__ == "__main__":
 
 	with open("results/svm_rbf_optimization.txt", "w") as f:
 		for x in svm_rbf:
-			f.write(str(x) + "\n")
+			f.write(str(x)[1:-1] + "\n")
 
 	print("done rbf")
 
@@ -140,7 +140,7 @@ if __name__ == "__main__":
 
 	with open("results/gmm_optimization.txt", "w") as f:
 		for x in gmm:
-			f.write(str(x) + "\n")
+			f.write(str(x)[1:-1] + "\n")
 
 
 	print("done gmm")

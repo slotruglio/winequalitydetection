@@ -3,7 +3,7 @@ import numpy
 from utilityML.Functions.normalization import normalize
 from utilityML.Functions.crossvalid import fold_data
 from utilityML.Functions.crossvalid import svm_linear_pca_k_cross_valid, svm_poly_pca_k_cross_valid, svm_rbf_pca_k_cross_valid
-from utilityML.Functions.bayes import compute_min_dcf
+from utilityML.Functions.bayes import compute_min_dcf, compute_confusion_matrix_binary, compute_normalized_dcf_binary
 
 from utilityML.Classifiers.SVM import SVM_linear, SVM_poly, SVM_RBF
 
@@ -52,7 +52,12 @@ def svm_calculate_best_combo_ds_and_pca(svm_type, svm_pca_function, dataset, lab
                 no_pca_score.extend(svm.score)
         
         mindcf = compute_min_dcf(numpy.array(no_pca_labels), numpy.array(no_pca_score), priors[1], 1, 1)
-        results[(type, "no pca")] = mindcf
+        
+        confusion_matrix = compute_confusion_matrix_binary(numpy.array(labels), numpy.array(no_pca_score), priors[1], 1, 1)
+        #compute norm dcf
+        normDcf = compute_normalized_dcf_binary(confusion_matrix, priors[1], 1, 1)
+
+        results[(type, "no pca")] = (mindcf, normDcf)
 
         print("no pca calculated")
         
@@ -85,12 +90,12 @@ if __name__ == "__main__":
 
 	with open("results/svm_linear_data_pca.txt", "w") as f:
 		for x in svm_linear:
-			f.write(str(x) + "\n")
+			f.write(str(x)[1:-1] + "\n")
 
 	with open("results/svm_poly_data_pca.txt", "w") as f:
 		for x in svm_poly:
-			f.write(str(x) + "\n")
+			f.write(str(x)[1:-1] + "\n")
 
 	with open("results/svm_rbf_data_pca.txt", "w") as f:
 		for x in svm_rbf:
-			f.write(str(x) + "\n")
+			f.write(str(x)[1:-1] + "\n")

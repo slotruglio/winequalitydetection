@@ -45,7 +45,7 @@ def gmm_calculate_best_combo_ds_and_pca(dataset, labels, priors, folds):
 
         pca_result = gmm_pca_k_cross_valid(DTR, labels, priors, folds)
         for x in pca_result.items():
-            results[(type, x[0])] = x[1][1]
+            results[(type, x[0])] = (x[1][1],x[1][2])
 
     return sorted(results.items(), key=lambda x: x[1][0])
 
@@ -67,4 +67,4 @@ if __name__ == "__main__":
 
 	with open("results/gmm_data_pca.txt", "w") as f:
 		for x in gmm:
-			f.write(str(x) + "\n")
+			f.write(str(x)[1:-1] + "\n")
