@@ -263,7 +263,7 @@ def GMM_LBG(X, iter, alpha=0.1, psi=0.01, type = 'full'):
 
 
 class GMM:
-	def __init__(self, DTR, LTR, DTE, LTE, prior_prob_array, iterations=1, alpha=0.1, psi=0.01, typeOfGmm="full"):
+	def __init__(self, DTR, LTR, DTE, LTE, prior_prob_array, iterations=2, alpha=0.1, psi=0.01, typeOfGmm="full"):
 		# initialization of the attributes
 		self.DTR = DTR
 		self.LTR = LTR
