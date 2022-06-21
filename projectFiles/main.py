@@ -121,7 +121,7 @@ reduced_dte = numpy.dot(P.T, DTE)
 
 log_reg = LogReg(reduced_dtr, LTR, reduced_dte, LTE, optimal_lambda)
 log_reg.estimate_model_parameters()
-log_reg.logreg_test()
+log_reg.logreg_test(prior_1)
 
 #TODO gmm unify m and iteration ? PCA ???
 optimal_m = min(gmm_pca.items(), key=lambda x: x[1][1][0])[0]
@@ -184,6 +184,7 @@ Printer.print_empty_lines(1)
 Printer.print_title("Logistic Regression data")
 Printer.print_line(f"Accuracy: {log_reg.accuracy * 100:.2f}%")
 Printer.print_line(f"Error: {log_reg.error * 100:.2f}%")
+Printer.print_line(f"DCF: {log_reg.dcf}")
 Printer.print_empty_lines(1)
 
 if do_svm:

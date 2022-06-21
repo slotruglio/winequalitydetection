@@ -129,7 +129,7 @@ def logreg_pca_1_fold_crossvalidation(DTR, LTR, priors, percentage=2./3.):
 			#train the model
 			model = LogReg(reduced_cv_dtr, cv_ltr, reduced_cv_dte, cv_lte, l)
 			model.estimate_model_parameters()
-			model.logreg_test()
+			model.logreg_test(priors[1])
 
 			#accuracies.append(model.accuracy)
 
@@ -173,7 +173,7 @@ def logreg_pca_k_fold_crossvalidation(DTR, LTR, priors, k):
 				#train the model
 				model = LogReg(reduced_cv_dtr, cv_ltr, reduced_cv_dte, cv_lte, l)
 				model.estimate_model_parameters()
-				model.logreg_test()
+				model.logreg_test(priors[1])
 
 				accuracies.append(model.accuracy)
 
