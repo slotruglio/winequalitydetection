@@ -68,68 +68,12 @@ Printer.print_line(f"Best accuracy: {max(logreg_xval_accuracies.items(), key=lam
 Printer.print_line(f"Best dcf (min): {min(logreg_xval_accuracies.items(), key=lambda x: x[1][1][0])}")
 Printer.print_empty_lines(1)
 
-#CROSSVAL FOR GMM FULL COVARIANCE
-gmm_pca = gmm_pca_k_cross_valid(DTR, LTR, [prior_0, prior_1], folds=5)
-Printer.print_title("PCA XVal Data for GMM Full Covariance")
-Printer.print_line(f"m: (Accuracies, dcf): {gmm_pca}")
-Printer.print_line(f"Best dcf (min): {min(gmm_pca.items(), key=lambda x: x[1][1][0])}")
-
-gmm_xval_accuracies = gmm_k_fold_cross_valid_components(DTR, LTR, 10, [prior_0, prior_1], alpha=0.1, psi=0.01, type="full")
-Printer.print_title("XVal Data for GMM Full Covariance iterate over components")
-Printer.print_line(f"components: (accuracy, minDCF): {gmm_xval_accuracies}")
-Printer.print_line(f"Best accuracy: {max(gmm_xval_accuracies.items(), key=lambda x: x[1][0])}")
-Printer.print_line(f"Best dcf (min): {min(gmm_xval_accuracies.items(), key=lambda x: x[1][1][0])}")
-Printer.print_empty_lines(1)
 
 #******* SVM CROSS VALIDATION *******
-#Separated from the rest of the file because of its complexity
-#SVM CROSS VALIDATION SECTION
-# do or not do svm
-do_svm = True
+# Inside svmPreprocessing.py and svm_gmmOptimization.py
 
-if do_svm :
-    Printer.print_title("SVM linear cross validation of C")
-
-    start = time.time()
-    
-    svm_linear_results = svm_linear_k_cross_valid_C(DTR, LTR, 10, [0.1, 1, 10], [prior_0, prior_1], 1, pcaVal=-1)
-    end = time.time()
-    Printer.print_line(f"C: (accuracy, mindcf): {svm_linear_results}")
-    Printer.print_empty_lines(1)
-    Printer.print_line(f"Time of kfold: {end - start:.2f}s")
-    Printer.print_line(f"Best dcf (min): {min(svm_linear_results.items(), key=lambda x: x[1][1][0])}")
-    Printer.print_empty_lines(1)
-    Printer.print_title("SVM poly cross validation")
-
-    start = time.time()
-
-    svm_poly_results = svm_poly_k_cross_valid(DTR, LTR, 10, [0.1, 1, 10], [0,1], [prior_0, prior_1], [0,1], pcaVal=-1)
-    end = time.time()
-    Printer.print_line(f"(K, C, c): (accuracy, mindcf): {svm_poly_results}")
-    Printer.print_empty_lines(1)
-    Printer.print_line(f"Time of kfold: {end - start:.2f}s")
-    Printer.print_empty_lines(1)
-    Printer.print_line(f"Best dcf (min): {min(svm_poly_results.items(), key=lambda x: x[1][1][0])}")
-    Printer.print_title("SVM RBF cross validation")
-
-    start = time.time()
-
-    svm_rbf_results = svm_RBF_k_cross_valid(DTR, LTR, 10, [0.1, 1, 10], [1.,10.], [prior_0, prior_1], [0,1], pcaVal=-1)
-    end = time.time()
-    Printer.print_line(f"(K, C, gamma): (accuracy mindcf): {svm_rbf_results}")
-    Printer.print_empty_lines(1)
-    Printer.print_line(f"Time of kfold: {end - start:.2f}s")
-    Printer.print_line(f"Best dcf (min): {min(svm_rbf_results.items(), key=lambda x: x[1][1][0])}")
-    Printer.print_empty_lines(1)
-
-    # svm_linear_pca = svm_linear_pca_k_cross_valid(DTR, LTR, [prior_0, prior_1], folds=5)
-    # Printer.print_line(f"m: (Accuracies, dcf): {svm_linear_pca}")
-
-    # svm_poly_pca = svm_poly_pca_k_cross_valid(DTR, LTR, [prior_0, prior_1], folds=5)
-    # Printer.print_line(f"m: (Accuracies, dcf): {svm_poly_pca}")
-
-    # svm_rbf_pca = svm_rbf_pca_k_cross_valid(DTR, LTR, [prior_0, prior_1], folds=5)
-    # Printer.print_line(f"m: (Accuracies, dcf): {svm_rbf_pca}")
+#******* GMM CROSS VALIDATION *******
+# Inside gmmPreprocessing.py and svm_gmmOptimization.py
 
 
 #SEPARATOR FOR THE PRINTER

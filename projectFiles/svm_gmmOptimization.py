@@ -5,11 +5,11 @@ from utilityML.Functions.genpurpose import load
 # RESULTS OBTAINED FROM svmPreprocessing & gmmPreprocessing.py
 # consider only the top 3 combo by mindcf
 
-# TODO - put real data, these below are just for testing
-best_combo_svm_linear = [("raw", 9), ("norm", "no pca")]
-best_combo_svm_poly = [("raw", 9), ("norm", "no pca")]
-best_combo_svm_rbf = [("raw", 9), ("norm", "no pca")]
-best_combo_gmm = [("raw", 9), ("norm", "no pca")]
+# values have been copied from results/*_data_pca.txt
+best_combo_svm_linear = [("norm", 5), ("norm", "no pca"), ("norm", 6)]
+best_combo_svm_poly = [("norm", "no pca"), ("norm", 10), ("norm", 9)]
+best_combo_svm_rbf = [("norm", "no pca"), ("norm", 10), ("norm", 8)]
+best_combo_gmm = [("raw", "no pca"), ("norm", "no pca"), ("norm", 10)]
 
 def calculate_svm_linear_paramaters(dataset, labels, priors, folds):
     
@@ -111,8 +111,39 @@ if __name__ == "__main__":
 	prior_0 = 0.5
 	prior_1 = 0.5
 
-	#svm_linear = calculate_svm_linear_paramaters(DTR, LTR, [prior_0, prior_1], 3)
-	svm_rbf = calculate_svm_rbf_paramaters(DTR, LTR, [prior_0, prior_1], 3)
+	svm_linear = calculate_svm_linear_paramaters(DTR, LTR, [prior_0, prior_1], 10)
 
-	print(svm_rbf)
+	with open("results/svm_linear_optimization.txt", "w") as f:
+		for x in svm_linear:
+			f.write(str(x) + "\n")
+
+	print("done linear")
+
+	svm_poly = calculate_svm_poly_paramaters(DTR, LTR, [prior_0, prior_1], 10)
+
+	with open("results/svm_poly_optimization.txt", "w") as f:
+		for x in svm_poly:
+			f.write(str(x) + "\n")
+
+	print("done poly")
+
+	svm_rbf = calculate_svm_rbf_paramaters(DTR, LTR, [prior_0, prior_1], 10)
+
+	with open("results/svm_rbf_optimization.txt", "w") as f:
+		for x in svm_rbf:
+			f.write(str(x) + "\n")
+
+	print("done rbf")
+
+
+	gmm = calculate_gmm_parameters(DTR, LTR, [prior_0, prior_1], 10)
+
+	with open("results/gmm_optimization.txt", "w") as f:
+		for x in gmm:
+			f.write(str(x) + "\n")
+
+
+	print("done gmm")
+
+
 
