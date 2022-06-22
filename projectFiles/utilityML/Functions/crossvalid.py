@@ -5,6 +5,7 @@ from utilityML.Functions.genpurpose import split_db_2to1
 from utilityML.Classifiers.SVM import SVM_linear, SVM_poly, SVM_RBF
 from utilityML.Classifiers.GMM import GMM
 from utilityML.Classifiers.LogReg import LogReg
+from utilityML.Classifiers.QuadLogReg import QuadLogReg
 
 def split_leave_one_out(D, L, index):
     D_train = numpy.delete(D, index, 1)
@@ -14,11 +15,6 @@ def split_leave_one_out(D, L, index):
     return (D_train, L_train), (D_test, L_test)
 
 #region gaussian pca
-def gaussian_pca_crossvalidation(classifier, DTR, LTR, priors, k=None, percentage=2./3.):
-	if k is None:
-		return gaussian_pca_1_fold_crossvalidation(classifier, DTR, LTR, priors, percentage)
-	else:
-		return gaussian_pca_k_fold_crossvalidation(classifier, DTR, LTR, priors, k)
 
 def gaussian_pca_k_fold_crossvalidation(classifier, DTR, LTR, priors, k):
 
@@ -73,77 +69,13 @@ def gaussian_pca_k_fold_crossvalidation(classifier, DTR, LTR, priors, k):
 	
 	return global_accuracies
 	
-
-def gaussian_pca_1_fold_crossvalidation(classifier, DTR, LTR, priors, percentage=2./3.):
-
-	#for each group, compute the accuracy
-	global_accuracies = {}
-
-	(cv_dtr, cv_ltr), (cv_dte, cv_lte) = split_db_2to1(DTR, LTR, percentage)
-
-	for m in range(1,11):
-
-		reduced_cv_dtr, P = pca(cv_dtr, m)
-
-		# get projected samples of test data
-		reduced_cv_dte = numpy.dot(P.T, cv_dte)
-
-		#train the model
-		model = classifier(reduced_cv_dtr, cv_ltr, reduced_cv_dte, cv_lte, priors)
-		model.train()
-		model.test()
-
-		#compute the mindcf on ALL the folds permutations' LLRS and LABELS
-		mindcf = compute_min_dcf(numpy.array(model.LTE), numpy.array(model.llrs), priors[1], 1, 1)
-		
-		#append the mean of accuracies to the global_accuracies dictionary, with m as key
-		global_accuracies[m] = (model.accuracy, mindcf)
-
-	return global_accuracies
-	
 	
 #endregion
 
 
 #region logreg pca
-def logreg_pca_crossvalidation(DTR, LTR, priors, k=None, percentage=2./3.):
-	if k is None:
-		return logreg_pca_1_fold_crossvalidation(DTR, LTR, priors, percentage)
-	else:
-		return logreg_pca_k_fold_crossvalidation(DTR, LTR, priors, k)
 
-
-def logreg_pca_1_fold_crossvalidation(DTR, LTR, priors, percentage=2./3.):
-
-	#for each group, compute the accuracy
-	global_accuracies = {}
-
-	(cv_dtr, cv_ltr), (cv_dte, cv_lte) = split_db_2to1(DTR, LTR, percentage)
-
-	for m in range(1,12):
-
-		#accuracies = []
-
-		for l in [10**-6, 10**-3, 10**-1, 1.0]:
-			reduced_cv_dtr, P = pca(cv_dtr, m)
-
-			# get projected samples of test data
-			reduced_cv_dte = numpy.dot(P.T, cv_dte)
-
-			#train the model
-			model = LogReg(reduced_cv_dtr, cv_ltr, reduced_cv_dte, cv_lte, l)
-			model.estimate_model_parameters()
-			model.logreg_test(priors[1])
-
-			#accuracies.append(model.accuracy)
-
-		#append the accuracy to the global_accuracies dictionary, with m as key
-		global_accuracies[m] = model.accuracy
-
-	return global_accuracies
-
-
-def logreg_pca_k_fold_crossvalidation(DTR, LTR, priors, k):
+def logreg_pca_k_fold_crossvalidation(DTR, LTR, priors, k, quadratic = False):
 
 	#for each group, compute the accuracy
 	global_accuracies = {}
@@ -152,7 +84,7 @@ def logreg_pca_k_fold_crossvalidation(DTR, LTR, priors, k):
 
 	for m in range(1,12):
 
-		for l in [10**-6, 10**-3, 10**-1, 1.0]:
+		for l in [10**-6, 10**-3, 10**-2, 10**-1, 1.0]:
 
 			accuracies = []
 
@@ -175,7 +107,10 @@ def logreg_pca_k_fold_crossvalidation(DTR, LTR, priors, k):
 				reduced_cv_dte = numpy.dot(P.T, cv_dte)
 
 				#train the model
-				model = LogReg(reduced_cv_dtr, cv_ltr, reduced_cv_dte, cv_lte, l)
+				if quadratic:
+					model = QuadLogReg(reduced_cv_dtr, cv_ltr, reduced_cv_dte, cv_lte, l)
+				else:
+					model = LogReg(reduced_cv_dtr, cv_ltr, reduced_cv_dte, cv_lte, l)
 				model.estimate_model_parameters()
 				model.logreg_test(priors[1])
 
