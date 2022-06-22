@@ -15,7 +15,7 @@ def plotHist(D, L, hFea, hLab, title, save=False):
         plt.legend()
         plt.tight_layout()
         if save:
-            save_plot('hist_{}_f{}.pdf'.format(title, i+1))
+            save_plot('hist_{}_f{}.png'.format(title, i+1))
     if not save: plt.show()
 
 def plotLabels(L, labels, save=False):
@@ -31,7 +31,7 @@ def plotLabels(L, labels, save=False):
     plt.bar(labels, [class_0, class_1], color= ["r", "b"], width=0.3)
     plt.legend()
     plt.tight_layout()
-    if save: save_plot("labels.pdf")
+    if save: save_plot("labels.png")
     else: plt.show()
 
 def plot_scatter(DP, L, title, save=False):
@@ -46,7 +46,7 @@ def plot_scatter(DP, L, title, save=False):
     plt.tight_layout()  # Use with non-default font size to keep axis label inside the figure
     
     if save:
-        save_plot('scatter_%s.pdf' % (title))
+        save_plot('scatter_%s.png' % (title))
     if not save: plt.show()
 
 def plot_scatter_dual(D, L, hFea, hLab, title, save=False):
@@ -68,7 +68,7 @@ def plot_scatter_dual(D, L, hFea, hLab, title, save=False):
             plt.legend()
             plt.tight_layout()  # Use with non-default font size to keep axis label inside the figure
             if save:
-                save_plot('scatter_dual_%s_%d_%d.pdf' % (title, dIdx1, dIdx2))
+                save_plot('scatter_dual_%s_%d_%d.png' % (title, dIdx1, dIdx2))
         plt.show()
 
 
@@ -80,7 +80,7 @@ def plot_density(save=False):
     plt.plot(XPlot.ravel(), numpy.exp(logpdf_GAU_ND(vrow(XPlot), m, C)))
     plt.title('Gaussian')
     if save:
-        save_plot('gaussian.pdf')
+        save_plot('gaussian.png')
     plt.show()
 
 
@@ -95,7 +95,7 @@ def plot_hist_and_density(X1D, save=False):
     plt.plot(XPlot.ravel(), numpy.exp(logpdf_GAU_ND(
         vrow(XPlot), m_ML, compute_covariance(X1D, m_ML))))
     if save:
-        save_plot('hist_and_density.pdf')
+        save_plot('hist_and_density.png')
     plt.show()
 
 
@@ -105,7 +105,7 @@ def plot_ROC(FPR, TPR, save=False):
     plt.xlabel('FPR')
     plt.ylabel('TPR')
     if save:
-        save_plot('roc.pdf')
+        save_plot('roc.png')
     plt.show()
 
 # INPUTS: 
@@ -126,7 +126,7 @@ def plot_bayes_error(p, DCF, NAMES, colors=None, save=False, legend=None):
     if legend is not None:
         plt.legend(legend)
     if save:
-        save_plot('bayes_errors.pdf')
+        save_plot('bayes_errors.png')
     plt.figure()
 
 

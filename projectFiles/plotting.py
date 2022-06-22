@@ -30,7 +30,7 @@ labels = [
 
 # SET SAVE = TRUE TO SAVE AND DON'T VIEW FIGURES
 # SET SAVE = FALSE TO VIEW FIGURES AND DON'T SAVE
-SAVE = False
+SAVE = True
 
 # histogram
 plotHist(DTR, LTR, features, labels, "Train dataset", save=SAVE)
