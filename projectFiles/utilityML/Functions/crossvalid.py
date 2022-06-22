@@ -245,7 +245,7 @@ def svm_linear_pca_k_cross_valid(DTR, LTR, priors, folds, K=1):
 	global_accuracies = {}
 
 	cv_dtr_array, cv_ltr_array, cv_dte_array, cv_lte_array = fold_data(DTR, LTR, folds)
-	for m in range(5,11):
+	for m in range(5,12):
 		accuracies = []
 
 		labels = []
@@ -350,7 +350,7 @@ def svm_poly_pca_k_cross_valid(DTR, LTR, priors, folds):
 	global_accuracies = {}
 
 	cv_dtr_array, cv_ltr_array, cv_dte_array, cv_lte_array = fold_data(DTR, LTR, folds)
-	for m in range(5,11):
+	for m in range(5,12):
 		accuracies = []
 
 		labels = []
@@ -455,7 +455,7 @@ def svm_rbf_pca_k_cross_valid(DTR, LTR, priors, folds):
 	global_accuracies = {}
 
 	cv_dtr_array, cv_ltr_array, cv_dte_array, cv_lte_array = fold_data(DTR, LTR, folds)
-	for m in range(5,11):
+	for m in range(5,12):
 		accuracies = []
 
 		labels = []
@@ -563,7 +563,7 @@ def gmm_pca_k_cross_valid(DTR, LTR, priors, folds):
 	global_accuracies = {}
 
 	cv_dtr_array, cv_ltr_array, cv_dte_array, cv_lte_array = fold_data(DTR, LTR, folds)
-	for m in range(5,11):
+	for m in range(5,12):
 		accuracies = []
 
 		labels = []
