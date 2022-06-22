@@ -120,7 +120,7 @@ def logreg_pca_1_fold_crossvalidation(DTR, LTR, priors, percentage=2./3.):
 
 	(cv_dtr, cv_ltr), (cv_dte, cv_lte) = split_db_2to1(DTR, LTR, percentage)
 
-	for m in range(1,11):
+	for m in range(1,12):
 
 		#accuracies = []
 
@@ -150,7 +150,7 @@ def logreg_pca_k_fold_crossvalidation(DTR, LTR, priors, k):
 
 	cv_dtr_array, cv_ltr_array, cv_dte_array, cv_lte_array = fold_data(DTR, LTR, k)
 
-	for m in range(1,11):
+	for m in range(1,12):
 
 		for l in [10**-6, 10**-3, 10**-1, 1.0]:
 
@@ -615,7 +615,7 @@ def gmm_k_fold_cross_valid_components(DTR, LTR, folds, priors, alpha, psi, type=
 
 	cv_dtr_array, cv_ltr_array, cv_dte_array, cv_lte_array = fold_data(DTR, LTR, folds)
 	# 2**iteration = number of components
-	for iteration in range(2):
+	for iteration in range(5):
 		accuracies = []
 		labels = []
 		llrs = []

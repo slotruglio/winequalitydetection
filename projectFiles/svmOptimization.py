@@ -3,13 +3,13 @@ from utilityML.Functions.normalization import normalize
 from utilityML.Functions.genpurpose import load
 
 # RESULTS OBTAINED FROM svmPreprocessing & gmmPreprocessing.py
-# consider only the top 3 combo by mindcf
+# consider only the top 3 combo by mindcf with at least one with
+# a different dataset (if 3 norm, 3 norm + 1 raw)
 
 # values have been copied from results/*_data_pca.txt
-best_combo_svm_linear = [("norm", 5), ("norm", "no pca"), ("norm", 6)]
-best_combo_svm_poly = [("norm", "no pca"), ("norm", 10), ("norm", 9)]
-best_combo_svm_rbf = [("norm", "no pca"), ("norm", 10), ("norm", 8)]
-best_combo_gmm = [("raw", "no pca"), ("norm", "no pca"), ("norm", 10)]
+best_combo_svm_linear = [("norm", 9), ("norm", "no pca"), ("norm", 10), ("raw", 9)]
+best_combo_svm_poly = [("norm", "no pca"), ("norm", 10), ("norm", 7), ("raw", 5)]
+best_combo_svm_rbf = [("norm", "no pca"), ("norm", 10), ("norm", 8), ("raw", 10)]
 
 def calculate_svm_linear_paramaters(dataset, labels, priors, folds):
     
@@ -30,7 +30,7 @@ def calculate_svm_linear_paramaters(dataset, labels, priors, folds):
         print("done {}, {}".format(dsType, pca))
 
     # sort by mindcf
-    return sorted(results.items(), key=lambda x: x[1][0])
+    return sorted(results.items(), key=lambda x: x[1][0][0])
 
 def calculate_svm_poly_paramaters(dataset, labels, priors, folds):
     
@@ -52,7 +52,7 @@ def calculate_svm_poly_paramaters(dataset, labels, priors, folds):
         print("done {}, {}".format(dsType, pca))
 
     # sort by mindcf
-    return sorted(results.items(), key=lambda x: x[1][0])
+    return sorted(results.items(), key=lambda x: x[1][0][0])
 
 def calculate_svm_rbf_paramaters(dataset, labels, priors, folds):
     
@@ -74,30 +74,8 @@ def calculate_svm_rbf_paramaters(dataset, labels, priors, folds):
         print("done {}, {}".format(dsType, pca))
 
     # sort by mindcf
-    return sorted(results.items(), key=lambda x: x[1][0])
+    return sorted(results.items(), key=lambda x: x[1][0][0])
 
-
-def calculate_gmm_parameters(dataset, labels, priors, folds):
-    results = {}
-    for dsType, pca in best_combo_gmm:
-        DTR = dataset
-        if dsType == "norm":
-            DTR, mu, sigma = normalize(dataset)
-        
-        if pca == "no pca":
-            for type in ["full", "diag", "tied_full", "tied_diag"]:
-                result = gmm_k_fold_cross_valid_components(DTR, labels, folds, priors, alpha=0.1, psi=0.01, type=type, pcaVal=-1)
-                for x in result.items():
-                    results[(dsType, pca, type, x[0])] = (x[1][1],x[1][2])
-        else:
-            for type in ["full", "diag", "tied_full", "tied_diag"]:
-                result = gmm_k_fold_cross_valid_components(DTR, labels, folds, priors, alpha=0.1, psi=0.01, type=type, pcaVal=pca)
-                for x in result.items():
-                    results[(dsType, pca, type, x[0])] = (x[1][1],x[1][2])
-        print("done {}, {}".format(dsType, pca))
-
-    # sort by mindcf
-    return sorted(results.items(), key=lambda x: x[1][0])
 
 if __name__ == "__main__":
 	# testing data
@@ -134,16 +112,6 @@ if __name__ == "__main__":
 			f.write(str(x)[1:-1] + "\n")
 
 	print("done rbf")
-
-
-	gmm = calculate_gmm_parameters(DTR, LTR, [prior_0, prior_1], 10)
-
-	with open("results/gmm_optimization.txt", "w") as f:
-		for x in gmm:
-			f.write(str(x)[1:-1] + "\n")
-
-
-	print("done gmm")
 
 
 
