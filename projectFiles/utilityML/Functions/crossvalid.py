@@ -1,11 +1,10 @@
 import numpy
+from utilityML.Functions.bayes import compute_min_dcf, compute_confusion_matrix_binary, compute_normalized_dcf_binary, compute_dcf_binary
 from utilityML.Functions.dimred import *
 from utilityML.Functions.genpurpose import split_db_2to1
 from utilityML.Classifiers.SVM import SVM_linear, SVM_poly, SVM_RBF
 from utilityML.Classifiers.GMM import GMM
 from utilityML.Classifiers.LogReg import LogReg
-from utilityML.Functions.bayes import compute_min_dcf
-
 
 def split_leave_one_out(D, L, index):
     D_train = numpy.delete(D, index, 1)
@@ -28,7 +27,7 @@ def gaussian_pca_k_fold_crossvalidation(classifier, DTR, LTR, priors, k):
 
 	cv_dtr_array, cv_ltr_array, cv_dte_array, cv_lte_array = fold_data(DTR, LTR, k)
 
-	for m in range(1,11):
+	for m in range(1,12):
 
 		accuracies = []
 
@@ -64,8 +63,13 @@ def gaussian_pca_k_fold_crossvalidation(classifier, DTR, LTR, priors, k):
 		#compute the mindcf on ALL the folds permutations' LLRS and LABELS
 		mindcf = compute_min_dcf(numpy.array(labels), numpy.array(llrs), priors[1], 1, 1)
 		
+		#compute the dcf
+		confusion_matrix = compute_confusion_matrix_binary(numpy.array(labels), numpy.array(llrs), priors[1], 1, 1)
+		#compute norm dcf
+		normDcf = compute_normalized_dcf_binary(confusion_matrix, priors[1], 1, 1)
+
 		#append the mean of accuracies to the global_accuracies dictionary, with m as key
-		global_accuracies[m] = (numpy.mean(accuracies), mindcf)
+		global_accuracies[m] = (numpy.mean(accuracies), mindcf, normDcf)
 	
 	return global_accuracies
 	
@@ -116,7 +120,7 @@ def logreg_pca_1_fold_crossvalidation(DTR, LTR, priors, percentage=2./3.):
 
 	(cv_dtr, cv_ltr), (cv_dte, cv_lte) = split_db_2to1(DTR, LTR, percentage)
 
-	for m in range(1,11):
+	for m in range(1,12):
 
 		#accuracies = []
 
@@ -146,7 +150,7 @@ def logreg_pca_k_fold_crossvalidation(DTR, LTR, priors, k):
 
 	cv_dtr_array, cv_ltr_array, cv_dte_array, cv_lte_array = fold_data(DTR, LTR, k)
 
-	for m in range(1,11):
+	for m in range(1,12):
 
 		for l in [10**-6, 10**-3, 10**-1, 1.0]:
 
@@ -185,8 +189,13 @@ def logreg_pca_k_fold_crossvalidation(DTR, LTR, priors, k):
 			#compute the mindcf on ALL the folds permutations' SCORES and LABELS
 			mindcf = compute_min_dcf(numpy.array(labels), numpy.array(scores), priors[1], 1, 1)
 
+			confusion_matrix = compute_confusion_matrix_binary(numpy.array(labels), numpy.array(scores), priors[1], 1, 1)
+			#compute norm dcf
+			normDcf = compute_normalized_dcf_binary(confusion_matrix, priors[1], 1, 1)
+
+
 			#append the mean of accuracies to the global_accuracies dictionary, with m as key
-			global_accuracies[(m,l)] = (numpy.mean(accuracies), mindcf)
+			global_accuracies[(m,l)] = (numpy.mean(accuracies), mindcf, normDcf)
 	
 	return global_accuracies
 #endregion
@@ -236,7 +245,7 @@ def svm_linear_pca_k_cross_valid(DTR, LTR, priors, folds, K=1):
 	global_accuracies = {}
 
 	cv_dtr_array, cv_ltr_array, cv_dte_array, cv_lte_array = fold_data(DTR, LTR, folds)
-	for m in range(5,11):
+	for m in range(5,12):
 		accuracies = []
 
 		labels = []
@@ -272,8 +281,13 @@ def svm_linear_pca_k_cross_valid(DTR, LTR, priors, folds, K=1):
 
 		#compute the mindcf on ALL the folds permutations' SCORES and LABELS
 		mindcf = compute_min_dcf(numpy.array(labels), numpy.array(score), priors[1], 1, 1)
+		
+		confusion_matrix = compute_confusion_matrix_binary(numpy.array(labels), numpy.array(score), priors[1], 1, 1)
+		#compute norm dcf
+		normDcf = compute_normalized_dcf_binary(confusion_matrix, priors[1], 1, 1)
+		
 		#append the mean of accuracies to the global_accuracies dictionary, with C as key
-		global_accuracies[m] = (numpy.mean(accuracies), mindcf)
+		global_accuracies[m] = (numpy.mean(accuracies), mindcf, normDcf)
 
 	return global_accuracies
 
@@ -319,8 +333,13 @@ def svm_linear_k_cross_valid_C(DTR, LTR, folds, C_array, priors, K=1, pcaVal=-1)
 		#compute the mindcf on ALL the folds permutations' SCORES and LABELS
 		mindcf = compute_min_dcf(numpy.array(labels), numpy.array(score), priors[1], 1, 1)
 
+		confusion_matrix = compute_confusion_matrix_binary(numpy.array(labels), numpy.array(score), priors[1], 1, 1)
+		#compute norm dcf
+		normDcf = compute_normalized_dcf_binary(confusion_matrix, priors[1], 1, 1)
+
+
 		#append the mean of accuracies to the global_accuracies dictionary, with C as key
-		global_accuracies[C] = (numpy.mean(accuracies), mindcf)
+		global_accuracies[C] = (numpy.mean(accuracies), mindcf, normDcf)
 
 	return global_accuracies
 	
@@ -331,7 +350,7 @@ def svm_poly_pca_k_cross_valid(DTR, LTR, priors, folds):
 	global_accuracies = {}
 
 	cv_dtr_array, cv_ltr_array, cv_dte_array, cv_lte_array = fold_data(DTR, LTR, folds)
-	for m in range(5,11):
+	for m in range(5,12):
 		accuracies = []
 
 		labels = []
@@ -366,7 +385,13 @@ def svm_poly_pca_k_cross_valid(DTR, LTR, priors, folds):
 
 		#compute the mindcf on ALL the folds permutations' SCORES and LABELS
 		mindcf = compute_min_dcf(numpy.array(labels), numpy.array(score), priors[1], 1, 1)
-		global_accuracies[m] = (numpy.mean(accuracies), mindcf)
+		
+		confusion_matrix = compute_confusion_matrix_binary(numpy.array(labels), numpy.array(score), priors[1], 1, 1)
+
+		#compute norm dcf
+		normDcf = compute_normalized_dcf_binary(confusion_matrix, priors[1], 1, 1)
+		
+		global_accuracies[m] = (numpy.mean(accuracies), mindcf, normDcf)
 
 	return global_accuracies
 
@@ -415,7 +440,11 @@ def svm_poly_k_cross_valid(DTR, LTR, folds, C_array, costant_array, priors, K_ar
 				#compute the mindcf on ALL the folds permutations' SCORES and LABELS
 				mindcf = compute_min_dcf(numpy.array(labels), numpy.array(score), priors[1], 1, 1)
 
-				global_accuracies[(K,C,c)] = (numpy.mean(accuracies), mindcf)
+				confusion_matrix = compute_confusion_matrix_binary(numpy.array(labels), numpy.array(score), priors[1], 1, 1)
+				#compute norm dcf
+				normDcf = compute_normalized_dcf_binary(confusion_matrix, priors[1], 1, 1)
+
+				global_accuracies[(K,C,c)] = (numpy.mean(accuracies), mindcf, normDcf)
 
 	return global_accuracies
 
@@ -426,7 +455,7 @@ def svm_rbf_pca_k_cross_valid(DTR, LTR, priors, folds):
 	global_accuracies = {}
 
 	cv_dtr_array, cv_ltr_array, cv_dte_array, cv_lte_array = fold_data(DTR, LTR, folds)
-	for m in range(5,11):
+	for m in range(5,12):
 		accuracies = []
 
 		labels = []
@@ -461,7 +490,13 @@ def svm_rbf_pca_k_cross_valid(DTR, LTR, priors, folds):
 
 		#compute the mindcf on ALL the folds permutations' SCORES and LABELS
 		mindcf = compute_min_dcf(numpy.array(labels), numpy.array(score), priors[1], 1, 1)
-		global_accuracies[m] = (numpy.mean(accuracies), mindcf)
+		
+		confusion_matrix = compute_confusion_matrix_binary(numpy.array(labels), numpy.array(score), priors[1], 1, 1)
+
+		#compute norm dcf
+		normDcf = compute_normalized_dcf_binary(confusion_matrix, priors[1], 1, 1)
+		
+		global_accuracies[m] = (numpy.mean(accuracies), mindcf, normDcf)
 
 	return global_accuracies
 
@@ -510,7 +545,11 @@ def svm_RBF_k_cross_valid(DTR, LTR, folds, C_array, gamma_array, priors, K_array
 				#compute the mindcf on ALL the folds permutations' SCORES and LABELS
 				mindcf = compute_min_dcf(numpy.array(labels), numpy.array(score), priors[1], 1, 1)
 
-				global_accuracies[(K,C,gamma)] = (numpy.mean(accuracies), mindcf)
+				confusion_matrix = compute_confusion_matrix_binary(numpy.array(labels), numpy.array(score), priors[1], 1, 1)
+				#compute norm dcf
+				normDcf = compute_normalized_dcf_binary(confusion_matrix, priors[1], 1, 1)
+
+				global_accuracies[(K,C,gamma)] = (numpy.mean(accuracies), mindcf, normDcf)
 
 
 	return global_accuracies
@@ -524,7 +563,7 @@ def gmm_pca_k_cross_valid(DTR, LTR, priors, folds):
 	global_accuracies = {}
 
 	cv_dtr_array, cv_ltr_array, cv_dte_array, cv_lte_array = fold_data(DTR, LTR, folds)
-	for m in range(5,11):
+	for m in range(5,12):
 		accuracies = []
 
 		labels = []
@@ -559,7 +598,13 @@ def gmm_pca_k_cross_valid(DTR, LTR, priors, folds):
 
 		#compute the mindcf on ALL the folds permutations' SCORES and LABELS
 		mindcf = compute_min_dcf(numpy.array(labels), numpy.array(score), priors[1], 1, 1)
-		global_accuracies[m] = (numpy.mean(accuracies), mindcf)
+		
+		confusion_matrix = compute_confusion_matrix_binary(numpy.array(labels), numpy.array(score), priors[1], 1, 1)
+		#compute norm dcf
+		normDcf = compute_normalized_dcf_binary(confusion_matrix, priors[1], 1, 1)
+
+		
+		global_accuracies[m] = (numpy.mean(accuracies), mindcf, normDcf)
 
 	return global_accuracies
 
@@ -570,7 +615,7 @@ def gmm_k_fold_cross_valid_components(DTR, LTR, folds, priors, alpha, psi, type=
 
 	cv_dtr_array, cv_ltr_array, cv_dte_array, cv_lte_array = fold_data(DTR, LTR, folds)
 	# 2**iteration = number of components
-	for iteration in range(2):
+	for iteration in range(5):
 		accuracies = []
 		labels = []
 		llrs = []
@@ -602,8 +647,12 @@ def gmm_k_fold_cross_valid_components(DTR, LTR, folds, priors, alpha, psi, type=
 		#compute the mindcf on ALL the folds permutations' LLRS and LABELS
 		mindcf = compute_min_dcf(numpy.array(labels), numpy.array(llrs), priors[1], 1, 1)
 		
+		confusion_matrix = compute_confusion_matrix_binary(numpy.array(labels), numpy.array(llrs), priors[1], 1, 1)
+		#compute norm dcf
+		normDcf = compute_normalized_dcf_binary(confusion_matrix, priors[1], 1, 1)
+
 		#append the mean of accuracies to the global_accuracies dictionary, with m as key
-		global_accuracies[iteration] = (numpy.mean(accuracies), mindcf)
+		global_accuracies[iteration] = (numpy.mean(accuracies), mindcf, normDcf)
 	
 	return global_accuracies
 	

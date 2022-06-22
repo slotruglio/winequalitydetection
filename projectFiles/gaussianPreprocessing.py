@@ -17,9 +17,9 @@ def gaussian_calculate_best_combo(classifier, dataset, labels, priors, folds):
     for DTR, type in zip([dataset, normalized], ["raw", "norm"]):
         result = gaussian_pca_k_fold_crossvalidation(classifier, DTR, labels, priors, folds)
         for x in result.items():
-            results[(type, x[0])] = x[1][1]
+            results[(type, x[0])] = (x[1][1], x[1][2])
 
-    return sorted(results.items(), key=lambda x: x[1][0])
+    return sorted(results.items(), key=lambda x: x[1][0][0])
 
 
 if __name__ == "__main__":
@@ -40,7 +40,7 @@ if __name__ == "__main__":
 		mvg = gaussian_calculate_best_combo(MVG, DTR, LTR, [prior_0, prior_1], 10)
 
 		for x in mvg:
-			f.write(str(x) + "\n")
+			f.write(str(x)[1:-1] + "\n")
 
 		f.write("\n")
 
@@ -48,7 +48,7 @@ if __name__ == "__main__":
 		naive = gaussian_calculate_best_combo(NaiveBayes, DTR, LTR, [prior_0, prior_1], 10)
 
 		for x in naive:
-			f.write(str(x) + "\n")
+			f.write(str(x)[1:-1] + "\n")
 
 		f.write("\n")
 
@@ -56,7 +56,7 @@ if __name__ == "__main__":
 		tied = gaussian_calculate_best_combo(TiedCovariance, DTR, LTR, [prior_0, prior_1], 10)
 
 		for x in tied:
-			f.write(str(x) + "\n")
+			f.write(str(x)[1:-1] + "\n")
 
 		f.write("\n")
 
@@ -64,4 +64,4 @@ if __name__ == "__main__":
 		tied_naive = gaussian_calculate_best_combo(TiedNaive, DTR, LTR, [prior_0, prior_1], 10)
 
 		for x in tied_naive:
-			f.write(str(x) + "\n")
+			f.write(str(x)[1:-1] + "\n")

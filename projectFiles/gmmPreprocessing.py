@@ -3,7 +3,7 @@ import numpy
 from utilityML.Functions.normalization import normalize
 from utilityML.Functions.crossvalid import fold_data
 from utilityML.Functions.crossvalid import gmm_pca_k_cross_valid
-from utilityML.Functions.bayes import compute_min_dcf
+from utilityML.Functions.bayes import compute_min_dcf, compute_confusion_matrix_binary, compute_normalized_dcf_binary
 from utilityML.Classifiers.GMM import GMM
 
 from utilityML.Functions.genpurpose import load
@@ -39,15 +39,20 @@ def gmm_calculate_best_combo_ds_and_pca(dataset, labels, priors, folds):
             no_pca_score.extend(gmm.llrs)
 
         mindcf = compute_min_dcf(numpy.array(no_pca_labels), numpy.array(no_pca_score), priors[1], 1, 1)
-        results[(type, "no pca")] = mindcf
+        
+        confusion_matrix = compute_confusion_matrix_binary(numpy.array(labels), numpy.array(no_pca_score), priors[1], 1, 1)
+        #compute norm dcf
+        normDcf = compute_normalized_dcf_binary(confusion_matrix, priors[1], 1, 1)
+        
+        results[(type, "no pca")] = (mindcf, normDcf)
 
         print("no pca calculated")
 
         pca_result = gmm_pca_k_cross_valid(DTR, labels, priors, folds)
         for x in pca_result.items():
-            results[(type, x[0])] = x[1][1]
+            results[(type, x[0])] = (x[1][1],x[1][2])
 
-    return sorted(results.items(), key=lambda x: x[1][0])
+    return sorted(results.items(), key=lambda x: x[1][0][0])
 
 if __name__ == "__main__":
 
@@ -67,4 +72,4 @@ if __name__ == "__main__":
 
 	with open("results/gmm_data_pca.txt", "w") as f:
 		for x in gmm:
-			f.write(str(x) + "\n")
+			f.write(str(x)[1:-1] + "\n")

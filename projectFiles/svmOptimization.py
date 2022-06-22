@@ -3,13 +3,13 @@ from utilityML.Functions.normalization import normalize
 from utilityML.Functions.genpurpose import load
 
 # RESULTS OBTAINED FROM svmPreprocessing & gmmPreprocessing.py
-# consider only the top 3 combo by mindcf
+# consider only the top 3 combo by mindcf with at least one with
+# a different dataset (if 3 norm, 3 norm + 1 raw)
 
 # values have been copied from results/*_data_pca.txt
-best_combo_svm_linear = [("norm", 5), ("norm", "no pca"), ("norm", 6)]
-best_combo_svm_poly = [("norm", "no pca"), ("norm", 10), ("norm", 9)]
-best_combo_svm_rbf = [("norm", "no pca"), ("norm", 10), ("norm", 8)]
-best_combo_gmm = [("raw", "no pca"), ("norm", "no pca"), ("norm", 10)]
+best_combo_svm_linear = [("norm", 9), ("norm", 10), ("norm", "no pca"), ("raw", 9)]
+best_combo_svm_poly = [("norm", 11), ("norm", "no pca"), ("norm", 10), ("raw", 7)]
+best_combo_svm_rbf = [("norm", "no pca"), ("norm", 11), ("norm", 10), ("raw", "no pca")]
 
 def calculate_svm_linear_paramaters(dataset, labels, priors, folds):
     
@@ -22,15 +22,15 @@ def calculate_svm_linear_paramaters(dataset, labels, priors, folds):
         if pca == "no pca":
             result = svm_linear_k_cross_valid_C(DTR, labels, folds, [0.1, 1, 10], priors, pcaVal=-1)
             for x in result.items():
-                results[(dsType, pca, x[0])] = x[1][1]
+                results[(dsType, pca, x[0])] = (x[1][1],x[1][2])
         else:
             result = svm_linear_k_cross_valid_C(DTR, labels, folds, [0.1, 1, 10], priors, pcaVal=pca)
             for x in result.items():
-                results[(dsType, pca, x[0])] = x[1][1]
+                results[(dsType, pca, x[0])] = (x[1][1],x[1][2])
         print("done {}, {}".format(dsType, pca))
 
     # sort by mindcf
-    return sorted(results.items(), key=lambda x: x[1][0])
+    return sorted(results.items(), key=lambda x: x[1][0][0])
 
 def calculate_svm_poly_paramaters(dataset, labels, priors, folds):
     
@@ -44,15 +44,15 @@ def calculate_svm_poly_paramaters(dataset, labels, priors, folds):
             
             result = svm_poly_k_cross_valid(DTR, labels, folds, [0.1, 1, 10], [0,1], priors, [0,1], pcaVal=-1)
             for x in result.items():
-                results[(dsType, pca, x[0])] = x[1][1]
+                results[(dsType, pca, x[0])] = (x[1][1],x[1][2])
         else:
             result = svm_poly_k_cross_valid(DTR, labels, folds, [0.1, 1, 10], [0,1], priors, [0,1], pcaVal=pca)
             for x in result.items():
-                results[(dsType, pca, x[0])] = x[1][1]
+                results[(dsType, pca, x[0])] = (x[1][1],x[1][2])
         print("done {}, {}".format(dsType, pca))
 
     # sort by mindcf
-    return sorted(results.items(), key=lambda x: x[1][0])
+    return sorted(results.items(), key=lambda x: x[1][0][0])
 
 def calculate_svm_rbf_paramaters(dataset, labels, priors, folds):
     
@@ -66,38 +66,16 @@ def calculate_svm_rbf_paramaters(dataset, labels, priors, folds):
             
             result = svm_RBF_k_cross_valid(DTR, labels, folds, [0.1, 1, 10], [1,10], priors, [0,1], pcaVal=-1)
             for x in result.items():
-                results[(dsType, pca, x[0])] = x[1][1]
+                results[(dsType, pca, x[0])] = (x[1][1],x[1][2])
         else:
             result = svm_RBF_k_cross_valid(DTR, labels, folds, [0.1, 1, 10], [1,10], priors, [0,1], pcaVal=pca)
             for x in result.items():
-                results[(dsType, pca, x[0])] = x[1][1]
+                results[(dsType, pca, x[0])] = (x[1][1],x[1][2])
         print("done {}, {}".format(dsType, pca))
 
     # sort by mindcf
-    return sorted(results.items(), key=lambda x: x[1][0])
+    return sorted(results.items(), key=lambda x: x[1][0][0])
 
-
-def calculate_gmm_parameters(dataset, labels, priors, folds):
-    results = {}
-    for dsType, pca in best_combo_gmm:
-        DTR = dataset
-        if dsType == "norm":
-            DTR, mu, sigma = normalize(dataset)
-        
-        if pca == "no pca":
-            for type in ["full", "diag", "tied_full", "tied_diag"]:
-                result = gmm_k_fold_cross_valid_components(DTR, labels, folds, priors, alpha=0.1, psi=0.01, type=type, pcaVal=-1)
-                for x in result.items():
-                    results[(dsType, pca, type, x[0])] = x[1][1]
-        else:
-            for type in ["full", "diag", "tied_full", "tied_diag"]:
-                result = gmm_k_fold_cross_valid_components(DTR, labels, folds, priors, alpha=0.1, psi=0.01, type=type, pcaVal=pca)
-                for x in result.items():
-                    results[(dsType, pca, type, x[0])] = x[1][1]
-        print("done {}, {}".format(dsType, pca))
-
-    # sort by mindcf
-    return sorted(results.items(), key=lambda x: x[1][0])
 
 if __name__ == "__main__":
 	# testing data
@@ -115,7 +93,7 @@ if __name__ == "__main__":
 
 	with open("results/svm_linear_optimization.txt", "w") as f:
 		for x in svm_linear:
-			f.write(str(x) + "\n")
+			f.write(str(x)[1:-1] + "\n")
 
 	print("done linear")
 
@@ -123,7 +101,7 @@ if __name__ == "__main__":
 
 	with open("results/svm_poly_optimization.txt", "w") as f:
 		for x in svm_poly:
-			f.write(str(x) + "\n")
+			f.write(str(x)[1:-1] + "\n")
 
 	print("done poly")
 
@@ -131,19 +109,9 @@ if __name__ == "__main__":
 
 	with open("results/svm_rbf_optimization.txt", "w") as f:
 		for x in svm_rbf:
-			f.write(str(x) + "\n")
+			f.write(str(x)[1:-1] + "\n")
 
 	print("done rbf")
-
-
-	gmm = calculate_gmm_parameters(DTR, LTR, [prior_0, prior_1], 10)
-
-	with open("results/gmm_optimization.txt", "w") as f:
-		for x in gmm:
-			f.write(str(x) + "\n")
-
-
-	print("done gmm")
 
 
 

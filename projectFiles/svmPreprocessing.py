@@ -3,7 +3,7 @@ import numpy
 from utilityML.Functions.normalization import normalize
 from utilityML.Functions.crossvalid import fold_data
 from utilityML.Functions.crossvalid import svm_linear_pca_k_cross_valid, svm_poly_pca_k_cross_valid, svm_rbf_pca_k_cross_valid
-from utilityML.Functions.bayes import compute_min_dcf
+from utilityML.Functions.bayes import compute_min_dcf, compute_confusion_matrix_binary, compute_normalized_dcf_binary
 
 from utilityML.Classifiers.SVM import SVM_linear, SVM_poly, SVM_RBF
 
@@ -52,17 +52,21 @@ def svm_calculate_best_combo_ds_and_pca(svm_type, svm_pca_function, dataset, lab
                 no_pca_score.extend(svm.score)
         
         mindcf = compute_min_dcf(numpy.array(no_pca_labels), numpy.array(no_pca_score), priors[1], 1, 1)
-        results[(type, "no pca")] = mindcf
+        
+        confusion_matrix = compute_confusion_matrix_binary(numpy.array(labels), numpy.array(no_pca_score), priors[1], 1, 1)
+        #compute norm dcf
+        normDcf = compute_normalized_dcf_binary(confusion_matrix, priors[1], 1, 1)
+
+        results[(type, "no pca")] = (mindcf, normDcf)
 
         print("no pca calculated")
         
 
         pca_result = svm_pca_function(DTR, labels, priors, folds)
         for x in pca_result.items():
-            results[(type, x[0])] = x[1][1]
+            results[(type, x[0])] = (x[1][1], x[1][2])
 
-    
-    return sorted(results.items(), key=lambda x: x[1][0])
+    return sorted(results.items(), key=lambda x: x[1][0][0])
 
 if __name__ == "__main__":
 
@@ -79,18 +83,25 @@ if __name__ == "__main__":
 
 
 	svm_linear = svm_calculate_best_combo_ds_and_pca("linear", svm_linear_pca_k_cross_valid, DTR, LTR, [prior_0, prior_1], 10)
-	svm_poly = svm_calculate_best_combo_ds_and_pca("poly", svm_poly_pca_k_cross_valid, DTR, LTR, [prior_0, prior_1], 10)
-	svm_rbf = svm_calculate_best_combo_ds_and_pca("rbf", svm_rbf_pca_k_cross_valid, DTR, LTR, [prior_0, prior_1], 10)
-
 
 	with open("results/svm_linear_data_pca.txt", "w") as f:
 		for x in svm_linear:
-			f.write(str(x) + "\n")
+			f.write(str(x)[1:-1] + "\n")
+
+	print("done linear")
+
+	svm_poly = svm_calculate_best_combo_ds_and_pca("poly", svm_poly_pca_k_cross_valid, DTR, LTR, [prior_0, prior_1], 10)
 
 	with open("results/svm_poly_data_pca.txt", "w") as f:
 		for x in svm_poly:
-			f.write(str(x) + "\n")
+			f.write(str(x)[1:-1] + "\n")
+
+	print("done poly")
+    
+	svm_rbf = svm_calculate_best_combo_ds_and_pca("rbf", svm_rbf_pca_k_cross_valid, DTR, LTR, [prior_0, prior_1], 10)
 
 	with open("results/svm_rbf_data_pca.txt", "w") as f:
 		for x in svm_rbf:
-			f.write(str(x) + "\n")
+			f.write(str(x)[1:-1] + "\n")
+
+	print("done rbf")
