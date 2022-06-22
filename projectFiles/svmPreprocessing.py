@@ -64,7 +64,7 @@ def svm_calculate_best_combo_ds_and_pca(svm_type, svm_pca_function, dataset, lab
 
         pca_result = svm_pca_function(DTR, labels, priors, folds)
         for x in pca_result.items():
-            results[(type, x[0])] = (x[1][1], x[1][2])
+            results[(type, x[0])] = (x[1][1], x[1][2], x[1][3])
 
     return sorted(results.items(), key=lambda x: x[1][0][0])
 

@@ -1,12 +1,20 @@
-import numpy as np
-from ..Classifiers import LogReg
+import numpy
+from ..Classifiers.LogReg import LogReg
 
-def calibration(train_scores, LTR, scores, prior):
+#This method uses the previously computed scores as a dataset for a new logistic regression model
+#This will allow us to generate calibrated scores
+def calibration(scores, labels, prior):
 
-	logreg = LogReg(train_scores, LTR, None, None, 10**-3)
+	#split scores in two groups of 70% and 30%
+	scores_70 = scores[:int(len(scores)*0.7)]
+	scores_30 = scores[int(len(scores)*0.7):]
+	labels_70 = labels[:int(len(labels)*0.7)]
+	labels_30 = labels[int(len(labels)*0.7):]
+
+	logreg = LogReg(numpy.array([scores_70]), labels_70, numpy.array([scores_30]), labels_30, 10**-3)
 
 	logreg.estimate_model_parameters()
 
-	w, b = logreg.estimated_w, logreg.estimated_b
+	logreg.logreg_test(prior)
 
-	return w*scores + b - np.log(prior/(1-prior))
+	return numpy.array([[logreg.S]]).T, labels_30

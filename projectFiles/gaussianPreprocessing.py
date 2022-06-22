@@ -17,7 +17,7 @@ def gaussian_calculate_best_combo(classifier, dataset, labels, priors, folds):
     for DTR, type in zip([dataset, normalized], ["raw", "norm"]):
         result = gaussian_pca_k_fold_crossvalidation(classifier, DTR, labels, priors, folds)
         for x in result.items():
-            results[(type, x[0])] = (x[1][1], x[1][2])
+            results[(type, x[0])] = (x[1][1], x[1][2], x[1][3])
 
     return sorted(results.items(), key=lambda x: x[1][0][0])
 

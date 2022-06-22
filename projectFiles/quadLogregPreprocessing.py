@@ -11,7 +11,7 @@ def quad_logreg_calculate_best_combo(dataset, labels, priors, folds):
         result = logreg_pca_k_fold_crossvalidation(DTR, labels, priors, folds, quadratic=True)
 
         for x in result.items():
-            results[(type, x[0])] = (x[1][1], x[1][2])
+            results[(type, x[0])] = (x[1][1], x[1][2], x[1][3])
     
     return sorted(results.items(), key=lambda x: x[1][0][0])
 
