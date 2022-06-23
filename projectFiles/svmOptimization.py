@@ -7,8 +7,8 @@ from utilityML.Functions.genpurpose import load
 # a different dataset (if 3 norm, 3 norm + 1 raw)
 
 # values have been copied from results/*_data_pca.txt
-best_combo_svm_linear = [("norm", 9), ("norm", 10), ("norm", "no pca"), ("raw", 9)]
-best_combo_svm_poly = [("norm", 11), ("norm", "no pca"), ("norm", 10), ("raw", 7)]
+best_combo_svm_linear = [("norm", 9), ("norm", 11), ("norm", 10), ("raw", 11)]
+best_combo_svm_poly = [("norm", 11), ("norm", 10), ("norm", 9), ("raw", "no pca")]
 best_combo_svm_rbf = [("norm", "no pca"), ("norm", 11), ("norm", 10), ("raw", "no pca")]
 
 def calculate_svm_linear_paramaters(dataset, labels, priors, folds):

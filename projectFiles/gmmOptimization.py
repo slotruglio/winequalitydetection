@@ -7,7 +7,7 @@ from utilityML.Functions.genpurpose import load
 # a different dataset (if 3 norm, 3 norm + 1 raw)
 
 # values have been copied from results/*_data_pca.txt
-best_combo_gmm = [("raw", 9), ("norm", 11), ("raw", "no pca"), ("raw", 10)]
+best_combo_gmm = [("norm", 11), ("raw", 10), ("raw", 11), ("raw", 9)]
 
 
 def calculate_gmm_parameters(dataset, labels, priors, folds):

@@ -1,5 +1,6 @@
 import numpy
 
+from utilityML.Functions.calibration import calibration
 from utilityML.Functions.normalization import normalize
 from utilityML.Functions.crossvalid import fold_data
 from utilityML.Functions.crossvalid import svm_linear_pca_k_cross_valid, svm_poly_pca_k_cross_valid, svm_rbf_pca_k_cross_valid
@@ -57,7 +58,16 @@ def svm_calculate_best_combo_ds_and_pca(svm_type, svm_pca_function, dataset, lab
         #compute norm dcf
         normDcf = compute_normalized_dcf_binary(confusion_matrix, priors[1], 1, 1)
 
-        results[(type, "no pca")] = (mindcf, normDcf)
+        llrs_array = numpy.array(no_pca_score)
+        labels_array = numpy.array(labels)
+        calibrated_scores, calibrated_labels = calibration(llrs_array, labels_array, priors[1])
+
+        #compute the dcf
+        confusion_matrix = compute_confusion_matrix_binary(numpy.array(calibrated_labels), numpy.array(calibrated_scores), priors[1], 1, 1)
+        #compute norm dcf
+        calibratedDcf = compute_normalized_dcf_binary(confusion_matrix, priors[1], 1, 1)
+
+        results[(type, "no pca")] = (mindcf, normDcf, calibratedDcf)
 
         print("no pca calculated")
         
