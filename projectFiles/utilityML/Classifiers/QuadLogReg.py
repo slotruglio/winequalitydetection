@@ -3,7 +3,7 @@ import numpy
 from scipy import optimize
 import sklearn
 from ..Functions.genpurpose import mcol
-from ..Functions.bayes import compute_confusion_matrix_binary, compute_normalized_dcf_binary
+from ..Functions.bayes import compute_confusion_matrix_binary, compute_min_dcf, compute_normalized_dcf_binary
 
 #QUADRATIC BINARY LOGISTIC REGRESSION
 class QuadLogReg:
@@ -58,7 +58,7 @@ class QuadLogReg:
 		self.estimated_w = model_parameters[0][0:-1]
 		self.estimated_b = model_parameters[0][-1]
 
-	def logreg_test(self, prior):
+	def logreg_test(self):
 		
 		self.S = numpy.dot(self.estimated_w.T, self.phi_DTE) + self.estimated_b 
 
@@ -68,11 +68,13 @@ class QuadLogReg:
 		self.accuracy = (self.predicted_labels == self.LTE).sum() / len(self.LTE)
 		self.error = 1 - self.accuracy
 
-		confusion_matrix = compute_confusion_matrix_binary(self.LTE, self.S, prior,1,1)
-		self.dcf = compute_normalized_dcf_binary(confusion_matrix, prior, 1, 1)
 
-
-
+	def compute_dcf(self, prior, threshold = None):
+		confusion_matrix = compute_confusion_matrix_binary(self.LTE, self.S, prior,1,1, threshold)
+		return compute_normalized_dcf_binary(confusion_matrix, prior, 1, 1)
+	
+	def compute_min_dcf(self, prior):
+		return compute_min_dcf(self.LTE, self.S, prior, 1, 1)
 
 
     

@@ -68,7 +68,7 @@ def gaussian_pca_k_fold_crossvalidation(classifier, DTR, LTR, priors, k):
 
 		llrs_array = numpy.array(llrs)
 		labels_array = numpy.array(labels)
-		calibrated_scores, calibrated_labels = calibration(llrs_array, labels_array, priors[1])
+		calibrated_scores, calibrated_labels = calibration(llrs_array, labels_array)
 
 		#compute the dcf
 		confusion_matrix = compute_confusion_matrix_binary(numpy.array(calibrated_labels), numpy.array(calibrated_scores), priors[1], 1, 1)
@@ -126,7 +126,7 @@ def logreg_pca_k_fold_crossvalidation(DTR, LTR, priors, k, quadratic = False):
 				else:
 					model = LogReg(reduced_cv_dtr, cv_ltr, reduced_cv_dte, cv_lte, l)
 				model.estimate_model_parameters()
-				model.logreg_test(priors[1])
+				model.logreg_test()
 
 				accuracies.append(model.accuracy)
 
@@ -144,7 +144,7 @@ def logreg_pca_k_fold_crossvalidation(DTR, LTR, priors, k, quadratic = False):
 
 			llrs_array = numpy.array(scores)
 			labels_array = numpy.array(labels)
-			calibrated_scores, calibrated_labels = calibration(llrs_array, labels_array, priors[1])
+			calibrated_scores, calibrated_labels = calibration(llrs_array, labels_array)
 
 			#compute the dcf
 			confusion_matrix = compute_confusion_matrix_binary(numpy.array(calibrated_labels), numpy.array(calibrated_scores), priors[1], 1, 1)
@@ -246,7 +246,7 @@ def svm_linear_pca_k_cross_valid(DTR, LTR, priors, folds, K=1):
 
 		llrs_array = numpy.array(score)
 		labels_array = numpy.array(labels)
-		calibrated_scores, calibrated_labels = calibration(llrs_array, labels_array, priors[1])
+		calibrated_scores, calibrated_labels = calibration(llrs_array, labels_array)
 
 		#compute the dcf
 		confusion_matrix = compute_confusion_matrix_binary(numpy.array(calibrated_labels), numpy.array(calibrated_scores), priors[1], 1, 1)
@@ -306,7 +306,7 @@ def svm_linear_k_cross_valid_C(DTR, LTR, folds, C_array, priors, K=1, pcaVal=-1)
 
 		llrs_array = numpy.array(score)
 		labels_array = numpy.array(labels)
-		calibrated_scores, calibrated_labels = calibration(llrs_array, labels_array, priors[1])
+		calibrated_scores, calibrated_labels = calibration(llrs_array, labels_array)
 
 		#compute the dcf
 		confusion_matrix = compute_confusion_matrix_binary(numpy.array(calibrated_labels), numpy.array(calibrated_scores), priors[1], 1, 1)
@@ -369,7 +369,7 @@ def svm_poly_pca_k_cross_valid(DTR, LTR, priors, folds):
 
 		llrs_array = numpy.array(score)
 		labels_array = numpy.array(labels)
-		calibrated_scores, calibrated_labels = calibration(llrs_array, labels_array, priors[1])
+		calibrated_scores, calibrated_labels = calibration(llrs_array, labels_array)
 
 		#compute the dcf
 		confusion_matrix = compute_confusion_matrix_binary(numpy.array(calibrated_labels), numpy.array(calibrated_scores), priors[1], 1, 1)
@@ -431,7 +431,7 @@ def svm_poly_k_cross_valid(DTR, LTR, folds, C_array, costant_array, priors, K_ar
 
 				llrs_array = numpy.array(score)
 				labels_array = numpy.array(labels)
-				calibrated_scores, calibrated_labels = calibration(llrs_array, labels_array, priors[1])
+				calibrated_scores, calibrated_labels = calibration(llrs_array, labels_array)
 
 				#compute the dcf
 				confusion_matrix = compute_confusion_matrix_binary(numpy.array(calibrated_labels), numpy.array(calibrated_scores), priors[1], 1, 1)
@@ -492,7 +492,7 @@ def svm_rbf_pca_k_cross_valid(DTR, LTR, priors, folds):
 
 		llrs_array = numpy.array(score)
 		labels_array = numpy.array(labels)
-		calibrated_scores, calibrated_labels = calibration(llrs_array, labels_array, priors[1])
+		calibrated_scores, calibrated_labels = calibration(llrs_array, labels_array)
 
 		#compute the dcf
 		confusion_matrix = compute_confusion_matrix_binary(numpy.array(calibrated_labels), numpy.array(calibrated_scores), priors[1], 1, 1)
@@ -554,7 +554,7 @@ def svm_RBF_k_cross_valid(DTR, LTR, folds, C_array, gamma_array, priors, K_array
 
 				llrs_array = numpy.array(score)
 				labels_array = numpy.array(labels)
-				calibrated_scores, calibrated_labels = calibration(llrs_array, labels_array, priors[1])
+				calibrated_scores, calibrated_labels = calibration(llrs_array, labels_array)
 
 				#compute the dcf
 				confusion_matrix = compute_confusion_matrix_binary(numpy.array(calibrated_labels), numpy.array(calibrated_scores), priors[1], 1, 1)
@@ -617,7 +617,7 @@ def gmm_pca_k_cross_valid(DTR, LTR, priors, folds):
 
 		llrs_array = numpy.array(score)
 		labels_array = numpy.array(labels)
-		calibrated_scores, calibrated_labels = calibration(llrs_array, labels_array, priors[1])
+		calibrated_scores, calibrated_labels = calibration(llrs_array, labels_array)
 
 		#compute the dcf
 		confusion_matrix = compute_confusion_matrix_binary(numpy.array(calibrated_labels), numpy.array(calibrated_scores), priors[1], 1, 1)
@@ -674,7 +674,7 @@ def gmm_k_fold_cross_valid_components(DTR, LTR, folds, priors, alpha, psi, type=
 
 		llrs_array = numpy.array(llrs)
 		labels_array = numpy.array(labels)
-		calibrated_scores, calibrated_labels = calibration(llrs_array, labels_array, priors[1])
+		calibrated_scores, calibrated_labels = calibration(llrs_array, labels_array)
 
 		#compute the dcf
 		confusion_matrix = compute_confusion_matrix_binary(numpy.array(calibrated_labels), numpy.array(calibrated_scores), priors[1], 1, 1)
