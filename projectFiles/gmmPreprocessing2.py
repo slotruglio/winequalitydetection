@@ -21,12 +21,12 @@ def calculate_gmm_parameters(dataset, labels, priors, folds):
             for type in ["full", "diag", "tied_full", "tied_diag"]:
                 result = gmm_k_fold_cross_valid_components(DTR, labels, folds, priors, alpha=0.1, psi=0.01, type=type, pcaVal=-1)
                 for x in result.items():
-                    results[(dsType, pca, type, x[0])] = (x[1][1],x[1][2], x[1][3])
+                    results[(dsType, pca, type, x[0])] = (x[1][1],x[1][2])
         else:
             for type in ["full", "diag", "tied_full", "tied_diag"]:
                 result = gmm_k_fold_cross_valid_components(DTR, labels, folds, priors, alpha=0.1, psi=0.01, type=type, pcaVal=pca)
                 for x in result.items():
-                    results[(dsType, pca, type, x[0])] = (x[1][1],x[1][2], x[1][3])
+                    results[(dsType, pca, type, x[0])] = (x[1][1],x[1][2])
         print("done {}, {}".format(dsType, pca))
 
     # sort by mindcf
@@ -46,7 +46,7 @@ if __name__ == "__main__":
 
 	gmm = calculate_gmm_parameters(DTR, LTR, [prior_0, prior_1], 10)
 
-	with open("results/gmm_optimization.txt", "w") as f:
+	with open("results/gmm_preprocessing2.txt", "w") as f:
 		for x in gmm:
 			f.write(str(x)[1:-1] + "\n")
 

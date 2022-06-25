@@ -45,22 +45,13 @@ def gmm_calculate_best_combo_ds_and_pca(dataset, labels, priors, folds):
         #compute norm dcf
         normDcf = compute_normalized_dcf_binary(confusion_matrix, priors[1], 1, 1)
         
-        llrs_array = numpy.array(no_pca_score)
-        labels_array = numpy.array(labels)
-        calibrated_scores, calibrated_labels = calibration(llrs_array, labels_array)
-
-        #compute the dcf
-        confusion_matrix = compute_confusion_matrix_binary(numpy.array(calibrated_labels), numpy.array(calibrated_scores), priors[1], 1, 1)
-        #compute norm dcf
-        calibratedDcf = compute_normalized_dcf_binary(confusion_matrix, priors[1], 1, 1)
-
-        results[(type, "no pca")] = (mindcf, normDcf, calibratedDcf)
+        results[(type, "no pca")] = (mindcf, normDcf)
 
         print("no pca calculated")
 
         pca_result = gmm_pca_k_cross_valid(DTR, labels, priors, folds)
         for x in pca_result.items():
-            results[(type, x[0])] = (x[1][1],x[1][2], x[1][3])
+            results[(type, x[0])] = (x[1][1],x[1][2])
 
     return sorted(results.items(), key=lambda x: x[1][0][0])
 
