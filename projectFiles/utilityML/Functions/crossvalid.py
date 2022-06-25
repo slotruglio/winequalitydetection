@@ -1,6 +1,6 @@
 import numpy
 from utilityML.Functions.bayes import compute_min_dcf, compute_confusion_matrix_binary, compute_normalized_dcf_binary, compute_dcf_binary
-from utilityML.Functions.calibration import calibration
+#from utilityML.Functions.calibration import calibration
 from utilityML.Functions.dimred import *
 from utilityML.Functions.genpurpose import split_db_2to1
 from utilityML.Classifiers.SVM import SVM_linear, SVM_poly, SVM_RBF
@@ -133,21 +133,7 @@ def logreg_pca_k_fold_crossvalidation(DTR, LTR, priors, k, quadratic = False):
 			#compute norm dcf
 			normDcf = compute_normalized_dcf_binary(confusion_matrix, priors[1], 1, 1)
 
-			if(quadratic):
-				global_accuracies[(m,l)] = (numpy.mean(accuracies), mindcf, normDcf)
-			else:
-				llrs_array = numpy.array(scores)
-				labels_array = numpy.array(labels)
-				calibrated_scores, calibrated_labels, w, b = calibration(llrs_array, labels_array)
-
-				#compute the dcf
-				confusion_matrix = compute_confusion_matrix_binary(numpy.array(calibrated_labels), numpy.array(calibrated_scores), priors[1], 1, 1)
-				#compute norm dcf
-				calibratedDcf = compute_normalized_dcf_binary(confusion_matrix, priors[1], 1, 1)
-
-
-				#append the mean of accuracies to the global_accuracies dictionary, with m as key
-				global_accuracies[(m,l)] = (numpy.mean(accuracies), mindcf, normDcf, calibratedDcf, w, b)
+			global_accuracies[(m,l)] = (numpy.mean(accuracies), mindcf, normDcf)
 	
 	return global_accuracies
 #endregion
@@ -289,18 +275,9 @@ def svm_linear_k_cross_valid_C(DTR, LTR, folds, C_array, priors, K=1, pcaVal=-1)
 		#compute norm dcf
 		normDcf = compute_normalized_dcf_binary(confusion_matrix, priors[1], 1, 1)
 
-		llrs_array = numpy.array(score)
-		labels_array = numpy.array(labels)
-		calibrated_scores, calibrated_labels, w, b = calibration(llrs_array, labels_array)
-
-		#compute the dcf
-		confusion_matrix = compute_confusion_matrix_binary(numpy.array(calibrated_labels), numpy.array(calibrated_scores), priors[1], 1, 1)
-		#compute norm dcf
-		calibratedDcf = compute_normalized_dcf_binary(confusion_matrix, priors[1], 1, 1)
-
 
 		#append the mean of accuracies to the global_accuracies dictionary, with C as key
-		global_accuracies[C] = (numpy.mean(accuracies), mindcf, normDcf, calibratedDcf, w, b)
+		global_accuracies[C] = (numpy.mean(accuracies), mindcf, normDcf)
 
 	return global_accuracies
 	
