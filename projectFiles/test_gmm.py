@@ -41,8 +41,6 @@ optimal_psi = 0.01
 reduced_dtr, P = pca(DTR, optimal_m)
 reduced_dte = numpy.dot(P.T, DTE)
 
-print(int(numpy.log2(optimal_comp)))
-
 gmm = GMM(reduced_dtr, LTR, reduced_dte, LTE, [prior_0, prior_1], iterations=int(numpy.log2(optimal_comp)), alpha=optimal_alpha, psi=optimal_psi, typeOfGmm=optimal_cov)
 gmm.train()
 gmm.test()
@@ -55,10 +53,11 @@ xvalthreshold_dcf = gmm.compute_dcf(-0.09985079274315645)
 min_dcf = gmm.compute_min_dcf()[0]
 
 
-
-
 Printer.print_title("GMM data")
 Printer.print_line(f"DCF: {empiric_dcf}")
 Printer.print_line(f"DCF xval: {xvalthreshold_dcf}")
 Printer.print_line(f"DCF min: {min_dcf}")
 Printer.print_empty_lines(1)
+
+
+bayes_error_plots("DCF For GMM", gmm.LTE, gmm.llrs, validation_threshold = -0.09985079274315645)

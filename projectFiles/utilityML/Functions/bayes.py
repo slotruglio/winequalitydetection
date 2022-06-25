@@ -123,7 +123,8 @@ def bayes_error_plots(plot_name, labels, scores, validation_threshold = None, ca
 	
 	plt.figure()
 
-	""" if(calibrated == False): """
+	
+	plt.xlabel("t")
 	plt.plot(effPriorLogOdds, DCF_array, label="Empiric DCF", color='r') 
 	plt.plot(effPriorLogOdds, DCF_min_array, label="min DCF", color='b')
 	if(validation_threshold != None):
@@ -131,12 +132,6 @@ def bayes_error_plots(plot_name, labels, scores, validation_threshold = None, ca
 	
 	if(calibrated_scores is not None):
 		plt.plot(effPriorLogOdds, DCF_calibrated, label="Calibrated DCF", color='g')
-
-	""" else:
-		plt.plot(effPriorLogOdds, DCF_array, label="Empiric Calibrated DCF", color='r') 
-		plt.plot(effPriorLogOdds, DCF_min_array, label="min Calibrated DCF", color='b')
-		if(validation_threshold != None):
-			plt.plot(effPriorLogOdds, DCF_validation, label="XVal Threshold Calibrated DCF", color='y') """
 
 	
 

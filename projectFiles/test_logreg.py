@@ -49,8 +49,8 @@ xvalthreshold_dcf = log_reg.compute_dcf(prior_1, -0.7029942351576266)
 min_dcf = log_reg.compute_min_dcf(prior_1)[0]
 
 #DCF CALIBRATO
-w = numpy.array([1.17207572])
-b = 0.7965104267331936
+w = numpy.array([1.10892441])
+b = 0.7514991780163697
 
 calibrated_scores = w * log_reg.S + b
 
@@ -69,7 +69,6 @@ Printer.print_line(f"DCF: {empiric_dcf}")
 Printer.print_line(f"DCF xval: {xvalthreshold_dcf}")
 Printer.print_line(f"DCF min: {min_dcf}")
 Printer.print_line(f"DCF calibrated: {calibrated_dcf}")
-Printer.print_line(f"DCF calibrated xval: {calibrated_xvalthreshold_dcf}")
 Printer.print_empty_lines(1)
 
 

@@ -30,7 +30,7 @@ prior_1 = 0.5
 
 #SVM MODELS
 
-optimal_m = 11
+optimal_m = 10
 optimal_K = 1
 optimal_C = 1
 reduced_normalized_dtr, P = pca(normalized_dtr, optimal_m)
@@ -43,26 +43,36 @@ svm_l.test()
 #DCF EMPIRICO
 empiric_dcf = svm_l.compute_dcf()
 #DCF XVAL THRESHOLD
-xvalthreshold_dcf = svm_l.compute_dcf(-0.3716369466883391)
+xvalthreshold_dcf = svm_l.compute_dcf(-0.5213549363675212)
 #DCF MINIMO
 min_dcf = svm_l.compute_min_dcf()[0]
 
 #DCF CALIBRATO
-w = numpy.array([1.37358556])
-b = 0.5886980606735804
+w = numpy.array([1.28695066])
+b = 0.5594431552202703
 calibrated_scores = w * svm_l.score[0] + b
 confusion_matrix = compute_confusion_matrix_binary(svm_l.LTE, calibrated_scores, prior_1, 1, 1)
+
 calibrated_dcf = compute_normalized_dcf_binary(confusion_matrix, prior_1, 1, 1)
 
 #DCF CALIBRATO MIN
 calibrated_min_dcf = compute_min_dcf(svm_l.LTE,calibrated_scores, prior_1, 1, 1)[0]
 
-bayes_error_plots("DCF for Linear SVM", svm_l.LTE, svm_l.score[0], validation_threshold = -0.3716369466883391, calibrated_scores = calibrated_scores)
+bayes_error_plots("DCF for Linear SVM", svm_l.LTE, svm_l.score[0], validation_threshold = -0.5213549363675212, calibrated_scores = calibrated_scores)
+
+
+Printer.print_title("SVM linear data")
+Printer.print_line(f"DCF: {empiric_dcf}")
+Printer.print_line(f"DCF xval: {xvalthreshold_dcf}")
+Printer.print_line(f"DCF min: {min_dcf}")
+Printer.print_line(f"DCF calibrated: {calibrated_dcf}")
+Printer.print_empty_lines(1)
 
 
 #------------------------------------------------
 
-""" optimal_m = 10
+
+optimal_m = 10
 optimal_K = 1
 optimal_C = 1
 optimal_c = 1
@@ -82,6 +92,12 @@ xvalthreshold_dcf = svm_p.compute_dcf(-0.30825297694737075)
 min_dcf = svm_p.compute_min_dcf()[0]
 
 bayes_error_plots("DCF for Poly SVM", svm_p.LTE, svm_p.score, validation_threshold = -0.30825297694737075)
+
+Printer.print_title("SVM polynomial data")
+Printer.print_line(f"DCF: {empiric_dcf}")
+Printer.print_line(f"DCF xval: {xvalthreshold_dcf}")
+Printer.print_line(f"DCF min: {min_dcf}")
+Printer.print_empty_lines(1)
 
 #------------------------------------------------
 
@@ -103,19 +119,9 @@ xvalthreshold_dcf = svm_rbf.compute_dcf(6.985426439970719e-07)
 #DCF MINIMO
 min_dcf = svm_rbf.compute_min_dcf()[0]
 
-bayes_error_plots("DCF for RBF SVM", svm_rbf.LTE, svm_rbf.score, validation_threshold = 6.985426439970719e-07) """
+bayes_error_plots("DCF for RBF SVM", svm_rbf.LTE, svm_rbf.score, validation_threshold = 6.985426439970719e-07)
 
 
-Printer.print_title("SVM linear data")
-Printer.print_line(f"DCF calibrated: {calibrated_dcf}")
-Printer.print_line(f"DCF calibrated min: {calibrated_min_dcf}")
-Printer.print_empty_lines(1)
-
-Printer.print_title("SVM polynomial data")
-Printer.print_line(f"DCF: {empiric_dcf}")
-Printer.print_line(f"DCF xval: {xvalthreshold_dcf}")
-Printer.print_line(f"DCF min: {min_dcf}")
-Printer.print_empty_lines(1)
 
 Printer.print_title("SVM RBF data")
 Printer.print_line(f"DCF: {empiric_dcf}")
