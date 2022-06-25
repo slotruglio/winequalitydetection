@@ -22,11 +22,11 @@ def calculate_svm_linear_paramaters(dataset, labels, priors, folds):
         if pca == "no pca":
             result = svm_linear_k_cross_valid_C(DTR, labels, folds, [0.1, 1, 10], priors, pcaVal=-1)
             for x in result.items():
-                results[(dsType, pca, x[0])] = (x[1][1],x[1][2],x[1][3])
+                results[(dsType, pca, x[0])] = (x[1][1],x[1][2],x[1][3],x[1][4],x[1][5])
         else:
             result = svm_linear_k_cross_valid_C(DTR, labels, folds, [0.1, 1, 10], priors, pcaVal=pca)
             for x in result.items():
-                results[(dsType, pca, x[0])] = (x[1][1],x[1][2],x[1][3])
+                results[(dsType, pca, x[0])] = (x[1][1],x[1][2],x[1][3],x[1][4],x[1][5])
         print("done {}, {}".format(dsType, pca))
 
     # sort by mindcf
@@ -97,7 +97,7 @@ if __name__ == "__main__":
 
 	print("done linear")
 
-	svm_poly = calculate_svm_poly_paramaters(DTR, LTR, [prior_0, prior_1], 10)
+	""" svm_poly = calculate_svm_poly_paramaters(DTR, LTR, [prior_0, prior_1], 10)
 
 	with open("results/svm_poly_optimization.txt", "w") as f:
 		for x in svm_poly:
@@ -111,7 +111,7 @@ if __name__ == "__main__":
 		for x in svm_rbf:
 			f.write(str(x)[1:-1] + "\n")
 
-	print("done rbf")
+	print("done rbf") """
 
 
 
