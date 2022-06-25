@@ -30,9 +30,9 @@ prior_1 = 0.5
 
 #SVM MODELS
 
-optimal_m = 10
+optimal_m = 11
 optimal_K = 1
-optimal_C = 0.1
+optimal_C = 1
 reduced_normalized_dtr, P = pca(normalized_dtr, optimal_m)
 reduced_normalized_dte = numpy.dot(P.T, normalized_dte)
 
@@ -40,18 +40,29 @@ svm_l = SVM_linear(reduced_normalized_dtr, LTR, reduced_normalized_dte, LTE, [pr
 svm_l.train()
 svm_l.test()
 
+#DCF EMPIRICO
+empiric_dcf = svm_l.compute_dcf()
+#DCF XVAL THRESHOLD
+xvalthreshold_dcf = svm_l.compute_dcf(-0.3716369466883391)
+#DCF MINIMO
+min_dcf = svm_l.compute_min_dcf()[0]
 
 #DCF CALIBRATO
-calibrated_scores, calibrated_labels = calibration(svm_l.score[0], svm_l.LTE)
-confusion_matrix = compute_confusion_matrix_binary(numpy.array(calibrated_labels), numpy.array(calibrated_scores), prior_1, 1, 1)
+w = numpy.array([1.37358556])
+b = 0.5886980606735804
+calibrated_scores = w * svm_l.score[0] + b
+confusion_matrix = compute_confusion_matrix_binary(svm_l.LTE, calibrated_scores, prior_1, 1, 1)
 calibrated_dcf = compute_normalized_dcf_binary(confusion_matrix, prior_1, 1, 1)
 
 #DCF CALIBRATO MIN
-calibrated_min_dcf = compute_min_dcf(calibrated_labels,calibrated_scores, prior_1, 1, 1)[0]
+calibrated_min_dcf = compute_min_dcf(svm_l.LTE,calibrated_scores, prior_1, 1, 1)[0]
+
+bayes_error_plots("DCF for Linear SVM", svm_l.LTE, svm_l.score[0], validation_threshold = -0.3716369466883391, calibrated_scores = calibrated_scores)
+
 
 #------------------------------------------------
 
-optimal_m = 10
+""" optimal_m = 10
 optimal_K = 1
 optimal_C = 1
 optimal_c = 1
@@ -69,6 +80,8 @@ empiric_dcf = svm_p.compute_dcf()
 xvalthreshold_dcf = svm_p.compute_dcf(-0.30825297694737075)
 #DCF MINIMO
 min_dcf = svm_p.compute_min_dcf()[0]
+
+bayes_error_plots("DCF for Poly SVM", svm_p.LTE, svm_p.score, validation_threshold = -0.30825297694737075)
 
 #------------------------------------------------
 
@@ -90,6 +103,7 @@ xvalthreshold_dcf = svm_rbf.compute_dcf(6.985426439970719e-07)
 #DCF MINIMO
 min_dcf = svm_rbf.compute_min_dcf()[0]
 
+bayes_error_plots("DCF for RBF SVM", svm_rbf.LTE, svm_rbf.score, validation_threshold = 6.985426439970719e-07) """
 
 
 Printer.print_title("SVM linear data")

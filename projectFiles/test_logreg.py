@@ -44,13 +44,13 @@ log_reg.logreg_test()
 #DCF EMPIRICO
 empiric_dcf = log_reg.compute_dcf(prior_1)
 #DCF XVAL THRESHOLD
-xvalthreshold_dcf = log_reg.compute_dcf(prior_1, -0.5865054923862975)
+xvalthreshold_dcf = log_reg.compute_dcf(prior_1, -0.7029942351576266)
 #DCF MINIMO
 min_dcf = log_reg.compute_min_dcf(prior_1)[0]
 
 #DCF CALIBRATO
-w = numpy.array([1.10404366])
-b = 0.12502534381771793
+w = numpy.array([1.17207572])
+b = 0.7965104267331936
 
 calibrated_scores = w * log_reg.S + b
 
@@ -58,7 +58,7 @@ confusion_matrix = compute_confusion_matrix_binary(log_reg.LTE, calibrated_score
 calibrated_dcf = compute_normalized_dcf_binary(confusion_matrix, prior_1, 1, 1)
 
 #DCF CALIBRATO CON XVAL THRESHOLD
-confusion_matrix = compute_confusion_matrix_binary(log_reg.LTE, calibrated_scores, prior_1, 1, 1,-0.5865054923862975)
+confusion_matrix = compute_confusion_matrix_binary(log_reg.LTE, calibrated_scores, prior_1, 1, 1,-0.7029942351576266)
 calibrated_xvalthreshold_dcf = compute_normalized_dcf_binary(confusion_matrix, prior_1, 1, 1)
 
 
