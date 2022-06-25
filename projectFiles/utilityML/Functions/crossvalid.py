@@ -144,7 +144,7 @@ def logreg_pca_k_fold_crossvalidation(DTR, LTR, priors, k, quadratic = False):
 
 			llrs_array = numpy.array(scores)
 			labels_array = numpy.array(labels)
-			calibrated_scores, calibrated_labels = calibration(llrs_array, labels_array)
+			calibrated_scores, calibrated_labels, w, b = calibration(llrs_array, labels_array)
 
 			#compute the dcf
 			confusion_matrix = compute_confusion_matrix_binary(numpy.array(calibrated_labels), numpy.array(calibrated_scores), priors[1], 1, 1)
@@ -153,7 +153,7 @@ def logreg_pca_k_fold_crossvalidation(DTR, LTR, priors, k, quadratic = False):
 
 
 			#append the mean of accuracies to the global_accuracies dictionary, with m as key
-			global_accuracies[(m,l)] = (numpy.mean(accuracies), mindcf, normDcf, calibratedDcf)
+			global_accuracies[(m,l)] = (numpy.mean(accuracies), mindcf, normDcf, calibratedDcf, w, b)
 	
 	return global_accuracies
 #endregion
@@ -246,7 +246,7 @@ def svm_linear_pca_k_cross_valid(DTR, LTR, priors, folds, K=1):
 
 		llrs_array = numpy.array(score)
 		labels_array = numpy.array(labels)
-		calibrated_scores, calibrated_labels = calibration(llrs_array, labels_array)
+		calibrated_scores, calibrated_labels, w, b = calibration(llrs_array, labels_array)
 
 		#compute the dcf
 		confusion_matrix = compute_confusion_matrix_binary(numpy.array(calibrated_labels), numpy.array(calibrated_scores), priors[1], 1, 1)
@@ -254,7 +254,7 @@ def svm_linear_pca_k_cross_valid(DTR, LTR, priors, folds, K=1):
 		calibratedDcf = compute_normalized_dcf_binary(confusion_matrix, priors[1], 1, 1)
 		
 		#append the mean of accuracies to the global_accuracies dictionary, with C as key
-		global_accuracies[m] = (numpy.mean(accuracies), mindcf, normDcf, calibratedDcf)
+		global_accuracies[m] = (numpy.mean(accuracies), mindcf, normDcf, calibratedDcf, w, b)
 
 	return global_accuracies
 

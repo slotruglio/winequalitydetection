@@ -18,4 +18,4 @@ def calibration(scores, labels):
 	logreg.logreg_test()
 
 
-	return numpy.array(logreg.S), labels_30
+	return numpy.array(logreg.S), labels_30, logreg.estimated_w, logreg.estimated_b

@@ -74,7 +74,7 @@ def generate_roc_curve(labels, scores, pi, Cfn, Cfp):
 
 	return FPR_array, TPR_array
 
-def bayes_error_plots(labels, scores, empiric_threshold, plot_name):
+def bayes_error_plots(plot_name, labels, scores, validation_threshold = None, calibrated_scores = None):
 
 	#IPOTESI DI BASE
 	#Una qualsiasi applicazione (pi, Cfn, Cfp), è equivalente
@@ -92,15 +92,27 @@ def bayes_error_plots(labels, scores, empiric_threshold, plot_name):
 
 	DCF_array = []
 	DCF_min_array = []
-	DCF_empiric = []
+
+	if(validation_threshold != None):
+		DCF_validation = []
+	
+	if(calibrated_scores is not None):
+		DCF_calibrated = []
 
 	#2) Per ogni valore di p, calcolo pi_tilde (usando la formula inversa di p)
 	#3) Calcolare DCF attuale e minima (entrambe normalizzate), considerando pi_tilde
 	for p in effPriorLogOdds:
 		pi_tilde = 1 / (1 + numpy.exp(-p))
+
+		#EMPIRIC DCF
 		DCF_array.append(compute_normalized_dcf_binary(compute_confusion_matrix_binary(labels, scores, pi_tilde, 1, 1), pi_tilde, 1, 1))
+		#MIN DCF
 		DCF_min_array.append(compute_min_dcf(labels, scores, pi_tilde, 1, 1)[0])
-		DCF_empiric.append(compute_normalized_dcf_binary(compute_confusion_matrix_binary(labels, scores, pi_tilde, 1, 1, t=empiric_threshold), pi_tilde, 1, 1))
+		#DCF USING THE VALIDATION THRESHOLD
+		if(validation_threshold != None):
+			DCF_validation.append(compute_normalized_dcf_binary(compute_confusion_matrix_binary(labels, scores, pi_tilde, 1, 1, t=validation_threshold), pi_tilde, 1, 1))
+		if(calibrated_scores is not None):
+			DCF_calibrated.append(compute_normalized_dcf_binary(compute_confusion_matrix_binary(labels, calibrated_scores, pi_tilde, 1, 1), pi_tilde, 1, 1))
 
 	#^^^^^ NOTA: nel metodo compute_min_dcf, consideriamo già le DCF normalizzate.
 
@@ -108,15 +120,32 @@ def bayes_error_plots(labels, scores, empiric_threshold, plot_name):
 	#5) PLOT 1: la x è p, la y è la corrispondente DCF normalizzata
 	#6) PLOT 2: la x è sempre la p, la y è la corrispondente DCF normalizzata minima
 
+	
+	plt.figure()
+
+	""" if(calibrated == False): """
 	plt.plot(effPriorLogOdds, DCF_array, label="Empiric DCF", color='r') 
 	plt.plot(effPriorLogOdds, DCF_min_array, label="min DCF", color='b')
-	plt.plot(effPriorLogOdds, DCF_empiric, label="XVal Threshold DCF", color='y') 
-	plt.ylim([0, 1.1])
-	plt.xlim([-3, 3])
+	if(validation_threshold != None):
+		plt.plot(effPriorLogOdds, DCF_validation, label="XVal Threshold DCF", color='y')
+	
+	if(calibrated_scores is not None):
+		plt.plot(effPriorLogOdds, DCF_calibrated, label="Calibrated DCF", color='g')
+
+	""" else:
+		plt.plot(effPriorLogOdds, DCF_array, label="Empiric Calibrated DCF", color='r') 
+		plt.plot(effPriorLogOdds, DCF_min_array, label="min Calibrated DCF", color='b')
+		if(validation_threshold != None):
+			plt.plot(effPriorLogOdds, DCF_validation, label="XVal Threshold Calibrated DCF", color='y') """
+
+	
+
+	plt.ylim([0.2, 1.0])
+	plt.xlim([-2, 2])
 	plt.legend()
 	plt.title(plot_name)
 
-	plt.show()
+	plt.savefig('./img/bayes_error_plots/'+ plot_name)
 
 #region *** MULTICLASS CASE ***
 def compute_confusion_matrix(labels, cond_ll, pi_array, c_matrix):

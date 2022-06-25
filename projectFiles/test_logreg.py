@@ -49,19 +49,17 @@ xvalthreshold_dcf = log_reg.compute_dcf(prior_1, -0.5865054923862975)
 min_dcf = log_reg.compute_min_dcf(prior_1)[0]
 
 #DCF CALIBRATO
-calibrated_scores, calibrated_labels = calibration(log_reg.S, log_reg.LTE)
-confusion_matrix = compute_confusion_matrix_binary(numpy.array(calibrated_labels), numpy.array(calibrated_scores), prior_1, 1, 1)
+w = numpy.array([1.10404366])
+b = 0.12502534381771793
+
+calibrated_scores = w * log_reg.S + b
+
+confusion_matrix = compute_confusion_matrix_binary(log_reg.LTE, calibrated_scores, prior_1, 1, 1)
 calibrated_dcf = compute_normalized_dcf_binary(confusion_matrix, prior_1, 1, 1)
 
 #DCF CALIBRATO CON XVAL THRESHOLD
-confusion_matrix = compute_confusion_matrix_binary(numpy.array(calibrated_labels), numpy.array(calibrated_scores), prior_1, 1, 1,-0.5865054923862975)
+confusion_matrix = compute_confusion_matrix_binary(log_reg.LTE, calibrated_scores, prior_1, 1, 1,-0.5865054923862975)
 calibrated_xvalthreshold_dcf = compute_normalized_dcf_binary(confusion_matrix, prior_1, 1, 1)
-
-#DCF CALIBRATO MIN
-calibrated_min_dcf = compute_min_dcf(calibrated_labels,calibrated_scores, prior_1, 1, 1)[0]
-
-#Plottare: DCF empirico, DCF minimo, DCF validation, DCF calibrated (empirico + threshold)
-#bayes_error_plots("DCF error plots for LogReg", LTE, log_reg.S, -0.5865054923862975, calibrated_scores, calibrated_labels)
 
 
 
@@ -72,5 +70,8 @@ Printer.print_line(f"DCF xval: {xvalthreshold_dcf}")
 Printer.print_line(f"DCF min: {min_dcf}")
 Printer.print_line(f"DCF calibrated: {calibrated_dcf}")
 Printer.print_line(f"DCF calibrated xval: {calibrated_xvalthreshold_dcf}")
-Printer.print_line(f"DCF calibrated min: {calibrated_min_dcf}")
 Printer.print_empty_lines(1)
+
+
+bayes_error_plots("DCF for LogReg", log_reg.LTE, log_reg.S, validation_threshold = -0.5865054923862975, calibrated_scores = calibrated_scores)
+

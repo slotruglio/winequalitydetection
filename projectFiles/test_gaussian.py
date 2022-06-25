@@ -29,8 +29,8 @@ prior_1 = 0.5
 
 #GAUSSIAN MODELS - MVG (the others have been discared due to poor performance)
 optimal_m = 9
-reduced_dtr, P = pca(DTR, optimal_m)
-reduced_dte = numpy.dot(P.T, DTE)
+reduced_dtr, P = pca(normalized_dtr, optimal_m)
+reduced_dte = numpy.dot(P.T, normalized_dte)
 
 mvg = MVG(reduced_dtr, LTR, reduced_dte, LTE, [prior_0, prior_1])
 mvg.train()
@@ -46,3 +46,6 @@ Printer.print_line(f"Empiric DCF: {empiric_dcf}")
 Printer.print_line(f"X-validation Threshold DCF: {xvalthreshold_dcf}")
 Printer.print_line(f"Min DCF: {min_dcf}")
 Printer.print_empty_lines(1)
+
+
+bayes_error_plots("DCF For MVG", mvg.LTE, mvg.llrs, validation_threshold = 0.42050259957894554)

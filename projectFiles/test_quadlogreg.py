@@ -50,3 +50,6 @@ Printer.print_line(f"DCF: {empiric_dcf}")
 Printer.print_line(f"DCF xval: {xvalthreshold_dcf}")
 Printer.print_line(f"DCF min: {min_dcf}")
 Printer.print_empty_lines(1)
+
+
+bayes_error_plots("DCF for Quadratic LogReg", quad_log_reg.LTE, quad_log_reg.S, validation_threshold = -0.43632266055187996)
