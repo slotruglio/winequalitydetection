@@ -1,5 +1,5 @@
 import numpy
-from ..Classifiers.LogReg import LogReg
+from ..Classifiers.WeighLogReg import WeighLogReg
 
 #This method uses the previously computed scores as a dataset for a new logistic regression model
 #This will allow us to generate calibrated scores
@@ -11,7 +11,7 @@ def calibration(scores, labels):
 	labels_70 = labels[:int(len(labels)*0.7)]
 	labels_30 = labels[int(len(labels)*0.7):]
 
-	logreg = LogReg(numpy.array([scores_70]), labels_70, numpy.array([scores_30]), labels_30, 10**-3)
+	logreg = WeighLogReg(numpy.array([scores_70]), labels_70, numpy.array([scores_30]), labels_30, 10**-3)
 
 	logreg.estimate_model_parameters()
 
