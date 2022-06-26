@@ -56,4 +56,4 @@ with open("results/experimental/quadlogreg.txt", "w") as f:
     f.write(f"X-validation Threshold DCF: {xvalthreshold_dcf}\n")
     f.write(f"minDCF Threshold DCF: {min_dcf}\n")
 
-bayes_error_plots("DCF for Quadratic LogReg", quad_log_reg.LTE, quad_log_reg.S)
+bayes_error_plots("DCF for Quadratic LogReg", quad_log_reg.LTE, quad_log_reg.S, validation_threshold = -0.43632266055187996)

@@ -64,4 +64,4 @@ with open("results/experimental/gmm.txt", "w") as f:
     f.write(f"X-validation Threshold DCF: {xvalthreshold_dcf}\n")
     f.write(f"minDCF Threshold DCF: {min_dcf}\n")
 
-bayes_error_plots("DCF For GMM", gmm.LTE, gmm.llrs)
+bayes_error_plots("DCF For GMM", gmm.LTE, gmm.llrs, validation_threshold = -0.09985079274315645)
