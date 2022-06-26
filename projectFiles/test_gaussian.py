@@ -52,4 +52,4 @@ with open("results/experimental/mvg.txt", "w") as f:
     f.write(f"X-validation Threshold DCF: {xvalthreshold_dcf}\n")
     f.write(f"minDCF Threshold DCF: {min_dcf}\n")
 
-bayes_error_plots("DCF For MVG", mvg.LTE, mvg.llrs, validation_threshold = 0.42050259957894554)
+bayes_error_plots("DCF For MVG", mvg.LTE, mvg.llrs)

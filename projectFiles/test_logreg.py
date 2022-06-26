@@ -77,5 +77,5 @@ with open("results/experimental/logreg.txt", "w") as f:
     f.write(f"minDCF Threshold DCF: {min_dcf}\n")
     f.write(f"DCF calibrated: {calibrated_dcf}")
 
-bayes_error_plots("DCF for LogReg", log_reg.LTE, log_reg.S, validation_threshold = -0.5865054923862975, calibrated_scores = calibrated_scores)
+bayes_error_plots("DCF for LogReg", log_reg.LTE, log_reg.S, calibrated_scores = calibrated_scores)
 

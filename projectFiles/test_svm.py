@@ -64,7 +64,7 @@ with open("results/experimental/linearsvm.txt", "w") as f:
     f.write(f"minDCF Threshold DCF: {min_dcf}\n")
     f.write(f"DCF calibrated: {calibrated_dcf}")
 
-bayes_error_plots("DCF for Linear SVM", svm_l.LTE, svm_l.score[0], validation_threshold = -0.5213549363675212, calibrated_scores = calibrated_scores)
+bayes_error_plots("DCF for Linear SVM", svm_l.LTE, svm_l.score[0], calibrated_scores = calibrated_scores)
 
 
 Printer.print_title("SVM linear data")
@@ -97,7 +97,7 @@ xvalthreshold_dcf = svm_p.compute_dcf(-0.30825297694737075)
 #DCF MINIMO
 min_dcf = svm_p.compute_min_dcf()[0]
 
-bayes_error_plots("DCF for Poly SVM", svm_p.LTE, svm_p.score, validation_threshold = -0.30825297694737075)
+bayes_error_plots("DCF for Poly SVM", svm_p.LTE, svm_p.score)
 
 Printer.print_title("SVM polynomial data")
 Printer.print_line(f"DCF: {empiric_dcf}")
@@ -135,7 +135,7 @@ with open("results/experimental/rbfsvm.txt", "w") as f:
     f.write(f"X-validation Threshold DCF: {xvalthreshold_dcf}\n")
     f.write(f"minDCF Threshold DCF: {min_dcf}\n")
 
-bayes_error_plots("DCF for RBF SVM", svm_rbf.LTE, svm_rbf.score, validation_threshold = 6.985426439970719e-07)
+bayes_error_plots("DCF for RBF SVM", svm_rbf.LTE, svm_rbf.score)
 
 
 
