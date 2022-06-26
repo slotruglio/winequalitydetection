@@ -42,14 +42,13 @@ if __name__ == "__main__":
 	prior_0 = 0.5
 	prior_1 = 0.5
 
-	""" logreg = logreg_calculate_best_combo(DTR, LTR, [prior_0, prior_1], 10)
+	logreg = logreg_calculate_best_combo(DTR, LTR, [prior_0, prior_1], 10)
 
 	with open("results/logreg_results.txt", "w") as f:
 		for x in logreg:
 			f.write(str(x)[1:-1] + "\n")
-	 """
 	
-	
+	#most promising LR model 
 	best_pcas = 11
 	best_lambdas = 0.01
 	data_type = "Norm"

@@ -49,32 +49,6 @@ def plot_scatter(DP, L, title, save=False):
         save_plot('first_analysis/scatter_plots/scatter_%s.png' % (title))
     if not save: plt.show()
 
-def plot_density(save=False):
-    plt.figure()
-    XPlot = numpy.linspace(-8, 12, 1000)
-    m = numpy.ones((1, 1)) * 1.0
-    C = numpy.ones((1, 1)) * 2.0
-    plt.plot(XPlot.ravel(), numpy.exp(logpdf_GAU_ND(vrow(XPlot), m, C)))
-    plt.title('Gaussian')
-    if save:
-        save_plot('gaussian.png')
-    plt.show()
-
-
-def plot_hist_and_density(X1D, save=False):
-    plt.figure()
-    XPlot = numpy.linspace(-8, 12, 1000)
-    m = numpy.ones((1, 1)) * 1.0
-    C = numpy.ones((1, 1)) * 2.0
-    plt.plot(XPlot.ravel(), numpy.exp(logpdf_GAU_ND(vrow(XPlot), m, C)))
-    plt.hist(X1D.ravel(), bins=50, density=True)
-    m_ML = compute_mean(X1D)
-    plt.plot(XPlot.ravel(), numpy.exp(logpdf_GAU_ND(
-        vrow(XPlot), m_ML, compute_covariance(X1D, m_ML))))
-    if save:
-        save_plot('hist_and_density.png')
-    plt.show()
-
 
 def plot_ROC(FPR, TPR, save=False):
     plt.figure()
@@ -84,27 +58,6 @@ def plot_ROC(FPR, TPR, save=False):
     if save:
         save_plot('roc.png')
     plt.show()
-
-# INPUTS: 
-#   p: array of effprior log odds
-#   DCF: array of dcf of the data
-#   NAMES: name[i] to assign to couple p[i] and DCF[i]
-#   colors: list of colors to use for the plot
-#   legend: list of legend to use for the plot
-def plot_bayes_error(p, DCF, NAMES, colors=None, save=False, legend=None):
-    if colors is None:
-        colors = ['r', 'b', 'y', 'c', 'm', 'g', 'k']
-    for idx, name in enumerate(NAMES):
-        plt.plot(p, DCF[idx], color=colors[idx], label=name)
-    plt.ylim(0, 1.1)
-    plt.xlim(-3, 3)
-    plt.xlabel('prior log-odds')
-    plt.ylabel('DCF value')
-    if legend is not None:
-        plt.legend(legend)
-    if save:
-        save_plot('bayes_error_plots/bayes_errors.png')
-    plt.figure()
 
 
 def save_plot(name):

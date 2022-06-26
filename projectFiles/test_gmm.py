@@ -59,5 +59,9 @@ Printer.print_line(f"DCF xval: {xvalthreshold_dcf}")
 Printer.print_line(f"DCF min: {min_dcf}")
 Printer.print_empty_lines(1)
 
+with open("results/experimental/gmm.txt", "w") as f:
+    f.write(f"empiric DCF: {empiric_dcf}\n")
+    f.write(f"X-validation Threshold DCF: {xvalthreshold_dcf}\n")
+    f.write(f"minDCF Threshold DCF: {min_dcf}\n")
 
 bayes_error_plots("DCF For GMM", gmm.LTE, gmm.llrs, validation_threshold = -0.09985079274315645)

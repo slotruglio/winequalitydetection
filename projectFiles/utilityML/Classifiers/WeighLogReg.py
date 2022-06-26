@@ -2,7 +2,7 @@ import numpy
 from scipy import optimize
 from ..Functions.genpurpose import mcol
 
-#BINARY LOGISTIC REGRESSION
+#WEIGHTED LOGISTIC REGRESSION
 class WeighLogReg:
 	def __init__(self, DTR, LTR, DTE, LTE, l):
 		self.DTR = DTR

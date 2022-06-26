@@ -22,7 +22,7 @@ def compute_confusion_matrix_binary(labels, llrs, pi, Cfn, Cfp, t = None):
 
 	return confusion_matrix
 
-#LO CHIAMAVANO BAYES RISK
+#BAYES RISK
 def compute_dcf_binary(confusion_matrix, pi, Cfn, Cfp):
 	Bt = pi * Cfn * (confusion_matrix[0][1] / (confusion_matrix[0][1]+confusion_matrix[1][1]))
 
@@ -30,7 +30,7 @@ def compute_dcf_binary(confusion_matrix, pi, Cfn, Cfp):
 
 	return Bt + Bf
 
-#ANCHE CHIAMATO NORMALIZED BAYES RISK
+#NORMALIZED BAYES RISK
 def compute_normalized_dcf_binary(confusion_matrix, pi, Cfn, Cfp):
 
 	best_dummy = min(pi * Cfn, (1-pi) * Cfp)

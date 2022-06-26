@@ -102,12 +102,13 @@ if __name__ == "__main__":
 	prior_0 = 0.5
 	prior_1 = 0.5
 
-	""" svm_linear = calculate_svm_linear_paramaters(DTR, LTR, [prior_0, prior_1], 10)
+	svm_linear = calculate_svm_linear_paramaters(DTR, LTR, [prior_0, prior_1], 10)
 
 	with open("results/svm_linear_preprocessing2.txt", "w") as f:
 		for x in svm_linear:
-			f.write(str(x)[1:-1] + "\n") """
+			f.write(str(x)[1:-1] + "\n")
 
+    # most promising linear SVM 
 
 	best_pca = 10
 	best_C = 1
@@ -121,7 +122,7 @@ if __name__ == "__main__":
 
 	print("done linear")
 
-	""" svm_poly = calculate_svm_poly_paramaters(DTR, LTR, [prior_0, prior_1], 10)
+	svm_poly = calculate_svm_poly_paramaters(DTR, LTR, [prior_0, prior_1], 10)
 
 	with open("results/svm_poly_preprocessing2.txt", "w") as f:
 		for x in svm_poly:
@@ -135,7 +136,7 @@ if __name__ == "__main__":
 		for x in svm_rbf:
 			f.write(str(x)[1:-1] + "\n")
 
-	print("done rbf") """
+	print("done rbf")
 
 
 	

@@ -47,5 +47,9 @@ Printer.print_line(f"X-validation Threshold DCF: {xvalthreshold_dcf}")
 Printer.print_line(f"Min DCF: {min_dcf}")
 Printer.print_empty_lines(1)
 
+with open("results/experimental/mvg.txt", "w") as f:
+    f.write(f"empiric DCF: {empiric_dcf}\n")
+    f.write(f"X-validation Threshold DCF: {xvalthreshold_dcf}\n")
+    f.write(f"minDCF Threshold DCF: {min_dcf}\n")
 
 bayes_error_plots("DCF For MVG", mvg.LTE, mvg.llrs, validation_threshold = 0.42050259957894554)

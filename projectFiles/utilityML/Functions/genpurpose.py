@@ -83,22 +83,6 @@ def compute_diag_covariance(X, mu):
 #endregion
 
 
-#region accuracy computation
-
-# compute accuracy of model
-# given LTE = labels of test data
-# given S = class conditional probability
-def compute_accuracy(LTE, S):
-    accuracy = numpy.sum(LTE == numpy.argmax(S, axis=0)) / len(LTE)
-    return accuracy
-
-# compute accuracy for SVM
-def compute_svm_accuracy(DTE, LTE, wStar):
-    DTEEXT = numpy.vstack([DTE, numpy.ones((1, DTE.shape[1]))])
-    score = numpy.dot(wStar.T, DTEEXT)
-    return numpy.sum( (score > 0) == LTE) / len(LTE)
-
-#endregion
 
 def get_DTRs(DTR, LTR, number_of_classes):
 
