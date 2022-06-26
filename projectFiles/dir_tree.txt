@@ -1,0 +1,27 @@
+.
+│ // folders
+├── data                        - Provided Datasets
+├── img                         - Generated plots
+├── results                     - Saved results of preprocessing and test py files
+├── utilityML                   - Library files
+│   ├── Classifiers             
+│   └── Functions               
+│ // files
+├── dir_tree.txt                - Current file
+├── Printer.py                  - Library file for improved console prints
+├── plotting.py                 - Generates plot saved inside img folder
+│
+├── gaussianPreprocessing.py    - Calculates parameters for Gaussian Classifiers
+├── logregPreprocessing.py      - Calculates parameters for LogReg Classifier
+├── quadLogregPreprocessing.py  - Calculates parameters for QuadLogReg Classifier
+│
+├── gmmPreprocessing1.py        - Calculates PART 1 parameters for GMM Classifier
+├── gmmPreprocessing2.py        - Calculates PART 2 parameters for GMM Classifier
+├── svmPreprocessing1.py        - Calculates PART 1 parameters for SVM Classifiers
+├── svmPreprocessing2.py        - Calculates PART 2 parameters for SVM Classifiers
+│
+├── test_gaussian.py            - Experimental Results with Gaussian Classifier
+├── test_gmm.py                 - Experimental Results with GMM Classifier
+├── test_logreg.py              - Experimental Results with LogReg Classifier
+├── test_quadlogreg.py          - Experimental Results with QuadLogReg Classifier
+└── test_svm.py                 - Experimental Results with SVM Classifiers
