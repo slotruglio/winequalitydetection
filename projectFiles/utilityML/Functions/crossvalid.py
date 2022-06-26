@@ -2,7 +2,6 @@ import numpy
 from utilityML.Functions.bayes import compute_min_dcf, compute_confusion_matrix_binary, compute_normalized_dcf_binary, compute_dcf_binary
 #from utilityML.Functions.calibration import calibration
 from utilityML.Functions.dimred import *
-from utilityML.Functions.genpurpose import split_db_2to1
 from utilityML.Classifiers.SVM import SVM_linear, SVM_poly, SVM_RBF
 from utilityML.Classifiers.GMM import GMM
 from utilityML.Classifiers.LogReg import LogReg

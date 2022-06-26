@@ -1,5 +1,5 @@
 import numpy
-from ..Functions.genpurpose import vrow, logpdf_GAU_ND, split_db_2to1, get_DTRs
+from ..Functions.genpurpose import vrow, logpdf_GAU_ND, get_DTRs
 from ..Functions.bayes import compute_confusion_matrix_binary, compute_normalized_dcf_binary
 
 class NaiveBayes:
