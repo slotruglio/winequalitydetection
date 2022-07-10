@@ -1,0 +1,38 @@
+name: Executing main
+
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    branches:
+      - calculate
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v3
+        with:
+          # Semantic version range syntax or exact version of a Python version
+          python-version: '3.8'
+          # Optional - x64 or x86 architecture, defaults to x64
+          architecture: 'x64'
+      # install dependencies
+      - name: pipreqs commands
+        run:  |
+          cd projectFiles
+          pip install pipreqs
+          pipreqs .
+          pip install -r requirements.txt
+      # run main
+      - name: execute main
+        run: |
+          cd projectFiles
+          python main.py | tee -a ./log/results.txt
+      # commit changes
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: feat(results.txt)

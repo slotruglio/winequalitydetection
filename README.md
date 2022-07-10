@@ -23,9 +23,6 @@ wine.
 
 The dataset has been split into Train and Evaluation (Test) data. The first is used to train and validate the model, while the second is used to evaluate the model.
 
-## Premises
-Classes are partially balanced, but they are hard to separate. We expect error rates to be in the range of 10% or more.
-
 ## Citation
 *P. Cortez, A. Cerdeira, F. Almeida, T. Matos and J. Reis.
 Modeling wine preferences by data mining from physicochemical properties. In Decision Support Systems, Elsevier, 47(4):547-553, 2009.*
